@@ -8,7 +8,7 @@ import java.util.List;
 public abstract class Message {
 
     ///The message type for easy identification (comparing ints is less expensive than typecasting)
-    protected int MessageType = 0;
+    protected int MessageType;
 
     ///A list of the specific message receiver entities to send the data to
     protected List<IMessageReceiver> Receivers = new ArrayList<>();

@@ -1,44 +1,65 @@
 package com.example.mossymobile.MossFramework;
 
+import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 
-public abstract class MonoBehaviour {
+import java.io.Serializable;
+
+public abstract class MonoBehaviour implements Serializable {
     protected GameObject gameObject = null;
     public boolean IsEnabled = true;
     protected boolean HasRunStart = false;
 
+    public String name;
+
+    public MonoBehaviour(String name)
+    {
+        this.name = name;
+    }
+
+    public MonoBehaviour()
+    {
+        this.name = "New Component";
+    }
+
 
     ///Awake is called when the Component is added to the GameObject.
-    protected void Awake() {}
+    public void Awake() {}
 
     ///Start is called once at the start of the frame when the scene is first run (this will not run if the component is inactive at the start, use {@code OnFirstEnabled()}).
-    public void Start() {}
+    public abstract void Start();
 
     ///OnEnabled is called everytime the component is activated.
     protected void OnEnabled() {}
 
-    ///OnFirstEnabled is called the first time the component is activated.
-    protected void OnFirstEnabled() {}
+    //public final void Enabled() {
+    //    if (!IsEnabled) { return; }
+    //    if (!HasRunStart)
+    //    {
+    //        OnFirstEnabled();
+    //        HasRunStart = true;
+    //    }
+    //    OnEnabled();
+    //}
 
-    public final void Enabled() {
-        if (!IsEnabled) { return; }
-        if (!HasRunStart)
-        {
-            OnFirstEnabled();
-            HasRunStart = true;
-        }
-        OnEnabled();
+    public final boolean Init()
+    {
+        if (HasRunStart) { return false; }
+
+        Start();
+        HasRunStart = true;
+        return true;
     }
 
-    public void Update() {}
+    public abstract void Update();
+    public void LateUpdate() {}
 
     public void OnDestroy() {}
 
     public GameObject Instantiate(GameObject gameObject, Vector2 position, float rotationAngle)
     {
-        ///TODO: Implement Cloneable interface for MonoBehaviour, find a way to clone the scripts and return a new gameObject + copy the existing components over
-        return null;
+        return Factory.CopyObject(gameObject);
     }
 
 
@@ -61,10 +82,16 @@ public abstract class MonoBehaviour {
         this.gameObject = go;
     }
 
+    public void SetGameObject(GameObject go)
+    {
+        SetGameObject(go, false);
+    }
+
     public GameObject GetGameObject()
     {
         return this.gameObject;
     }
 
+    public boolean RunStartFunction() { return HasRunStart; }
 
 }

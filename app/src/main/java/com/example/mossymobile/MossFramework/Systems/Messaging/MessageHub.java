@@ -19,11 +19,10 @@ public class MessageHub {
      * @param ID the group ID to add the {@code IMessageReceiver} to
      * @param receiver the {@code IMessageReceiver} to register under the group
      *
-     * @return Whether adding the receiver was successful ({@code boolean})
      */
-    public static boolean AddReceiver(String ID, IMessageReceiver receiver)
+    public static void AddReceiver(String ID, IMessageReceiver receiver)
     {
-        if (ID.isEmpty() || receiver == null) { return false; } //if invalid
+        if (ID.isEmpty() || receiver == null) { return; } //if invalid
         if (Receivers.containsKey(ID))
         {
             Objects.requireNonNull(Receivers.get(ID)).add(receiver);
@@ -35,8 +34,6 @@ public class MessageHub {
 
             Receivers.put(ID, receiversOfID);
         }
-
-        return true;
     }
 
 
@@ -85,13 +82,10 @@ public class MessageHub {
                 }
 
                 receiverCache.clear();  //empty the cache of receivers for garbage collection
-                receiverCache = null;
             }
         }
 
         Messages.clear();   //empty the list of messages for garbage collection
-        Messages = null;
-
         System.gc(); //handle garbage collection of the messages
     }
 

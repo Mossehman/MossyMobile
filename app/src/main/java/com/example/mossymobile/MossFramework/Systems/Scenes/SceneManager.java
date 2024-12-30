@@ -7,8 +7,8 @@ import java.util.List;
 
 public class SceneManager {
     private static final HashMap<String, Scene> GameScenes = new HashMap<>();
-    private static List<Scene> CurrentScenes = new ArrayList<>();
-    private static List<Scene> ScenesToUnload = new ArrayList<>();
+    private static final List<Scene> CurrentScenes = new ArrayList<>();
+    private static final List<Scene> ScenesToUnload = new ArrayList<>();
     private static Scene NextScene = null;
 
     private static SceneLoadMode sceneLoad = SceneLoadMode.SINGLE;
@@ -88,7 +88,7 @@ public class SceneManager {
 
                 CurrentScenes.clear();
             }
-            NextScene.Init();
+            NextScene.Start();
             CurrentScenes.add(NextScene);
         }
 
@@ -110,6 +110,19 @@ public class SceneManager {
         }
 
         return true;
+    }
+
+    public static void Exit()
+    {
+        for (Scene scene : CurrentScenes)
+        {
+            scene.Exit();
+        }
+    }
+
+    public static int GetSceneCount()
+    {
+        return GameScenes.size();
     }
 
 }

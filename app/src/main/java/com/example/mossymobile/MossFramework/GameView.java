@@ -8,9 +8,12 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.example.mossymobile.MossFramework.Components.Collider;
+import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private SurfaceHolder holder;
+    private SurfaceHolder holder = null;
     private boolean SurfaceReady = false;
     private boolean SurfaceValid = true;
 

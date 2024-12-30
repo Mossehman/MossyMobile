@@ -9,13 +9,31 @@ public class Scene {
 
     protected int ScenePriority = 0;
 
-    public void Init() { }
-    public void Update() { }
+    protected void Init() { }
+    protected void Update() {
+        for (GameObject gameObject : gameObjects)
+        {
+            gameObject.Update();
+        }
+    }
 
-    public void LateUpdate() {}
+    protected void LateUpdate() {
+        for (GameObject gameObject : gameObjects)
+        {
+            gameObject.LateUpdate();
+        }
+    }
 
     public void Render() {}
-    public void Exit() {}
+    public final void Exit() {
+        for (GameObject gameObject : gameObjects)
+        {
+            gameObject.OnDestroy();
+        }
+
+        gameObjects.clear();
+        gameObjects = null;
+    }
 
     public final void Start()
     {
