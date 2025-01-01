@@ -1,18 +1,29 @@
 package com.example.mossymobile.MossFramework.Components;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 
+import java.util.Objects;
+
 public class Renderer extends MonoBehaviour {
 
     public Vector2 RenderOffset = new Vector2();
-    protected Bitmap sprite = null;
+    public Bitmap sprite = null;
+    protected Transform transform = null;
+
+    public boolean DoAntiAliasing = false;
+
+    Vector2 position = new Vector2();
+    Vector2 scale = new Vector2();
+    float rotation = 0.0f;
 
     public enum Ratio
     {
@@ -27,29 +38,47 @@ public class Renderer extends MonoBehaviour {
         this.imageRatio = ratio;
     }
 
+    public Renderer(int resourceID)
+    {
+        super();
+        this.sprite = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), resourceID);
+    }
+
+    public Renderer(String name, int resourceID)
+    {
+        super(name);
+        this.sprite = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), resourceID);
+    }
+
+
     @Override
     public void Start() {
-        return;
+        transform = gameObject.GetTransform();
+        position = transform.GetPosition();
+        scale = transform.GetScale();
+        rotation = transform.GetRotation();
     }
 
     @Override
     public void Update() {
-        return;
-    }
 
-    public void Render(Canvas canvas)
-    {
-        Transform transform = gameObject.GetTransform();
         if (!IsEnabled ||           //Renderer is not enabled, do not render
             transform == null ||    //GameObject has no positional value, do not render
             sprite == null)         //No sprite to render, do not render
         {
             return;
         }
+        gameObject.ToRender = true;
+    }
 
-        Vector2 position = transform.GetPosition();
-        Vector2 scale = transform.GetScale();
-        float rotation = transform.GetRotation();
+    public void Render(Canvas canvas)
+    {
+        if (!IsEnabled ||           //Renderer is not enabled, do not render
+            transform == null ||    //GameObject has no positional value, do not render
+            sprite == null)         //No sprite to render, do not render
+        {
+            return;
+        }
 
         Vector2Int src = new Vector2Int();
         Vector2Int srcEnd = new Vector2Int(sprite.getWidth(), sprite.getHeight());
@@ -79,5 +108,21 @@ public class Renderer extends MonoBehaviour {
 
         canvas.drawBitmap(sprite, srcRect, dstRect, null);
         canvas.restore();
+    }
+
+    /**
+     *
+     * @return the size of the sprite in world coordinates ({@code Vector2}).
+     */
+    public Vector2 GetSpriteSize()
+    {
+        Vector2Int srcEnd = new Vector2Int(sprite.getWidth(), sprite.getHeight());
+
+        if (imageRatio == Ratio.FIXED)
+        {
+            srcEnd = new Vector2Int(1, 1);
+        }
+
+        return new Vector2((srcEnd.x * scale.x) * 0.5f, (srcEnd.y * scale.y) * 0.5f);
     }
 }

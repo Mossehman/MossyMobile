@@ -9,10 +9,24 @@ public final class MossMath {
     public static final float HALF_PI = PI / 2.0f;
     public static final float QUARTER_PI = PI / 4.0f;
 
+    /**
+     * Ensures the value will always be positive.
+     *
+     * @param value the value of the data to set to positive.
+     *
+     * @return the positive value of the variable.
+     */
     public static float abs(float value) {
         return (value < 0) ? -value : value;
     }
 
+    /**
+     * Gets the sign of the input value.
+     *
+     * @param value the value of the data to get the sign from.
+     *
+     * @return 1 or -1 depending on whether the {@code value} is positive or negative.
+     */
     public static int sign(float value)
     {
         return (value < 0) ? -1 : 1;

@@ -1,12 +1,21 @@
 package com.example.mossymobile.MossFramework;
 
-import com.example.mossymobile.MossFramework.Components.Collider;
-import com.example.mossymobile.MossFramework.Components.Transform;
+import android.graphics.Canvas;
+
+import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
+import com.example.mossymobile.MossFramework.Systems.Messaging.MessageHub;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
+import com.example.mossymobile.MossFramework.Testing.TestScene;
+import com.example.mossymobile.R;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 public class Application {
+    public static HashMap<Class<? extends MonoBehaviour>, Boolean> AllowClassDuplicates = new HashMap<>();
 
     ///This is to check if application should close (no shit sherlock)
     public static boolean CloseApplication = false;
@@ -16,25 +25,29 @@ public class Application {
 
     ///This is to check if deltaTime should be updated, else it should be read-only and unmodifiable
     protected static boolean nextFrameUpdate = false;
-
-
-    ///The screen our game scene will be rendered to
-    protected GameView gameView = null;
+    protected Canvas canvas = null;
 
     public final boolean Start()
     {
         //if the game view is null, end the program (this should not happen)
-        if (gameView == null) { return false; }
+        if (GameView.GetInstance() == null) { return false; }
+        canvas = Objects.requireNonNull(GameView.GetInstance()).canvas;
+
+        if (Debug.GetConfig() != BuildConfig.RELEASE)
+        {
+            InspectorGUI.GetInstance().AddLayoutComponent("Hierarchy", GameView.GetInstance().GetActivity().findViewById(R.id.gameObjectList));
+            InspectorGUI.GetInstance().AddLayoutComponent("Components", GameView.GetInstance().GetActivity().findViewById(R.id.componentList));
+        }
 
         return OnStart();
     }
 
     public final void Run()
     {
-        while (!gameView.IsSurfaceReady() && gameView.IsSurfaceValid()) { continue; }
+        while (!Objects.requireNonNull(GameView.GetInstance()).IsSurfaceReady() && Objects.requireNonNull(GameView.GetInstance()).IsSurfaceValid()) { continue; }
 
         //In the event our game view is invalid (this should not happen)
-        if (!gameView.IsSurfaceValid())
+        if (!Objects.requireNonNull(GameView.GetInstance()).IsSurfaceValid())
         {
             Debug.LogWarning("Application::Run()", "Game View was invalid! Is the surface view null or too small?", "Game View Invalid");
         }
@@ -58,25 +71,43 @@ public class Application {
 
             nextFrameUpdate = false;
 
+            canvas = Objects.requireNonNull(GameView.GetInstance()).LockCanvas();
+            canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+
             if (!SceneManager.UpdateScenes()) //if scene list is empty, function will return false, if so, break program
             {
                 Debug.LogError("Application::Run()", "No game scenes were running... ending program.");
                 CloseApplication = true;
 
                 break;
-
-
             }
+            if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
+                UpdateInspector();
+            }
+
+            Objects.requireNonNull(GameView.GetInstance()).UnlockCanvasAndPost(canvas);
         }
+    }
+
+    private final void UpdateInspector()
+    {
+        InspectorGUI.GetInstance().UpdateHierarchyGUI("Hierarchy", R.layout.gameobjectdata);
     }
 
     public final void Exit()
     {
+        OnExit();
+
+        //cleanup all the systems
         SceneManager.Exit();
+        MessageHub.Exit();
+
+        System.gc();
     }
 
     protected boolean OnStart()
     {
+        SceneManager.AddToSceneList("TestScene", new TestScene());
         return true;
     }
 
@@ -84,7 +115,8 @@ public class Application {
 
     protected void OnRun() {}
 
-    protected void OnExit() {}
+    protected void OnExit() {
+    }
 
     public static boolean IsRunning()
     {
@@ -95,5 +127,16 @@ public class Application {
     {
         return nextFrameUpdate;
     }
+
+    public static <T extends MonoBehaviour> boolean CheckAllowDuplicates(Class<?> type)
+    {
+        if (AllowClassDuplicates.containsKey(type))
+        {
+            return Boolean.TRUE.equals(AllowClassDuplicates.get(type));
+        }
+
+        return false;
+    }
+
 
 }

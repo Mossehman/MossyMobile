@@ -2,26 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/componentBase"
+    android:id="@+id/errorBase"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#BFBFBF"
+    android:background="#999999"
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/dataName"
+        android:id="@+id/logData"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:layout_weight="3"
-        android:gravity="center"
-        android:text="DataType" />
+        android:text="TextView" />
 
-    <LinearLayout
-        android:id="@+id/componentValues"
+    <TextView
+        android:id="@+id/logDesc"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal" />
+        android:background="#262626"
+        android:text="Text"
+        android:textColor="#E2E2E2"
+        android:textColorLink="#DEDEDE" />
+
 </LinearLayout>

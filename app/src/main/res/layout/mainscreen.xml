@@ -74,7 +74,14 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/gameUI"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent" >
+
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BUTTON" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
 
             <LinearLayout
@@ -186,6 +193,7 @@
                     android:background="#4B4B4B">
 
                     <LinearLayout
+                        android:id="@+id/logDataPanel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />

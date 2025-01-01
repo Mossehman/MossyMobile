@@ -7,11 +7,19 @@ import java.util.Objects;
 
 public class MessageHub {
 
+    public static void Exit() {
+        Receivers.clear();
+        QueuedMessages.clear();
+
+        Receivers = null;
+        QueuedMessages = null;
+    }
+
     ///Hashmap of all the registered message receivers under an ID
-    private static final HashMap<String, List<IMessageReceiver>> Receivers = new HashMap<>();
+    private static HashMap<String, List<IMessageReceiver>> Receivers = new HashMap<>();
 
     ///List of all the queued messages, queued messages will be handled at the end of each frame in the scene's SystemUpdate()
-    private static final List<Message> QueuedMessages = new ArrayList<>();
+    private static List<Message> QueuedMessages = new ArrayList<>();
 
     /**
      * Adds a new {@code IMessageReceiver} to a group ID. A {@code IMessageReceiver} can be placed under multiple groups. A group can have multiple {@code IMessageReceiver}s.
@@ -86,7 +94,6 @@ public class MessageHub {
         }
 
         Messages.clear();   //empty the list of messages for garbage collection
-        System.gc(); //handle garbage collection of the messages
     }
 
 

@@ -3,13 +3,22 @@ package com.example.mossymobile.MossFramework;
 import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorData;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public abstract class MonoBehaviour implements Serializable {
     protected GameObject gameObject = null;
     public boolean IsEnabled = true;
-    protected boolean HasRunStart = false;
+    private boolean HasRunStart = false;
+
+    ///Determines if the component allows derived types to be added onto the same GameObject if one is already present (eg: sprite renderer and animated sprite renderer), defined in the constructor
+    protected boolean AllowDerivedTypes = false;
+    private boolean InitInspector = false;
+
+    private HashMap<String, InspectorData> GUIData = new HashMap<>();
+
 
     public String name;
 
@@ -23,12 +32,25 @@ public abstract class MonoBehaviour implements Serializable {
         this.name = "New Component";
     }
 
+    public final void AddToList()
+    {
+        if (Application.AllowClassDuplicates.containsKey(this.getClass())) { return; }
+        Application.AllowClassDuplicates.put(this.getClass(), AllowDerivedTypes);
+    }
+
 
     ///Awake is called when the Component is added to the GameObject.
     public void Awake() {}
 
-    ///Start is called once at the start of the frame when the scene is first run (this will not run if the component is inactive at the start, use {@code OnFirstEnabled()}).
+    ///Start is called once at the start of the frame which the component is enabled (typically when the component gets added)
     public abstract void Start();
+
+    public final void InspectorGUI() {
+        InitInspector = true;
+        InitialiseInspectorData();
+        InitInspector = false;
+    }
+    protected void InitialiseInspectorData() {}
 
     ///OnEnabled is called everytime the component is activated.
     protected void OnEnabled() {}
@@ -93,5 +115,27 @@ public abstract class MonoBehaviour implements Serializable {
     }
 
     public boolean RunStartFunction() { return HasRunStart; }
+
+    public void ShowInInspector(String data, Object obj)
+    {
+        if (!InitInspector) {
+            Debug.LogError("MonoBehaviour::ShowInInspector()", "You can only call this function in { InitialiseInspectorData() }!");
+        }
+        GUIData.put(data, new InspectorData(obj, true));
+    }
+
+    public void EditInInspector(String data, Object obj)
+    {
+        if (!InitInspector) {
+            Debug.LogError("MonoBehaviour::ShowInInspector()", "You can only call this function in { InitialiseInspectorData() }!");
+        }
+        GUIData.put(data, new InspectorData(obj, false));
+    }
+
+    public HashMap<String, InspectorData> GetInspectorData()
+    {
+        return this.GUIData;
+    }
+
 
 }

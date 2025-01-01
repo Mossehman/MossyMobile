@@ -6,10 +6,29 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SceneManager {
-    private static final HashMap<String, Scene> GameScenes = new HashMap<>();
-    private static final List<Scene> CurrentScenes = new ArrayList<>();
-    private static final List<Scene> ScenesToUnload = new ArrayList<>();
+
+    public static void Exit() {
+        for (Scene scene : CurrentScenes)
+        {
+            scene.Exit();
+        }
+
+        GameScenes.clear();
+        CurrentScenes.clear();
+        ScenesToUnload.clear();
+        NextScene = null;
+        RunningScene = null;
+
+        GameScenes = null;
+        CurrentScenes = null;
+        ScenesToUnload = null;
+    }
+
+    private static HashMap<String, Scene> GameScenes = new HashMap<>();
+    private static List<Scene> CurrentScenes = new ArrayList<>();
+    private static List<Scene> ScenesToUnload = new ArrayList<>();
     private static Scene NextScene = null;
+    private static Scene RunningScene = null;
 
     private static SceneLoadMode sceneLoad = SceneLoadMode.SINGLE;
 
@@ -88,6 +107,7 @@ public class SceneManager {
 
                 CurrentScenes.clear();
             }
+            RunningScene = NextScene;
             NextScene.Start();
             CurrentScenes.add(NextScene);
         }
@@ -96,6 +116,7 @@ public class SceneManager {
         {
             for (Scene scene : ScenesToUnload)
             {
+                RunningScene = scene;
                 scene.Exit();
                 CurrentScenes.remove(scene);
             }
@@ -106,23 +127,29 @@ public class SceneManager {
 
         for (Scene scene : CurrentScenes) //loop through and update all our existing scenes
         {
+            RunningScene = scene;
             scene.Run();
         }
 
         return true;
     }
 
-    public static void Exit()
-    {
-        for (Scene scene : CurrentScenes)
-        {
-            scene.Exit();
-        }
-    }
-
+    /**
+     *
+     * @return the total number of {@code Scene}s regardless of if they are active or not.
+     */
     public static int GetSceneCount()
     {
         return GameScenes.size();
+    }
+
+    /**
+     *
+     * @return the {@code Scene} that is running a function in {@code SceneManager::Run()}.
+     */
+    public static Scene GetCurrScene()
+    {
+        return RunningScene;
     }
 
 }

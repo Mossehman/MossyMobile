@@ -2,7 +2,7 @@ package com.example.mossymobile.MossFramework.Components;
 
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 
-public class Collider extends MonoBehaviour {
+public abstract class Collider extends MonoBehaviour {
 
     public boolean IsTrigger = false;
 
@@ -15,4 +15,16 @@ public class Collider extends MonoBehaviour {
     public void Update() {
         return;
     }
+
+    public final void OnCollisionDetected()
+    {
+        if (IsTrigger)
+        {
+            gameObject.OnTriggerEnter();
+            return;
+        }
+        gameObject.OnCollisionEnter();
+    }
+
+    public abstract void ResolveCollision();
 }

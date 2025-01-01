@@ -1,9 +1,18 @@
 package com.example.mossymobile.MossFramework.Systems.Debugging;
 
+import android.graphics.Color;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.mossymobile.MossFramework.GameView;
+import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
+import com.example.mossymobile.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 ///Helper class to allow for an in-app debugger, allows for debugging on the mobile device for convenience, most features are stripped in Release/Prod.
 public class Debug {
@@ -12,13 +21,19 @@ public class Debug {
     public static boolean WarningsEnabled = true;
     public static boolean ErrorsEnabled = true;
 
-    private static List<String> DisabledWarningCodes = new ArrayList<>();
+    private static final List<String> DisabledWarningCodes = new ArrayList<>();
+
+    private static int LogID = 0;
 
     ///Initialises the build configuration
-    public Debug(BuildConfig build)
+    public static void SetConfig(BuildConfig build)
     {
+        if (buildConfig != null) { return; }
         buildConfig = build;
+
     }
+
+    public static BuildConfig GetConfig() { return buildConfig; }
 
     /**
      * Disables a specific warning code via string identifier.
@@ -54,6 +69,8 @@ public class Debug {
             return;
         }
         Log.d(tag, "" + value);
+
+        PrintLogToGUI(tag, "" + value, Color.WHITE);
     }
 
     public static void Log (String tag,boolean value)
@@ -64,8 +81,10 @@ public class Debug {
 
         if (value) {
             Log.d(tag, "TRUE");
+            PrintLogToGUI(tag, "TRUE", Color.WHITE);
         } else {
             Log.d(tag, "FALSE");
+            PrintLogToGUI(tag, "FALSE", Color.WHITE);
         }
     }
 
@@ -75,6 +94,8 @@ public class Debug {
             return;
         }
         Log.d(tag, "" + value);
+
+        PrintLogToGUI(tag, "" + value, Color.WHITE);
     }
 
     public static void Log (String tag,double value)
@@ -83,6 +104,7 @@ public class Debug {
             return;
         }
         Log.d(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.WHITE);
     }
 
     public static void Log (String tag,long value)
@@ -91,6 +113,7 @@ public class Debug {
             return;
         }
         Log.d(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.WHITE);
     }
 
     public static void Log (String tag,char value)
@@ -99,6 +122,7 @@ public class Debug {
             return;
         }
         Log.d(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.WHITE);
     }
 
     public static void Log (String tag, String value)
@@ -107,6 +131,8 @@ public class Debug {
             return;
         }
         Log.d(tag, value);
+
+        PrintLogToGUI(tag, value, Color.WHITE);
     }
 
     public static void Log (String tag, ILoggable value)
@@ -115,6 +141,7 @@ public class Debug {
             return;
         }
         Log.d(tag, value.GetLogStatement());
+        PrintLogToGUI(tag, value.GetLogStatement(), Color.WHITE);
     }
 
 
@@ -291,6 +318,10 @@ public class Debug {
             return;
         }
         Log.e(tag, value);
+
+        PrintLogToGUI(tag, value, Color.RED);
+
+
     }
 
     public static void LogError (String tag, ILoggable value)
@@ -299,12 +330,30 @@ public class Debug {
             return;
         }
         Log.e(tag, value.GetLogStatement());
+        PrintLogToGUI(tag, value.GetLogStatement(), Color.RED);
     }
 
-    public static void Test(String test)
+    private static void PrintLogToGUI(String tag, String data, int color)
     {
-        return;
-    }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LogID++;
+                LinearLayout logDataPanel = (LinearLayout) InspectorGUI.GetInstance().GetLayoutComponent("LogPanel");
+                View logComponent = Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(R.layout.logcomponent, logDataPanel, false);
+                TextView logData = logComponent.findViewById(R.id.logData);
+                TextView logDesc = logComponent.findViewById(R.id.logDesc);
 
+                String tagData = tag + " (" + LogID + ")";
+
+                logData.setText(tagData);
+                logDesc.setText(data);
+
+                logDesc.setTextColor(color);
+
+                logDataPanel.addView(logComponent);
+            }
+        });
+    }
 
 }

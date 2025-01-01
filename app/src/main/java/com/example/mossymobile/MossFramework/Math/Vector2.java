@@ -2,9 +2,23 @@ package com.example.mossymobile.MossFramework.Math;
 
 import static java.lang.Math.sqrt;
 
-import com.example.mossymobile.MossFramework.Systems.Debugging.ILoggable;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
-public final class Vector2 implements ILoggable {
+import androidx.annotation.NonNull;
+
+import com.example.mossymobile.MossFramework.GameView;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Debugging.ILoggable;
+import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
+
+import java.util.Objects;
+
+public final class Vector2 implements ILoggable, ICustomInspectorGUI {
     @Override
     public String GetLogStatement() {
         return "Vector2: { " + x + ", " + y + " }";
@@ -253,7 +267,89 @@ public final class Vector2 implements ILoggable {
      */
     public boolean IsEqual(Vector2 otherVec2) { return Math.abs(x - otherVec2.x) < MossMath.EPSILON && Math.abs(y - otherVec2.y) < MossMath.EPSILON; }
 
+    @Override
+    public void SetGUIData(LinearLayout componentList) {
+        EditText xComponent = new EditText(Objects.requireNonNull(GameView.GetInstance()).GetContext());
+        xComponent.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        xComponent.setText(String.valueOf(x));
 
+        xComponent.addTextChangedListener(new TextWatcher() {
+            private String previousText = "";
 
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                previousText = s.toString();
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String newText = s.toString();
+                if (!newText.equals(previousText)) {
+                    try {
+                        // Convert text to a number
+                        x = Float.parseFloat(newText);
+                    } catch (NumberFormatException e) {
+                        Debug.LogError("Vector2::SetGUIData()", "Invalid data set via Inspector, only input float values!");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        EditText yComponent = new EditText(Objects.requireNonNull(GameView.GetInstance()).GetContext());
+        yComponent.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        yComponent.setText(String.valueOf(y));
+
+        yComponent.addTextChangedListener(new TextWatcher() {
+            private String previousText = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                previousText = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String newText = s.toString();
+
+                if (!newText.equals(previousText)) {
+                    try {
+                        // Convert text to a number
+                        y = Float.parseFloat(newText);
+                    } catch (NumberFormatException e) {
+                        Debug.LogError("Vector2::SetGUIData()", "Invalid data set via Inspector, only input float values!");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        Handler handler = new Handler();
+        Runnable updateTextData = new Runnable() {
+            @Override
+            public void run() {
+                if (!xComponent.getText().toString().equals(String.valueOf(x))) {
+                    xComponent.setText(String.valueOf(x)); // Update X text
+                }
+                if (!yComponent.getText().toString().equals(String.valueOf(y))) {
+                    yComponent.setText(String.valueOf(y)); // Update Y text
+                }
+
+                handler.postDelayed(this, 10); // Repeat every 100ms
+            }
+        };
+
+        handler.post(updateTextData);
+
+        componentList.addView(xComponent);
+        componentList.addView(yComponent);
+    }
 }
