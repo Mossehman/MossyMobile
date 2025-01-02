@@ -1,14 +1,22 @@
 package com.example.mossymobile.MossFramework;
 
+import android.os.Handler;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
 import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorData;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Objects;
 
-public abstract class MonoBehaviour implements Serializable {
+public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI {
     protected GameObject gameObject = null;
     public boolean IsEnabled = true;
     private boolean HasRunStart = false;
@@ -47,10 +55,10 @@ public abstract class MonoBehaviour implements Serializable {
 
     public final void InspectorGUI() {
         InitInspector = true;
-        InitialiseInspectorData();
+        InitializeInspectorData();
         InitInspector = false;
     }
-    protected void InitialiseInspectorData() {}
+    protected void InitializeInspectorData() {}
 
     ///OnEnabled is called everytime the component is activated.
     protected void OnEnabled() {}
@@ -135,6 +143,35 @@ public abstract class MonoBehaviour implements Serializable {
     public HashMap<String, InspectorData> GetInspectorData()
     {
         return this.GUIData;
+    }
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " (" + gameObject.name + ")";
+    }
+
+    @Override
+    public void SetGUIData(LinearLayout componentList, long updateDelay) {
+        TextView dataComponent = new TextView(Objects.requireNonNull(GameView.GetInstance()).GetContext());
+        dataComponent.setText(toString());
+
+        Handler handler = new Handler();
+        Runnable updateTextData = new Runnable() {
+            @Override
+            public void run() {
+                if (!dataComponent.getText().toString().equals(toString())) {
+                    dataComponent.setText(toString()); // Update X text
+                }
+
+                handler.postDelayed(this, updateDelay); // Repeat every 100ms
+            }
+        };
+
+        handler.post(updateTextData);
+
+        componentList.addView(dataComponent);
     }
 
 

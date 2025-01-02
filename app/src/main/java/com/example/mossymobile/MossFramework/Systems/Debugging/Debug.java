@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.mossymobile.MossFramework.GameView;
@@ -20,10 +21,13 @@ public class Debug {
     public static boolean DebugEnabled = true;
     public static boolean WarningsEnabled = true;
     public static boolean ErrorsEnabled = true;
-
     private static final List<String> DisabledWarningCodes = new ArrayList<>();
 
     private static int LogID = 0;
+
+    private static final List<String> allTags = new ArrayList<>();
+
+    public static boolean AutoScrollDown = true;
 
     ///Initialises the build configuration
     public static void SetConfig(BuildConfig build)
@@ -339,6 +343,9 @@ public class Debug {
             @Override
             public void run() {
                 LogID++;
+
+                ScrollView logScroll = (ScrollView) InspectorGUI.GetInstance().GetLayoutComponent("LogScroll");
+
                 LinearLayout logDataPanel = (LinearLayout) InspectorGUI.GetInstance().GetLayoutComponent("LogPanel");
                 View logComponent = Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(R.layout.logcomponent, logDataPanel, false);
                 TextView logData = logComponent.findViewById(R.id.logData);
@@ -352,8 +359,27 @@ public class Debug {
                 logDesc.setTextColor(color);
 
                 logDataPanel.addView(logComponent);
+
+                if (AutoScrollDown)
+                {
+                    logScroll.scrollTo(0, logScroll.getChildAt(0).getBottom());
+                }
             }
         });
+    }
+
+    public void AddTagToDebugList(String tag)
+    {
+        if (Debug.GetConfig() == BuildConfig.PRODUCTION || allTags.contains(tag)) { return; }
+        allTags.add(tag);
+    }
+
+    public void PrintAllTags()
+    {
+        for (String str : allTags)
+        {
+            Debug.Log("Tag", str);
+        }
     }
 
 }

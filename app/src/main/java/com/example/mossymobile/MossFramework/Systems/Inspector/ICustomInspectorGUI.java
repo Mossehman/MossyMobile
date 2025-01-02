@@ -4,6 +4,6 @@ import android.widget.LinearLayout;
 
 public interface ICustomInspectorGUI {
 
-    void SetGUIData(LinearLayout componentList);
+    void SetGUIData(LinearLayout componentList, long updateDelay);
 
 }

@@ -2,10 +2,103 @@ package com.example.mossymobile.MossFramework.Math;
 
 import static java.lang.Math.sqrt;
 
+import android.os.Handler;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Debugging.ILoggable;
+import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 
-public final class Vector2Int implements ILoggable {
+import java.util.Objects;
+
+public final class Vector2Int implements ILoggable, ICustomInspectorGUI {
+    @Override
+    public void SetGUIData(LinearLayout componentList, long updateDelay) {
+        EditText xComponent = new EditText(Objects.requireNonNull(GameView.GetInstance()).GetContext());
+        xComponent.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        xComponent.setText(String.valueOf(x));
+
+        xComponent.addTextChangedListener(new TextWatcher() {
+            private String previousText = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                previousText = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String newText = s.toString();
+                if (!newText.equals(previousText)) {
+                    try {
+                        x = Integer.parseInt(newText);
+                    } catch (NumberFormatException e) {
+                        Debug.LogError("Vector2Int::SetGUIData()", "Invalid data set via Inspector, only input integer values!");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        EditText yComponent = new EditText(Objects.requireNonNull(GameView.GetInstance()).GetContext());
+        yComponent.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        yComponent.setText(String.valueOf(y));
+
+        yComponent.addTextChangedListener(new TextWatcher() {
+            private String previousText = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                previousText = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String newText = s.toString();
+
+                if (!newText.equals(previousText)) {
+                    try {
+                        y = Integer.parseInt(newText);
+                    } catch (NumberFormatException e) {
+                        Debug.LogError("Vector2Int::SetGUIData()", "Invalid data set via Inspector, only input integer values!");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        Handler handler = new Handler();
+        Runnable updateTextData = new Runnable() {
+            @Override
+            public void run() {
+                if (!xComponent.getText().toString().equals(String.valueOf(x))) {
+                    xComponent.setText(String.valueOf(x));
+                }
+                if (!yComponent.getText().toString().equals(String.valueOf(y))) {
+                    yComponent.setText(String.valueOf(y));
+                }
+
+                handler.postDelayed(this, updateDelay);
+            }
+        };
+
+        handler.post(updateTextData);
+
+        componentList.addView(xComponent);
+        componentList.addView(yComponent);
+    }
+
     @Override
     public String GetLogStatement() {
         return "Vector2Int: { " + x + ", " + y + " }";

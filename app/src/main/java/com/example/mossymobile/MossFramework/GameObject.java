@@ -1,8 +1,16 @@
 package com.example.mossymobile.MossFramework;
 
+import android.os.Handler;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
 import com.example.mossymobile.MossFramework.Components.Transform;
 import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
+import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 
 import java.io.Serializable;
@@ -10,9 +18,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public final class GameObject implements Serializable {
+public final class GameObject implements Serializable, ICustomInspectorGUI {
     String name = "GameObject";
+
+    List<String> tags = new ArrayList<>();
+
     private HashMap<Class<?>, MonoBehaviour> Components = new HashMap<>();
     private List<MonoBehaviour> ComponentsToRemove = new ArrayList<>();
     private Transform transform = null;
@@ -63,8 +75,9 @@ public final class GameObject implements Serializable {
                 }
             }
         }
-
-        component.InspectorGUI();
+        if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
+            component.InspectorGUI();
+        }
 
         if (component instanceof Transform) {
             transform = (Transform) component;
@@ -149,6 +162,10 @@ public final class GameObject implements Serializable {
     public void LateUpdate() {
         for (MonoBehaviour component : Components.values())
         {
+            //if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
+            //    component.InspectorGUI();
+            //}
+
             if (!component.IsEnabled) { continue; }
             component.LateUpdate();
         }
@@ -211,6 +228,46 @@ public final class GameObject implements Serializable {
     public List<MonoBehaviour> GetComponents()
     {
         return new ArrayList<>(Components.values());
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public void SetGUIData(LinearLayout componentList, long updateDelay) {
+        TextView dataComponent = new TextView(Objects.requireNonNull(GameView.GetInstance()).GetContext());
+        dataComponent.setText(toString());
+
+        Handler handler = new Handler();
+        Runnable updateTextData = new Runnable() {
+            @Override
+            public void run() {
+                if (!dataComponent.getText().toString().equals(toString())) {
+                    dataComponent.setText(toString()); // Update X text
+                }
+
+                handler.postDelayed(this, updateDelay); // Repeat every 100ms
+            }
+        };
+
+        handler.post(updateTextData);
+
+        componentList.addView(dataComponent);
+    }
+
+    public void AddTag(String tag) {
+        this.tags.add(tag);
+    }
+
+    public boolean HasTag(String tag) {
+        return tags.contains(tag);
+    }
+
+    public void RemoveTag(String tag) {
+        this.tags.remove(tag);
     }
 
 }

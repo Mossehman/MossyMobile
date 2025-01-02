@@ -1,6 +1,8 @@
 package com.example.mossymobile.MossFramework;
 
 import android.graphics.Canvas;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
@@ -37,6 +39,14 @@ public class Application {
         {
             InspectorGUI.GetInstance().AddLayoutComponent("Hierarchy", GameView.GetInstance().GetActivity().findViewById(R.id.gameObjectList));
             InspectorGUI.GetInstance().AddLayoutComponent("Components", GameView.GetInstance().GetActivity().findViewById(R.id.componentList));
+            InspectorGUI.GetInstance().AddLayoutComponent("GOName", GameView.GetInstance().GetActivity().findViewById(R.id.currGOName));
+            InspectorGUI.GetInstance().AddLayoutComponent("LogScroll", GameView.GetInstance().GetActivity().findViewById(R.id.logScroll));
+
+            ImageButton downScrollBtn = GameView.GetInstance().GetActivity().findViewById(R.id.logDownScroll);
+            downScrollBtn.setOnClickListener(v -> {
+                Debug.AutoScrollDown = !Debug.AutoScrollDown;
+            });
+
         }
 
         return OnStart();

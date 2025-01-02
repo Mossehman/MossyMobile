@@ -268,7 +268,7 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI {
     public boolean IsEqual(Vector2 otherVec2) { return Math.abs(x - otherVec2.x) < MossMath.EPSILON && Math.abs(y - otherVec2.y) < MossMath.EPSILON; }
 
     @Override
-    public void SetGUIData(LinearLayout componentList) {
+    public void SetGUIData(LinearLayout componentList, long updateDelay) {
         EditText xComponent = new EditText(Objects.requireNonNull(GameView.GetInstance()).GetContext());
         xComponent.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         xComponent.setText(String.valueOf(x));
@@ -343,7 +343,7 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI {
                     yComponent.setText(String.valueOf(y)); // Update Y text
                 }
 
-                handler.postDelayed(this, 10); // Repeat every 100ms
+                handler.postDelayed(this, updateDelay); // Repeat every 100ms
             }
         };
 
@@ -351,5 +351,11 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI {
 
         componentList.addView(xComponent);
         componentList.addView(yComponent);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "{ " + x + ", " + y + " }";
     }
 }

@@ -10,14 +10,9 @@ public class TestScene extends Scene {
     protected void Init() {
         GameObject newGO = new GameObject();
         Camera camera = newGO.AddComponent(Camera.class);
-        newGO.AddComponent(Camera.class);
-        camera.a = 10.0f;
-
         newGO.GetTransform().SetPosition(new Vector2(1, 0));
 
         GameObject anotherGO = new GameObject("Other GameObject");
-        GameObject GO2 = new GameObject("Other GameObject 1");
-        GameObject GO3 = new GameObject("Other GameObject 2");
-        GameObject GO4 = new GameObject("Other GameObject 3");
+        anotherGO.GetTransform().SetPosition(new Vector2(-4, 0));
     }
 }

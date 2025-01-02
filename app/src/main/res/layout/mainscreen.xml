@@ -180,13 +180,35 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="right"
                     android:layout_weight="5"
                     android:background="#2C2C2C"
                     android:orientation="horizontal">
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right">
+
+                        <ImageButton
+                            android:id="@+id/logDownScroll"
+                            android:layout_width="46dp"
+                            android:layout_height="36dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintDimensionRatio="1:1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHeight_default="wrap"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintWidth_default="wrap"
+                            app:srcCompat="@drawable/downarrow" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
 
                 <ScrollView
+                    android:id="@+id/logScroll"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
