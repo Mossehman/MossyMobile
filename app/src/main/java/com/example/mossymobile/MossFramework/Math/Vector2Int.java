@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -19,9 +20,26 @@ import java.util.Objects;
 public final class Vector2Int implements ILoggable, ICustomInspectorGUI {
     @Override
     public void SetGUIData(LinearLayout componentList, long updateDelay) {
+
+        final boolean[] isEditing = {false, false};
+
         EditText xComponent = new EditText(Objects.requireNonNull(GameView.GetInstance()).GetContext());
         xComponent.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
         xComponent.setText(String.valueOf(x));
+        xComponent.setMaxLines(1);
+        xComponent.setSingleLine(true);
+
+        xComponent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    isEditing[0] = true;
+                }
+                else {
+                    isEditing[0] = false;
+                }
+            }
+        });
 
         xComponent.addTextChangedListener(new TextWatcher() {
             private String previousText = "";
@@ -52,6 +70,20 @@ public final class Vector2Int implements ILoggable, ICustomInspectorGUI {
         EditText yComponent = new EditText(Objects.requireNonNull(GameView.GetInstance()).GetContext());
         yComponent.setInputType(InputType.TYPE_NUMBER_VARIATION_NORMAL);
         yComponent.setText(String.valueOf(y));
+        yComponent.setMaxLines(1);
+        yComponent.setSingleLine(true);
+
+        yComponent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    isEditing[1] = true;
+                }
+                else {
+                    isEditing[1] = false;
+                }
+            }
+        });
 
         yComponent.addTextChangedListener(new TextWatcher() {
             private String previousText = "";
@@ -82,10 +114,10 @@ public final class Vector2Int implements ILoggable, ICustomInspectorGUI {
         Runnable updateTextData = new Runnable() {
             @Override
             public void run() {
-                if (!xComponent.getText().toString().equals(String.valueOf(x))) {
+                if (!xComponent.getText().toString().equals(String.valueOf(x)) && !isEditing[0]) {
                     xComponent.setText(String.valueOf(x));
                 }
-                if (!yComponent.getText().toString().equals(String.valueOf(y))) {
+                if (!yComponent.getText().toString().equals(String.valueOf(y)) && !isEditing[1]) {
                     yComponent.setText(String.valueOf(y));
                 }
 

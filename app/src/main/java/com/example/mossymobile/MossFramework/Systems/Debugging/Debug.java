@@ -28,6 +28,7 @@ public class Debug {
     private static final List<String> allTags = new ArrayList<>();
 
     public static boolean AutoScrollDown = true;
+    public static int MaxDebugCount = 100;
 
     ///Initialises the build configuration
     public static void SetConfig(BuildConfig build)
@@ -350,6 +351,11 @@ public class Debug {
                 View logComponent = Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(R.layout.logcomponent, logDataPanel, false);
                 TextView logData = logComponent.findViewById(R.id.logData);
                 TextView logDesc = logComponent.findViewById(R.id.logDesc);
+
+                if (LogID > MaxDebugCount)
+                {
+                    logDataPanel.removeView(logDataPanel.getChildAt(0));
+                }
 
                 String tagData = tag + " (" + LogID + ")";
 

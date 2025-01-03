@@ -118,16 +118,21 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
         RemoveComponent(type, false);
     }
 
-    public <T extends MonoBehaviour> T GetComponent(Class<T> type)
+    public <T extends MonoBehaviour> T GetComponentFast(Class<T> type)
     {
         return type.cast(Components.get(type));
+    }
+
+    public <T extends MonoBehaviour> T GetComponent(Class<T> type)
+    {
+        return GetComponent(type, true);
     }
 
     public <T extends MonoBehaviour> T GetComponent(Class<T> type, boolean GetInherited)
     {
         for (MonoBehaviour component : Components.values())
         {
-            if (type.isInstance(component) || (GetInherited && ( type.isAssignableFrom(component.getClass()) || component.getClass().isAssignableFrom(type) )))
+            if (type.isInstance(component) || (GetInherited && component.getClass().isAssignableFrom(type) ))
             {
                 return type.cast(Components.get(component.getClass()));
             }
