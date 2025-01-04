@@ -1,11 +1,11 @@
 package com.example.mossymobile.MossFramework;
 
 import android.graphics.Canvas;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Messaging.MessageHub;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
@@ -108,6 +108,11 @@ public class Application {
     {
         OnExit();
 
+        for (ScriptableObject so : ScriptableObject.LoadedObjects.values())
+        {
+            so.SaveToStorage();
+        }
+
         //cleanup all the systems
         SceneManager.Exit();
         MessageHub.Exit();
@@ -126,6 +131,7 @@ public class Application {
     protected void OnRun() {}
 
     protected void OnExit() {
+        return;
     }
 
     public static boolean IsRunning()

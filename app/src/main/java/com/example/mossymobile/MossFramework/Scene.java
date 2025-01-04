@@ -2,12 +2,15 @@ package com.example.mossymobile.MossFramework;
 
 import com.example.mossymobile.MossFramework.Components.Renderer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Scene {
+public abstract class Scene implements Serializable {
     protected List<GameObject> gameObjects = new ArrayList<>();
+
+    protected List<GameObject> gameObjectsToAdd = new ArrayList<>();
     protected List<GameObject> objectsToRender = new ArrayList<>();
 
     protected int ScenePriority = 0;
@@ -26,6 +29,8 @@ public abstract class Scene {
 
         gameObjects.clear();
         gameObjects = null;
+        gameObjectsToAdd.clear();
+        gameObjectsToAdd = null;
     }
 
     public final void Start()
@@ -35,6 +40,12 @@ public abstract class Scene {
 
     public final void Run()
     {
+        if (!gameObjectsToAdd.isEmpty())
+        {
+            gameObjects.addAll(gameObjectsToAdd);
+            gameObjectsToAdd.clear();
+        }
+
         for (GameObject gameObject : gameObjects)
         {
             gameObject.Init();
@@ -75,7 +86,7 @@ public abstract class Scene {
 
     public void AddGOToScene(GameObject gameObject)
     {
-        this.gameObjects.add(gameObject);
+        this.gameObjectsToAdd.add(gameObject);
     }
 
     public List<GameObject> GetGameObjects()

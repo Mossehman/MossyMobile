@@ -1,6 +1,8 @@
 package com.example.mossymobile.MossFramework.Systems.Inspector;
 
-public class InspectorData {
+import java.io.Serializable;
+
+public class InspectorData implements Serializable {
     public boolean IsReadOnly = false;
     public Object obj = null;
 

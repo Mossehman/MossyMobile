@@ -15,9 +15,10 @@ import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Debugging.ILoggable;
 import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public final class Vector2Int implements ILoggable, ICustomInspectorGUI {
+public final class Vector2Int implements ILoggable, ICustomInspectorGUI, Serializable {
     @Override
     public void SetGUIData(LinearLayout componentList, long updateDelay) {
 

@@ -70,13 +70,17 @@ public class InspectorGUI extends Singleton<InspectorGUI> {
         TextView GOName = (TextView) GetLayoutComponent("GOName");
         if (layout == null || (currScene == SceneManager.GetCurrScene() && CurrGOCount == currScene.GetGameObjects().size())) { return; }
 
+
+
+
         Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 layout.removeAllViews();
                 currScene = SceneManager.GetCurrScene();
+                List<GameObject> objs = new ArrayList<>(currScene.GetGameObjects());
 
-                for (GameObject gameObject : currScene.GetGameObjects())
+                for (GameObject gameObject : objs)
                 {
                     View logComponent = Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(R.layout.gameobjectdata, layout, false);
                     Button gameObjectBtn = logComponent.findViewById(R.id.gameObjectName);
@@ -88,8 +92,6 @@ public class InspectorGUI extends Singleton<InspectorGUI> {
                             GOName.setText(selectedGameObject.GetName());
 
                             UpdateComponentGUI("Components", R.layout.component, R.layout.componentdata);
-
-
                         }
 
                     });

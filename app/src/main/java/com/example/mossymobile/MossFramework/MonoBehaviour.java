@@ -11,6 +11,7 @@ import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorData;
+import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -26,7 +27,6 @@ public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI
     private boolean InitInspector = false;
 
     private HashMap<String, InspectorData> GUIData = new HashMap<>();
-
 
     public String name;
 
@@ -87,9 +87,14 @@ public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI
 
     public void OnDestroy() {}
 
-    public GameObject Instantiate(GameObject gameObject, Vector2 position, float rotationAngle)
+    public GameObject Instantiate(GameObject gameObject)
     {
-        return Factory.CopyObject(gameObject);
+        GameObject go = Factory.CopyObject(gameObject);
+        if (go != null && SceneManager.GetCurrScene().GetGameObjects().contains(gameObject)) {
+            SceneManager.GetCurrScene().AddGOToScene(go);
+        }
+
+        return go;
     }
 
 

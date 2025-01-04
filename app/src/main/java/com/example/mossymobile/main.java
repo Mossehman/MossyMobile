@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 
@@ -14,7 +15,6 @@ import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
 
 public class main extends Activity {
-
     private final Application app = new Application();
     GameView gameView;
 
@@ -50,6 +50,10 @@ public class main extends Activity {
 
         app.Start();
 
+        this.findViewById(R.id.closeBtn).setOnClickListener(v -> {
+            Application.CloseApplication = true;
+        });
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -61,5 +65,17 @@ public class main extends Activity {
             }
         }).start();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        app.Exit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        app.Exit();
     }
 }

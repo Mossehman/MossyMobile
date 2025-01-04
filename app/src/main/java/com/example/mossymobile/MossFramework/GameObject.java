@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class GameObject implements Serializable, ICustomInspectorGUI {
-    String name = "GameObject";
+    public String name = "GameObject";
 
     List<String> tags = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
     private Transform transform = null;
     public boolean ToRender = false;
 
-    private Scene CurrentScene = null;
+    private transient Scene CurrentScene = null;
 
     public GameObject(String name)
     {
@@ -52,6 +52,7 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
 
         this.CurrentScene = SceneManager.GetCurrScene();
         CurrentScene.AddGOToScene(this);
+
     }
 
     public void AddComponent(MonoBehaviour component)
@@ -87,9 +88,6 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
         component.Awake();
 
         Components.put(componentType, component);
-
-
-
     }
 
     public <T extends MonoBehaviour> T AddComponent(Class<T> type)
@@ -167,10 +165,6 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
     public void LateUpdate() {
         for (MonoBehaviour component : Components.values())
         {
-            //if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
-            //    component.InspectorGUI();
-            //}
-
             if (!component.IsEnabled) { continue; }
             component.LateUpdate();
         }
@@ -251,10 +245,10 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
             @Override
             public void run() {
                 if (!dataComponent.getText().toString().equals(toString())) {
-                    dataComponent.setText(toString()); // Update X text
+                    dataComponent.setText(toString());
                 }
 
-                handler.postDelayed(this, updateDelay); // Repeat every 100ms
+                handler.postDelayed(this, updateDelay);
             }
         };
 

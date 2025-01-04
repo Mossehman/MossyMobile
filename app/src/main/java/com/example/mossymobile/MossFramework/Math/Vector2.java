@@ -17,9 +17,10 @@ import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Debugging.ILoggable;
 import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public final class Vector2 implements ILoggable, ICustomInspectorGUI {
+public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializable {
     @Override
     public String GetLogStatement() {
         return "Vector2: { " + x + ", " + y + " }";
