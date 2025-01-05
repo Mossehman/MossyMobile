@@ -2,7 +2,6 @@ package com.example.mossymobile.MossFramework.Components;
 
 import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.GameObject;
-import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 
@@ -18,16 +17,21 @@ public class Camera extends MonoBehaviour {
 
     public GameObject go;
 
+
+
     @Override
     protected void InitializeInspectorData() {
         EditInInspector("a", a);
         EditInInspector("b", b);
+        EditInInspector("List", test2);
     }
 
     @Override
     public void Start() {
         GameObject newGO = Instantiate(go);
         newGO.name = "testing";
+
+        test2.put(10, "str1");
     }
 
     @Override

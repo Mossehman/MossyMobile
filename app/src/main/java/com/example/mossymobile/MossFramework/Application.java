@@ -1,11 +1,16 @@
 package com.example.mossymobile.MossFramework;
 
 import android.graphics.Canvas;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
+import com.example.mossymobile.MossFramework.Systems.Physics.CollisionMatrix;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Messaging.MessageHub;
@@ -43,12 +48,45 @@ public class Application {
             InspectorGUI.GetInstance().AddLayoutComponent("GOName", GameView.GetInstance().GetActivity().findViewById(R.id.currGOName));
             InspectorGUI.GetInstance().AddLayoutComponent("LogScroll", GameView.GetInstance().GetActivity().findViewById(R.id.logScroll));
 
+            InspectorGUI.GetInstance().AddLayoutComponent("CollisionsTitlebar", GameView.GetInstance().GetActivity().findViewById(R.id.collisionTagsHorizontal));
+            InspectorGUI.GetInstance().AddLayoutComponent("Collisions", GameView.GetInstance().GetActivity().findViewById(R.id.collisionTagsVertical));
+
             ImageButton downScrollBtn = GameView.GetInstance().GetActivity().findViewById(R.id.logDownScroll);
             downScrollBtn.setOnClickListener(v -> {
                 Debug.AutoScrollDown = !Debug.AutoScrollDown;
             });
 
+            Button debugTab = GameView.GetInstance().GetActivity().findViewById(R.id.debugBtn);
+            Button collisionTab = GameView.GetInstance().GetActivity().findViewById(R.id.collisionBtn);
+            FrameLayout utilTab =  GameView.GetInstance().GetActivity().findViewById(R.id.utilTab);
+
+            debugTab.setOnClickListener(v -> {
+                for (int i = 0; i < utilTab.getChildCount(); i++)
+                {
+                    utilTab.getChildAt(i).setVisibility(View.INVISIBLE);
+                }
+                utilTab.getChildAt(1).setVisibility(View.VISIBLE);
+            });
+
+            collisionTab.setOnClickListener(v -> {
+                for (int i = 0; i < utilTab.getChildCount(); i++)
+                {
+                    utilTab.getChildAt(i).setVisibility(View.INVISIBLE);
+                }
+                utilTab.getChildAt(0).setVisibility(View.VISIBLE);
+            });
+
         }
+
+        ///TODO: Move this into OnStart() for actual project
+        Collision.CreateCollisionLayer("Default");
+        Collision.CreateCollisionLayer("Layer1");
+        Collision.CreateCollisionLayer("Layer2");
+        Collision.CreateCollisionLayer("Layer3");
+        Collision.CreateCollisionLayer("Layer4");
+        Collision.CreateCollisionLayer("Layer5");
+
+        Collision.InitialiseCollisionMatrix();
 
         return OnStart();
     }
@@ -115,6 +153,7 @@ public class Application {
         {
             so.SaveToStorage();
         }
+        Collision.SaveCollisionMatrix();
 
         //cleanup all the systems
         SceneManager.Exit();

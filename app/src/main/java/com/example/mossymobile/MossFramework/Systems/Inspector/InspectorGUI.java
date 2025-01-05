@@ -1,5 +1,7 @@
 package com.example.mossymobile.MossFramework.Systems.Inspector;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -24,9 +26,11 @@ import com.example.mossymobile.MossFramework.Scene;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.R;
+import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -66,8 +70,6 @@ public final class InspectorGUI extends Singleton<InspectorGUI> {
         LinearLayout layout = (LinearLayout) GetLayoutComponent(name);
         TextView GOName = (TextView) GetLayoutComponent("GOName");
         if (layout == null || (currScene == SceneManager.GetCurrScene() && CurrGOCount == currScene.GetGameObjects().size())) { return; }
-
-
 
 
         Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
@@ -638,6 +640,157 @@ public final class InspectorGUI extends Singleton<InspectorGUI> {
             //handler.post(runnable);
             dataList.addView(boolComponent);
         }
+    }
+
+    public void CreateCollisionGUI(String titleBar, String checkboxes, LinkedHashMap<String, List<String>> mtx)
+    {
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void run() {
+
+                LinkedHashMap<String, List<String>> collisionMatrix = new LinkedHashMap<>(mtx);
+                int iteration = 0;
+
+                LinearLayout titleLayout = (LinearLayout) GetLayoutComponent(titleBar);
+                LinearLayout checkboxLayout = (LinearLayout) GetLayoutComponent(checkboxes);
+
+                if (titleLayout == null || checkboxLayout == null) { return; }
+
+                Context ctx = Objects.requireNonNull(GameView.GetInstance()).GetContext();
+
+                TextView title = new TextView(ctx);
+                title.setText("Layers");
+                title.setTypeface(title.getTypeface(), Typeface.BOLD_ITALIC);
+                title.setTextColor(Color.WHITE);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                );
+
+                params.weight = 1;
+                params.gravity = Gravity.CENTER_HORIZONTAL;
+
+                title.setLayoutParams(params);
+                title.setGravity(Gravity.CENTER);
+
+
+                titleLayout.addView(title);
+
+                int columnsToRemove = 0;
+
+                for (Map.Entry<String, List<String>> set : collisionMatrix.entrySet())
+                {
+                    String collisionLayer = set.getKey();
+                    List<String> layersToAvoid = set.getValue();
+
+                    TextView layer = new TextView(ctx);
+                    layer.setText(collisionLayer);
+                    layer.setTextColor(Color.WHITE);
+
+                    layer.setLayoutParams(params);
+                    layer.setGravity(Gravity.CENTER);
+                    titleLayout.addView(layer);
+
+                    if (iteration == collisionMatrix.size() - 1)
+                    {
+                        break;
+                    }
+
+                    //I got very lazy with naming
+                    TextView layer2 = new TextView(ctx);
+                    layer2.setText(collisionLayer);
+                    layer2.setTextColor(Color.WHITE);
+
+                    layer2.setLayoutParams(params);
+                    layer2.setGravity(Gravity.CENTER);
+                    layer2.setBackgroundColor(Color.rgb(44, 44, 44));
+
+
+                    LinearLayout newLayout = new LinearLayout(ctx);
+                    newLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    LinearLayout.LayoutParams newLayoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    newLayoutParams.gravity = Gravity.CENTER;
+                    newLayout.setLayoutParams(newLayoutParams);
+                    newLayout.setGravity(Gravity.CENTER);
+
+                    newLayout.addView(layer2);
+
+                    int col = 0;
+
+                    for (Map.Entry<String, List<String>> subset : collisionMatrix.entrySet())
+                    {
+                        String colLayer = subset.getKey();
+                        if (colLayer.equals(collisionLayer) || columnsToRemove > col) {
+                            TextView blankText = new TextView(ctx);
+                            blankText.setText("");
+                            blankText.setTextColor(Color.WHITE);
+                            blankText.setLayoutParams(params);
+                            blankText.setBackgroundColor(Color.DKGRAY);
+                            newLayout.addView(blankText);
+                            col++;
+
+                            continue;
+                        }
+
+                        MaterialCheckBox checkBox = new MaterialCheckBox(ctx);
+                        if (!layersToAvoid.contains(colLayer)) { checkBox.setChecked(true);}
+                        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                                if (isChecked)
+                                {
+                                    if (mtx.containsKey(collisionLayer))
+                                    {
+                                        Objects.requireNonNull(mtx.get(collisionLayer)).remove(colLayer);
+                                    }
+
+                                    if (mtx.containsKey(colLayer))
+                                    {
+                                        Objects.requireNonNull(mtx.get(colLayer)).remove(collisionLayer);
+                                    }
+                                }
+                                else
+                                {
+                                    if (mtx.containsKey(collisionLayer))
+                                    {
+                                        Objects.requireNonNull(mtx.get(collisionLayer)).add(colLayer);
+                                    }
+
+                                    if (mtx.containsKey(colLayer))
+                                    {
+                                        Objects.requireNonNull(mtx.get(colLayer)).add(collisionLayer);
+                                    }
+                                }
+
+                            }
+                        });
+                        LinearLayout.LayoutParams checkboxParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT
+                        );
+
+                        checkboxParams.weight = 1;
+                        checkboxParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+                        checkBox.setLayoutParams(checkboxParams);
+                        checkBox.setGravity(Gravity.CENTER_HORIZONTAL);
+                        //checkBox.setText("");
+
+                        newLayout.addView(checkBox);
+                    }
+                    columnsToRemove++;
+
+                    checkboxLayout.addView(newLayout);
+                    iteration++;
+
+                }
+            }
+        });
     }
 
 

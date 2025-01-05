@@ -80,7 +80,7 @@
                         android:id="@+id/closeBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="BUTTON" />
+                        android:text="Save SO Data" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
 
@@ -153,75 +153,135 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:id="@+id/sectionImg"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/debugImg"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            tools:srcCompat="@tools:sample/avatars" />
+                            android:layout_weight="2"
+                            tools:srcCompat="@drawable/objLogo" />
 
                         <Button
-                            android:id="@+id/sectionBtn"
+                            android:id="@+id/debugBtn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Section" />
+                            android:text="Debug Log" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="10sp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/collisionImg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            tools:srcCompat="@drawable/objLogo" />
+
+                        <Button
+                            android:id="@+id/collisionBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Collision Matrix" />
                     </LinearLayout>
 
                 </LinearLayout>
             </ScrollView>
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/utilTab"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#FFFFFF"
-                android:orientation="vertical">
+                android:layout_weight="1">
 
                 <LinearLayout
+                    android:id="@+id/CollisionMatrixTab"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:layout_weight="5"
-                    android:background="#2C2C2C"
-                    android:orientation="horizontal">
+                    android:background="#4B4B4B"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/collisionTagsHorizontal"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="right">
+                        android:layout_weight="5"
+                        android:background="#2C2C2C"
+                        android:orientation="horizontal"></LinearLayout>
 
-                        <ImageButton
-                            android:id="@+id/logDownScroll"
-                            android:layout_width="46dp"
-                            android:layout_height="36dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintDimensionRatio="1:1"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHeight_default="wrap"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintWidth_default="wrap"
-                            app:srcCompat="@drawable/downarrow" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:id="@+id/collisionTagsVertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </ScrollView>
                 </LinearLayout>
 
-                <ScrollView
-                    android:id="@+id/logScroll"
+                <LinearLayout
+                    android:id="@+id/DebugTab"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#4B4B4B">
+                    android:background="#FFFFFF"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <LinearLayout
-                        android:id="@+id/logDataPanel"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-                </ScrollView>
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:layout_weight="5"
+                        android:background="#2C2C2C"
+                        android:orientation="horizontal">
 
-            </LinearLayout>
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right">
+
+                            <ImageButton
+                                android:id="@+id/logDownScroll"
+                                android:layout_width="46dp"
+                                android:layout_height="36dp"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitCenter"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHeight_default="wrap"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintWidth_default="wrap"
+                                app:srcCompat="@drawable/downarrow" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+
+                    <ScrollView
+                        android:id="@+id/logScroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#4B4B4B">
+
+                        <LinearLayout
+                            android:id="@+id/logDataPanel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+                    </ScrollView>
+
+                </LinearLayout>
+            </FrameLayout>
+
         </LinearLayout>
 
     </LinearLayout>

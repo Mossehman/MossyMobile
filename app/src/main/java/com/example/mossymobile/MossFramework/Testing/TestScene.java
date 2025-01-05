@@ -20,6 +20,5 @@ public class TestScene extends Scene {
         anotherGO.GetTransform().SetPosition(new Vector2(-4, 0));
 
         camera.go = anotherGO;
-
     }
 }

@@ -16,6 +16,7 @@ import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,7 +26,7 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
 
     List<String> tags = new ArrayList<>();
 
-    private HashMap<Class<?>, MonoBehaviour> Components = new HashMap<>();
+    private LinkedHashMap<Class<?>, MonoBehaviour> Components = new LinkedHashMap<>();
     private List<MonoBehaviour> ComponentsToRemove = new ArrayList<>();
     private Transform transform = null;
     public boolean ToRender = false;
