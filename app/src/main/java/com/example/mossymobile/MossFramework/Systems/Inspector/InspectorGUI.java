@@ -27,13 +27,12 @@ import com.example.mossymobile.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 
-public class InspectorGUI extends Singleton<InspectorGUI> {
+public final class InspectorGUI extends Singleton<InspectorGUI> {
     public static InspectorGUI GetInstance()
     {
         return Singleton.GetInstance(InspectorGUI.class);
@@ -45,8 +44,6 @@ public class InspectorGUI extends Singleton<InspectorGUI> {
     private GameObject selectedGameObject = null;
     private Scene currScene = null;
     private int CurrGOCount = 0;
-
-    private boolean SwitchingGameObject = false;
 
 
     public void AddLayoutComponent(String name, View layout)

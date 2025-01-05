@@ -93,7 +93,9 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
     public <T extends MonoBehaviour> T AddComponent(Class<T> type)
     {
         MonoBehaviour component = Factory.CreateObject(type);
-        AddComponent(component);
+        if (component != null) {
+            AddComponent(component);
+        }
 
         return type.cast(component);
     }
@@ -188,30 +190,6 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
     public Transform GetTransform()
     {
         return transform;
-    }
-
-    public void OnCollisionEnter() {
-    }
-
-    public void OnCollisionHold() {
-
-    }
-
-    public void OnCollisionExit() {
-
-    }
-
-
-    public void OnTriggerEnter() {
-
-    }
-
-    public void OnTriggerHold() {
-
-    }
-
-    public void OnTriggerExit() {
-
     }
 
     public Scene GetScene()

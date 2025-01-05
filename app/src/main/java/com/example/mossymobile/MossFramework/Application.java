@@ -3,6 +3,7 @@ package com.example.mossymobile.MossFramework;
 import android.graphics.Canvas;
 import android.widget.ImageButton;
 
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
@@ -94,6 +95,8 @@ public class Application {
             if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
                 UpdateInspector();
             }
+
+            AudioPlayer.Update();
 
             Objects.requireNonNull(GameView.GetInstance()).UnlockCanvasAndPost(canvas);
         }

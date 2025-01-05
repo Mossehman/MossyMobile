@@ -71,4 +71,14 @@ public class QuadTree {
                                                                             start.position.y + start.dimensions.y * 0.5f),
                                                                 new Vector2(start.dimensions.x * 0.5f, start.dimensions.y * 0.5f)));
     }
+
+    public Vector2 GetStartPosition()
+    {
+        return start.position;
+    }
+
+    public Vector2 GetDimensions()
+    {
+        return start.dimensions;
+    }
 }

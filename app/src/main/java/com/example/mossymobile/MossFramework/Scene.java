@@ -11,6 +11,7 @@ public abstract class Scene implements Serializable {
     protected List<GameObject> gameObjects = new ArrayList<>();
 
     protected List<GameObject> gameObjectsToAdd = new ArrayList<>();
+    protected List<GameObject> gameObjectsToRemove = new ArrayList<>();
     protected List<GameObject> objectsToRender = new ArrayList<>();
 
     protected int ScenePriority = 0;
@@ -69,13 +70,23 @@ public abstract class Scene implements Serializable {
 
         LateUpdate();
 
-        if (objectsToRender.isEmpty() || GameView.GetInstance() == null || GameView.GetInstance().canvas == null) { return; }
+        if (!objectsToRender.isEmpty()) {
 
-        for (GameObject gameObject : objectsToRender)
+            for (GameObject gameObject : objectsToRender) {
+                Renderer renderer = gameObject.GetComponent(Renderer.class, true);
+                if (renderer == null) {
+                    continue;
+                }
+                renderer.Render(Objects.requireNonNull(GameView.GetInstance()).canvas);
+            }
+        }
+
+        if (!gameObjectsToRemove.isEmpty())
         {
-            Renderer renderer = gameObject.GetComponent(Renderer.class, true);
-            if (renderer == null) { continue; }
-            renderer.Render(Objects.requireNonNull(GameView.GetInstance()).canvas);
+            for (GameObject go : gameObjectsToRemove)
+            {
+                gameObjects.remove(go);
+            }
         }
     }
 
