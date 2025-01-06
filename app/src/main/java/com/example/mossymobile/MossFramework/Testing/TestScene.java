@@ -6,6 +6,7 @@ import com.example.mossymobile.MossFramework.Components.Colliders.CircleCollider
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Scene;
+import com.example.mossymobile.MossFramework.Systems.Time.Time;
 
 public class TestScene extends Scene {
     @Override
@@ -20,5 +21,7 @@ public class TestScene extends Scene {
         anotherGO.GetTransform().SetPosition(new Vector2(-4, 0));
 
         camera.go = anotherGO;
+
+        Time.UpdateDeltaTime(10);
     }
 }

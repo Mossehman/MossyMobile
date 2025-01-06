@@ -16,6 +16,9 @@ public abstract class Collider extends MonoBehaviour {
     protected COLLISION_TYPE collisionType = COLLISION_TYPE.NUM_TYPES;
     public boolean IsTrigger = false;
 
+    ///Adds to the position when calculating the hitbox center
+    public Vector2 Offset = new Vector2();
+
     private String CollisionLayer = "Default";
 
     @Override

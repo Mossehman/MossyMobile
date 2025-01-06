@@ -46,7 +46,7 @@ public class Collision {
     public static void SaveCollisionMatrix()
     {
         mtx.CollisionsLayers = new HashMap<>(CollisionLayers);
-        mtx.SaveToStorage();
+        mtx.SaveToInternalStorage();
     }
 
     public static void CreateCollisionLayer(String layer)

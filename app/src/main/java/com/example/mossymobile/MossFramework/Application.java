@@ -151,7 +151,11 @@ public class Application {
 
         for (ScriptableObject so : ScriptableObject.LoadedObjects.values())
         {
-            so.SaveToStorage();
+            if (!so.IsExternal) {
+                so.SaveToInternalStorage();
+                continue;
+            }
+            so.SaveToExternalStorage();
         }
         Collision.SaveCollisionMatrix();
 
