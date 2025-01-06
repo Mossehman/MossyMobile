@@ -1,4 +1,4 @@
-package com.example.mossymobile.MossFramework.Components;
+package com.example.mossymobile.MossFramework.Components.Colliders;
 
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
@@ -32,9 +32,6 @@ public abstract class Collider extends MonoBehaviour {
     public void Update() {
         return;
     }
-
-
-    public abstract void ResolveCollision();
 
     public abstract Vector2 GetBounds();
 

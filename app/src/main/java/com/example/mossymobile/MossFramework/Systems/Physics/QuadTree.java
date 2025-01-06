@@ -1,6 +1,6 @@
 package com.example.mossymobile.MossFramework.Systems.Physics;
 
-import com.example.mossymobile.MossFramework.Components.Collider;
+import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 
 import java.util.ArrayList;

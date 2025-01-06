@@ -157,6 +157,7 @@ public class Debug {
             return;
         }
         Log.w(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.YELLOW);
     }
 
     public static void LogWarning (String tag,boolean value, String WarningCode)
@@ -167,8 +168,10 @@ public class Debug {
 
         if (value) {
             Log.w(tag, "TRUE");
+            PrintLogToGUI(tag, "TRUE", Color.YELLOW);
         } else {
             Log.w(tag, "FALSE");
+            PrintLogToGUI(tag, "FALSE", Color.YELLOW);
         }
     }
 
@@ -178,6 +181,7 @@ public class Debug {
             return;
         }
         Log.w(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.YELLOW);
     }
 
     public static void LogWarning (String tag,double value, String WarningCode)
@@ -186,6 +190,7 @@ public class Debug {
             return;
         }
         Log.w(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.YELLOW);
     }
 
     public static void LogWarning (String tag,long value, String WarningCode)
@@ -194,6 +199,7 @@ public class Debug {
             return;
         }
         Log.w(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.YELLOW);
     }
 
     public static void LogWarning (String tag,char value, String WarningCode)
@@ -202,6 +208,7 @@ public class Debug {
             return;
         }
         Log.w(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.YELLOW);
     }
 
     public static void LogWarning (String tag, String value, String WarningCode)
@@ -210,6 +217,7 @@ public class Debug {
             return;
         }
         Log.w(tag, value);
+        PrintLogToGUI(tag, value, Color.YELLOW);
     }
 
     public static void LogWarning (String tag, ILoggable value, String WarningCode)
@@ -218,6 +226,7 @@ public class Debug {
             return;
         }
         Log.w(tag, value.GetLogStatement());
+        PrintLogToGUI(tag, value.GetLogStatement(), Color.YELLOW);
     }
 
     public static void LogWarning (String tag, int value)
@@ -270,6 +279,7 @@ public class Debug {
             return;
         }
         Log.e(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.RED);
     }
 
     public static void LogError (String tag,boolean value)
@@ -280,8 +290,10 @@ public class Debug {
 
         if (value) {
             Log.e(tag, "TRUE");
+            PrintLogToGUI(tag, "TRUE", Color.RED);
         } else {
             Log.e(tag, "FALSE");
+            PrintLogToGUI(tag, "FALSE", Color.YELLOW);
         }
     }
 
@@ -291,6 +303,7 @@ public class Debug {
             return;
         }
         Log.e(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.RED);
     }
 
     public static void LogError (String tag,double value)
@@ -299,6 +312,7 @@ public class Debug {
             return;
         }
         Log.e(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.RED);
     }
 
     public static void LogError (String tag,long value)
@@ -307,6 +321,7 @@ public class Debug {
             return;
         }
         Log.e(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.RED);
     }
 
     public static void LogError (String tag,char value)
@@ -315,6 +330,7 @@ public class Debug {
             return;
         }
         Log.e(tag, "" + value);
+        PrintLogToGUI(tag, "" + value, Color.RED);
     }
 
     public static void LogError (String tag, String value)
@@ -325,7 +341,6 @@ public class Debug {
         Log.e(tag, value);
 
         PrintLogToGUI(tag, value, Color.RED);
-
 
     }
 
