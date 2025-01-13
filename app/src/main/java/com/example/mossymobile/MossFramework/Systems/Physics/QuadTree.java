@@ -1,13 +1,18 @@
 package com.example.mossymobile.MossFramework.Systems.Physics;
 
+import android.graphics.Color;
+import android.util.Log;
+
 import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class QuadTree {
-
+    public final int MaxDepth = 5;
+    public int CurrDepth = 0;
     private List<Collider> colliders = new ArrayList<>();
     private Rectangle QuadTreeBoundary = null;
     private int cellCapacity = 0;
@@ -62,9 +67,7 @@ public class QuadTree {
         //if there is no more room in the cell, we split it into 4 leaf nodes
         if (colliders.size() > cellCapacity) {
             colliders.add(col);     //add new collider to list of colliders (this is to avoid creating a new list)
-            Subdivide(colliders);   //subdivide this node into its leaf nodes
-            //colliders.clear();      //colliders should all be transferred to the child nodes now, clear this current list
-            this.IsDivided = true;  //ensure that this node cannot be divided again (this will reset the child nodes)
+            Subdivide(col);   //subdivide this node into its leaf nodes
         }
     }
 
@@ -77,10 +80,9 @@ public class QuadTree {
         return xOverlap && yOverlap;
     }
 
-    private void Subdivide(List<Collider> cols) {
-
+    private void Subdivide(Collider col) {
         //if we have already divided the tree, do not split it again (this will reset the child nodes)
-        if (!IsDivided) {
+        if (!IsDivided && CurrDepth < MaxDepth) {
             splitNodes[0] = new QuadTree(cellCapacity, new Rectangle(new Vector2(QuadTreeBoundary.position.x + QuadTreeBoundary.dimensions.x * 0.5f,
                     QuadTreeBoundary.position.y - QuadTreeBoundary.dimensions.y * 0.5f),
                     new Vector2(QuadTreeBoundary.dimensions.x * 0.5f, QuadTreeBoundary.dimensions.y * 0.5f)));
@@ -96,16 +98,27 @@ public class QuadTree {
             splitNodes[3] = new QuadTree(cellCapacity, new Rectangle(new Vector2(QuadTreeBoundary.position.x - QuadTreeBoundary.dimensions.x * 0.5f,
                     QuadTreeBoundary.position.y + QuadTreeBoundary.dimensions.y * 0.5f),
                     new Vector2(QuadTreeBoundary.dimensions.x * 0.5f, QuadTreeBoundary.dimensions.y * 0.5f)));
+
+            for (int i = 0; i < 4; i++)
+            {
+                splitNodes[i].CurrDepth = this.CurrDepth + 1;
+
+                for (Collider collider : colliders)
+                {
+                    splitNodes[i].AddCollider(collider);
+                }
+            }
+
+            this.IsDivided = true;  //ensure that this node cannot be divided again (this will reset the child nodes)
+            return;
         }
 
-        //transfer any current colliders to their child nodes
-        for (int i = 0; i < 4; i++)
-        {
-            for (Collider col : cols)
-            {
+        if (IsDivided) {
+            for (int i = 0; i < 4; i++) {
                 splitNodes[i].AddCollider(col);
             }
         }
+
     }
 
     //recursive function to gather all the colliders for a specified collider to check against
@@ -118,7 +131,6 @@ public class QuadTree {
         if (colliders.contains(col)) {
             //this is a leaf node, we can directly add the collider data into the list
             if (!this.IsDivided) {
-
                 //ensure we do not add any duplicates
                 for (Collider collider : colliders) {
                     if (collidersToCheck.contains(collider)) { continue; }
@@ -150,4 +162,19 @@ public class QuadTree {
     {
         return QuadTreeBoundary.dimensions;
     }
+
+    public void Render()
+    {
+        if (this.IsDivided)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                splitNodes[i].Render();
+            }
+            return;
+        }
+
+        Gizmos.DrawBox(QuadTreeBoundary.position, QuadTreeBoundary.dimensions, Color.RED);
+    }
+
 }

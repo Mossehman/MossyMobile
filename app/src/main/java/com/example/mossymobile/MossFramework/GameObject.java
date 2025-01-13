@@ -15,7 +15,6 @@ import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,15 +174,28 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
         for (int i = ComponentsToRemove.size() - 1; i >= 0; i--)
         {
             Components.remove(ComponentsToRemove.get(i).getClass());
+            ComponentsToRemove.set(i, null);
         }
 
         ComponentsToRemove.clear();
     }
 
+    public void Gizmos() {
+        for (MonoBehaviour component : Components.values())
+        {
+            if (!component.IsEnabled) { continue; }
+            component.OnDrawGizmos();
+        }
+    }
+
+
     public void OnDestroy()
     {
-        Components.clear();
+        for (MonoBehaviour component : Components.values()) {
+            component = null;
+        }
 
+        Components.clear();
         Components = null;
         ComponentsToRemove = null;
     }

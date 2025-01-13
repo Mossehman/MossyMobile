@@ -3,12 +3,21 @@ package com.example.mossymobile.MossFramework;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Insets;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowInsets;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import androidx.annotation.NonNull;
+
+import com.example.mossymobile.MossFramework.Math.Vector2Int;
 
 import java.lang.ref.WeakReference;
 
@@ -93,6 +102,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public Context GetContext()
     {
         return ctx;
+    }
+
+    public Vector2Int GetDeviceDimensions()
+    {
+        WindowManager windowManager = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+
+        WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
+        Insets insets = windowMetrics.getWindowInsets()
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+        int width = windowMetrics.getBounds().width() - insets.left - insets.right;
+        int height = windowMetrics.getBounds().height() - insets.top - insets.bottom;
+        return new Vector2Int(width, height);
     }
 
 }

@@ -1,11 +1,11 @@
 package com.example.mossymobile.MossFramework;
-
-import android.graphics.Canvas;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
@@ -21,27 +21,31 @@ import com.example.mossymobile.R;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Application {
+
+    private AtomicInteger completedThreads = new AtomicInteger(0);
+    private final Object cleanupLock = new Object();
+
     public static HashMap<Class<? extends MonoBehaviour>, Boolean> AllowClassDuplicates = new HashMap<>();
 
     ///This is to check if application should close (no shit sherlock)
-    public static boolean CloseApplication = false;
+    public static boolean closeApplication = false;
 
     ///This is to check if the game loop has started, mainly to prevent us from doing certain things at runtime (eg: creating new scenes)
     protected static boolean isRunning = false;
 
     ///This is to check if deltaTime should be updated, else it should be read-only and unmodifiable
     protected static boolean nextFrameUpdate = false;
-    protected Canvas canvas = null;
+    protected static Vector2 renderingRatio = new Vector2();
 
     public final boolean Start()
     {
         //if the game view is null, end the program (this should not happen)
         if (GameView.GetInstance() == null) { return false; }
-        canvas = Objects.requireNonNull(GameView.GetInstance()).canvas;
 
-        if (Debug.GetConfig() != BuildConfig.RELEASE)
+        if (Debug.GetConfig() != BuildConfig.PRODUCTION)
         {
             InspectorGUI.GetInstance().AddLayoutComponent("Hierarchy", GameView.GetInstance().GetActivity().findViewById(R.id.gameObjectList));
             InspectorGUI.GetInstance().AddLayoutComponent("Components", GameView.GetInstance().GetActivity().findViewById(R.id.componentList));
@@ -101,12 +105,17 @@ public class Application {
             Debug.LogWarning("Application::Run()", "Game View was invalid! Is the surface view null or too small?", "Game View Invalid");
         }
 
+        Vector2 screenDimensions = Objects.requireNonNull(GameView.GetInstance()).GetDeviceDimensions().ToFloat();
+        Vector2 gameViewSize = new Vector2Int(Objects.requireNonNull(GameView.GetInstance()).getWidth(), Objects.requireNonNull(GameView.GetInstance()).getHeight()).ToFloat();
+
+        renderingRatio = Vector2.Div(gameViewSize, screenDimensions);
+
         isRunning = true;
         OnRunStart();
 
         long prevTime = System.nanoTime();
 
-        while (!CloseApplication)
+        while (!closeApplication)
         {
             nextFrameUpdate = true; //encase the DT update here to avoid any modification from external locations
 
@@ -120,23 +129,24 @@ public class Application {
 
             nextFrameUpdate = false;
 
-            canvas = Objects.requireNonNull(GameView.GetInstance()).LockCanvas();
-            canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+            Objects.requireNonNull(GameView.GetInstance()).canvas = Objects.requireNonNull(GameView.GetInstance()).LockCanvas();
+            Objects.requireNonNull(GameView.GetInstance()).canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
 
             if (!SceneManager.UpdateScenes()) //if scene list is empty, function will return false, if so, break program
             {
                 Debug.LogError("Application::Run()", "No game scenes were running... ending program.");
-                CloseApplication = true;
+                closeApplication = true;
 
                 break;
             }
+
             if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
                 UpdateInspector();
             }
 
             AudioPlayer.Update();
 
-            Objects.requireNonNull(GameView.GetInstance()).UnlockCanvasAndPost(canvas);
+            Objects.requireNonNull(GameView.GetInstance()).UnlockCanvasAndPost(Objects.requireNonNull(GameView.GetInstance()).canvas);
         }
     }
 
@@ -148,16 +158,19 @@ public class Application {
     public final void Exit()
     {
         OnExit();
+        Collision.SaveCollisionMatrix();
 
         for (ScriptableObject so : ScriptableObject.LoadedObjects.values())
         {
+            if (!so.ToSave()) { continue; }
+
             if (!so.IsExternal) {
                 so.SaveToInternalStorage();
                 continue;
             }
             so.SaveToExternalStorage();
         }
-        Collision.SaveCollisionMatrix();
+
 
         //cleanup all the systems
         SceneManager.Exit();
@@ -198,6 +211,10 @@ public class Application {
         }
 
         return false;
+    }
+    public static Vector2 GetViewToScreenRatio()
+    {
+        return renderingRatio;
     }
 
 

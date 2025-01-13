@@ -6,17 +6,20 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 
 import java.util.Objects;
 
 public class Renderer extends MonoBehaviour {
 
     public Vector2 RenderOffset = new Vector2();
-    public Bitmap sprite = null;
+    protected Bitmap sprite = null;
     protected Transform transform = null;
 
     public boolean DoAntiAliasing = false;
@@ -25,6 +28,8 @@ public class Renderer extends MonoBehaviour {
     Vector2 scale = new Vector2();
     float rotation = 0.0f;
 
+    Vector2 spriteScaling = new Vector2();
+
     public enum Ratio
     {
         FIXED,
@@ -32,31 +37,32 @@ public class Renderer extends MonoBehaviour {
     }
 
     protected Ratio imageRatio = Ratio.FIXED;
-
     public void SetImageSizing(Ratio ratio)
     {
         this.imageRatio = ratio;
     }
-
-    public Renderer(int resourceID)
-    {
-        super();
-        this.sprite = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), resourceID);
-    }
-
-    public Renderer(String name, int resourceID)
-    {
-        super(name);
-        this.sprite = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), resourceID);
-    }
+    public int ResourceID = -1;
 
 
     @Override
     public void Start() {
         transform = gameObject.GetTransform();
-        position = transform.GetPosition();
-        scale = transform.GetScale();
         rotation = transform.GetRotation();
+
+        sprite = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), ResourceID);
+        if (sprite == null)
+        {
+            Debug.LogError("Sprite", "sprite is null");
+        }
+
+    }
+
+    @Override
+    protected void InitializeInspectorData() {
+        super.InitializeInspectorData();
+        ShowInInspector("Sprite", sprite);
+        ShowInInspector("ResourceID", ResourceID);
+        ShowInInspector("Size", spriteScaling);
     }
 
     @Override
@@ -68,7 +74,17 @@ public class Renderer extends MonoBehaviour {
         {
             return;
         }
-        gameObject.ToRender = true;
+
+
+        transform.SetPosition(new Vector2(transform.GetPosition().x, transform.GetPosition().y + 1));
+
+        position = Vector2.Mul(Application.GetViewToScreenRatio(), transform.GetPosition());
+        scale = Vector2.Mul(Application.GetViewToScreenRatio(), transform.GetScale());
+
+
+        if (gameObject.GetScene() != null) {
+            gameObject.GetScene().RenderGameObject(this);
+        }
     }
 
     public void Render(Canvas canvas)
@@ -77,6 +93,12 @@ public class Renderer extends MonoBehaviour {
             transform == null ||    //GameObject has no positional value, do not render
             sprite == null)         //No sprite to render, do not render
         {
+            return;
+        }
+
+        if (canvas == null)
+        {
+            Debug.LogError("Canvas", "Canvas is null!");
             return;
         }
 
@@ -98,6 +120,9 @@ public class Renderer extends MonoBehaviour {
         );
 
         canvas.save();
+
+        spriteScaling.x = (scale.x * srcEnd.x) * 0.5f;
+        spriteScaling.y = (scale.y * srcEnd.y) * 0.5f;
 
         float centerX = position.x + (scale.x * srcEnd.x) * 0.5f + RenderOffset.x;
         float centerY = position.y + (scale.y * srcEnd.y) * 0.5f + RenderOffset.y;

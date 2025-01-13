@@ -2,9 +2,7 @@ package com.example.mossymobile;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 
@@ -51,7 +49,7 @@ public class main extends Activity {
         app.Start();
 
         this.findViewById(R.id.closeBtn).setOnClickListener(v -> {
-            Application.CloseApplication = true;
+            Application.closeApplication = true;
         });
 
         new Thread(new Runnable() {

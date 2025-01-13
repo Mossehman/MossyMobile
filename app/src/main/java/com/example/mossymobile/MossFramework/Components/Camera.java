@@ -1,46 +1,29 @@
 package com.example.mossymobile.MossFramework.Components;
-
-import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
-import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
-import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Camera extends MonoBehaviour {
-    public MutableWrapper<Float> a = new MutableWrapper<>(5.0f);
-    public MutableWrapper<Boolean> b = new MutableWrapper<>(true);
-    public List<Integer> test = new ArrayList<>();
-    public HashMap<Integer, String> test2 = new HashMap<>();
-
-    public GameObject go;
-
-
-
+    List<Integer> list = new ArrayList<>();
+    HashMap<String, String> strLisr = new HashMap<>();
     @Override
     protected void InitializeInspectorData() {
-        EditInInspector("a", a);
-        EditInInspector("b", b);
-        EditInInspector("List", test2);
+        ShowInInspector("List", list);
+        ShowInInspector("Hashmap", strLisr);
     }
 
     @Override
     public void Start() {
-        GameObject newGO = Instantiate(go);
-        newGO.name = "testing";
+        list.add(10);
+        list.add(12);
 
-        test2.put(10, "str1");
+        strLisr.put("hi", "hashmap");
     }
 
     @Override
     public void Update() {
-        a.value -= 0.1f;
-
-        if (b.value == false) {
-            Debug.Log("False", "This is false");
-        }
 
     }
 }

@@ -1,6 +1,12 @@
 package com.example.mossymobile.MossFramework;
 
+import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.Components.Renderer;
+import com.example.mossymobile.MossFramework.Components.RigidBody;
+import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Physics.QuadTree;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +18,10 @@ public abstract class Scene implements Serializable {
 
     protected List<GameObject> gameObjectsToAdd = new ArrayList<>();
     protected List<GameObject> gameObjectsToRemove = new ArrayList<>();
-    protected List<GameObject> objectsToRender = new ArrayList<>();
+    protected List<Renderer> objectsToRender = new ArrayList<>();
+    protected List<Collider> collidersToCheck = new ArrayList<>();
+
+    protected QuadTree tree;
 
     protected int ScenePriority = 0;
 
@@ -54,13 +63,12 @@ public abstract class Scene implements Serializable {
 
         Update();
 
+        //construct the tree each frame
+        tree = new QuadTree(2, new QuadTree.Rectangle(new Vector2(1200, 500), new Vector2(800, 400)));
+
         for (GameObject gameObject : gameObjects)
         {
             gameObject.Update();
-
-            if (gameObject.ToRender) {
-                objectsToRender.add(gameObject);
-            }
         }
 
         for (GameObject gameObject : gameObjects)
@@ -72,14 +80,22 @@ public abstract class Scene implements Serializable {
 
         if (!objectsToRender.isEmpty()) {
 
-            for (GameObject gameObject : objectsToRender) {
-                Renderer renderer = gameObject.GetComponent(Renderer.class, true);
+            for (Renderer renderer : objectsToRender) {
                 if (renderer == null) {
                     continue;
                 }
                 renderer.Render(Objects.requireNonNull(GameView.GetInstance()).canvas);
             }
+
+            objectsToRender.clear();
         }
+        if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
+            for (GameObject gameObject : gameObjects) {
+                gameObject.Gizmos();
+            }
+        }
+
+        tree.Render();
 
         if (!gameObjectsToRemove.isEmpty())
         {
@@ -88,7 +104,10 @@ public abstract class Scene implements Serializable {
                 gameObjects.remove(go);
             }
         }
+
+        tree = null;
     }
+
 
     public int GetScenePriority()
     {
@@ -103,5 +122,15 @@ public abstract class Scene implements Serializable {
     public List<GameObject> GetGameObjects()
     {
         return this.gameObjects;
+    }
+
+    public void RenderGameObject(Renderer renderer)
+    {
+        objectsToRender.add(renderer);
+    }
+
+    public QuadTree GetTree()
+    {
+        return this.tree;
     }
 }

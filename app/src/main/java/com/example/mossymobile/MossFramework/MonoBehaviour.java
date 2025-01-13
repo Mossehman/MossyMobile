@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 
 import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
-import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorData;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
@@ -178,6 +177,9 @@ public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI
 
         componentList.addView(dataComponent);
     }
+
+    public void OnDrawGizmos() { return; }
+
 
 
 }

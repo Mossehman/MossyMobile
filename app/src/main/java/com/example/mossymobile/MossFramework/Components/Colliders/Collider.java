@@ -1,5 +1,6 @@
 package com.example.mossymobile.MossFramework.Components.Colliders;
 
+import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
@@ -9,12 +10,19 @@ public abstract class Collider extends MonoBehaviour {
     public enum COLLISION_TYPE {
         CIRCLE,
         BOX,
-        CAPSULE,
         NUM_TYPES
     }
 
     protected COLLISION_TYPE collisionType = COLLISION_TYPE.NUM_TYPES;
     public boolean IsTrigger = false;
+
+    public MutableWrapper<Boolean> DrawGizmos = new MutableWrapper<>(true);
+
+    @Override
+    protected void InitializeInspectorData() {
+        ShowInInspector("Offset", Offset);
+        EditInInspector("Wireframe", DrawGizmos);
+    }
 
     ///Adds to the position when calculating the hitbox center
     public Vector2 Offset = new Vector2();
@@ -33,7 +41,7 @@ public abstract class Collider extends MonoBehaviour {
 
     @Override
     public void Update() {
-        return;
+        gameObject.GetScene().GetTree().AddCollider(this);
     }
 
     public abstract Vector2 GetBounds();

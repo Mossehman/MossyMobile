@@ -22,12 +22,12 @@ public final class Input {
     /**
      * Allows us to get the touch position in the form of a {@code Vector2}. Use as follows: {@code PointerID = Input.GetTouchPosition(TouchPos, PointerID)}.
      *
-     * @param touchPosOut the {@code Vector2} the touch position will be output to.
+     * @param touchPosRef the {@code Vector2} the touch position will be output to.
      * @param PointerID the current pointerID the code is referencing.
      *
      * @return the PointerID for the script that calls this function to reference.
      */
-    public static int GetTouchPosition(Vector2 touchPosOut, int PointerID)
+    public static int GetTouchPosition(Vector2 touchPosRef, int PointerID)
     {
         int returnVal = PointerID;
         if (action == -1 || pointerID == -1 || event == null) { return -1; }
@@ -46,8 +46,8 @@ public final class Input {
             for (int i = 0; i < event.getPointerCount(); i++)
             {
                 if (event.getPointerId(i) != returnVal) { continue; }
-                touchPosOut.x = event.getX(i);
-                touchPosOut.y = event.getY(i);
+                touchPosRef.x = event.getX(i);
+                touchPosRef.y = event.getY(i);
                 break;
             }
         }

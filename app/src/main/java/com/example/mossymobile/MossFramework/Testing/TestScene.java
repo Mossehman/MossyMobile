@@ -1,27 +1,24 @@
 package com.example.mossymobile.MossFramework.Testing;
 
-import com.example.mossymobile.MossFramework.Components.AudioListener;
-import com.example.mossymobile.MossFramework.Components.Camera;
-import com.example.mossymobile.MossFramework.Components.Colliders.CircleCollider;
+import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.GameObject;
+import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Scene;
-import com.example.mossymobile.MossFramework.Systems.Time.Time;
 
 public class TestScene extends Scene {
     @Override
     protected void Init() {
-        GameObject newGO = new GameObject();
-        Camera camera = newGO.AddComponent(Camera.class);
-        newGO.GetTransform().SetPosition(new Vector2(0, 0));
-        newGO.AddComponent(AudioListener.class);
 
-        GameObject anotherGO = new GameObject("Other GameObject");
-        anotherGO.AddComponent(CircleCollider.class);
-        anotherGO.GetTransform().SetPosition(new Vector2(-4, 0));
 
-        camera.go = anotherGO;
-
-        Time.UpdateDeltaTime(10);
+        for (int i = 0; i < 200; i++)
+        {
+            GameObject go = new GameObject();
+            BoxCollider col = go.AddComponent(BoxCollider.class);
+            go.AddComponent(MovingScript.class);
+            go.GetTransform().SetPosition(new Vector2(MossMath.randFloatMinMax(400, 2000), MossMath.randFloatMinMax(100, 900)));
+            col.hitboxDimensions.x = 20;
+            col.hitboxDimensions.y = 20;
+        }
     }
 }

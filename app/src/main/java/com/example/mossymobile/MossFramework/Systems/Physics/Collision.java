@@ -1,7 +1,7 @@
 package com.example.mossymobile.MossFramework.Systems.Physics;
 
 import com.example.mossymobile.MossFramework.Application;
-import com.example.mossymobile.MossFramework.Components.Rigidbody;
+import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
@@ -22,9 +22,9 @@ public class Collision {
     public static LinkedHashMap<String, List<String>> CollisionLayers = new LinkedHashMap<>();
     public static void InitialiseCollisionMatrix()
     {
-        mtx = ScriptableObject.Create(CollisionMatrixFilepath, CollisionMatrix.class);
+        mtx = ScriptableObject.Create(CollisionMatrixFilepath, "res", CollisionMatrix.class, true);
         if (mtx == null) { return; }
-        if (mtx.CollisionsLayers.isEmpty()) { return; }
+
 
         for (Map.Entry<String, List<String>> set : CollisionLayers.entrySet())
         {
@@ -46,7 +46,6 @@ public class Collision {
     public static void SaveCollisionMatrix()
     {
         mtx.CollisionsLayers = new HashMap<>(CollisionLayers);
-        mtx.SaveToInternalStorage();
     }
 
     public static void CreateCollisionLayer(String layer)
@@ -62,7 +61,7 @@ public class Collision {
 
 
     private GameObject gameObject;
-    private Rigidbody rigidbody;
+    private RigidBody rigidbody;
     private Vector2 collisionNormal;
 
     public GameObject GetGameObject() {
@@ -73,7 +72,7 @@ public class Collision {
         return this.collisionNormal;
     }
 
-    public Rigidbody GetRigidbody() {
+    public RigidBody GetRigidbody() {
         return this.rigidbody;
     }
 }

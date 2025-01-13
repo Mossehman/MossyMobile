@@ -7,6 +7,17 @@ public class Time {
     private static float elapsedTime = 0.0f;
     private static float deltaTime = 0.0f;
 
+    private static float fixedTime = 0.02f;
+
+    public static void SetFixedTime(float time)
+    {
+        if (!Application.IsRunning()) {
+            fixedTime = time;
+            return;
+        }
+        Debug.LogError("Time::SetFixedTime(" + time + ")", "The physics TimeStep cannot be modified at runtime!");
+    }
+
     public static void UpdateDeltaTime(float newDT)
     {
         if (Application.IsFrameUpdate()) {
@@ -27,5 +38,6 @@ public class Time {
 
     public static float GetElapsedTime() { return elapsedTime; }
     public static float GetDeltaTime() { return deltaTime; }
+    public static float GetFixedTime() { return fixedTime; }
 
 }
