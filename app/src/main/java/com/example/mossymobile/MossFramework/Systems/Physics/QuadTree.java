@@ -1,7 +1,6 @@
 package com.example.mossymobile.MossFramework.Systems.Physics;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.Math.Vector2;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuadTree {
-    public final int MaxDepth = 5;
+    public final int MaxDepth = 3;
     public int CurrDepth = 0;
     private List<Collider> colliders = new ArrayList<>();
     private Rectangle QuadTreeBoundary = null;
@@ -174,7 +173,7 @@ public class QuadTree {
             return;
         }
 
-        Gizmos.DrawBox(QuadTreeBoundary.position, QuadTreeBoundary.dimensions, Color.RED);
+        Gizmos.DrawBox(QuadTreeBoundary.position, QuadTreeBoundary.dimensions, Color.WHITE);
     }
 
 }

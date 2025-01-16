@@ -260,6 +260,17 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
         }
     }
 
+    public Vector2 FastNormalize()
+    {
+        float l = FastMagnitude();
+        if (l <= MossMath.EPSILON) {
+            return new Vector2();
+        } else {
+            return new Vector2(x / l, y / l);
+        }
+    }
+
+
     /**
      * Checks whether the {@code x} and {@code y} components of the {@code Vector2} match with another {@code Vector2}.
      *

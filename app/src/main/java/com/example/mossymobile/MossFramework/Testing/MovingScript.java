@@ -13,6 +13,8 @@ public class MovingScript extends MonoBehaviour {
     boolean IsMoving = false;
     public float speed = 100.0f;
 
+    public float delay = 0.0f;
+
     @Override
     public void Start() {
         this.startPos.x = gameObject.GetTransform().GetPosition().x;
@@ -23,7 +25,7 @@ public class MovingScript extends MonoBehaviour {
     public void Update() {
         Transform t = this.gameObject.GetTransform();
         if (t == null) { return; }
-
+//
         if (IsMoving)
         {
             if (t.GetPosition().DistanceSq(targetPos) <= speed * Time.GetDeltaTime())
@@ -31,8 +33,8 @@ public class MovingScript extends MonoBehaviour {
                 IsMoving = false;
                 return;
             }
-
-            Vector2 moveVector = Vector2.Sub(targetPos, t.GetPosition()).Normalized();
+//
+            Vector2 moveVector = Vector2.Sub(targetPos, t.GetPosition()).FastNormalize();
             moveVector.Mul(new Vector2(speed * Time.GetDeltaTime(), speed * Time.GetDeltaTime()));
             t.SetPosition(Vector2.Add(t.GetPosition(), moveVector));
         }
@@ -42,5 +44,12 @@ public class MovingScript extends MonoBehaviour {
             targetPos.y = MossMath.randFloatMinMax(startPos.y - radius, startPos.y + radius);
             IsMoving = true;
         }
+
+        //delay += Time.GetDeltaTime();
+        //if (delay > 3.0f) {
+        //    Debug.Log("Applied Force", "Force");
+        //    gameObject.GetComponent(RigidBody.class).AddForce(new Vector2(1000000f, 0));
+        //    delay = -10.0f;
+        //}
     }
 }

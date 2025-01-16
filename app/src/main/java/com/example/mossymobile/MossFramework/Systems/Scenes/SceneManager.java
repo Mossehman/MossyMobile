@@ -1,4 +1,5 @@
 package com.example.mossymobile.MossFramework.Systems.Scenes;
+import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Scene;
 
 import java.util.ArrayList;
@@ -96,6 +97,10 @@ public class SceneManager {
 
     public static boolean UpdateScenes()
     {
+        if (Application.pause) {
+            return true;
+        }
+
         if (NextScene != null && !CurrentScenes.contains(NextScene))
         {
             if (sceneLoad == SceneLoadMode.SINGLE)

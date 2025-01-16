@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 ///This class is for saving any collision matrix data the user inputs in during runtime
-public class CollisionMatrix extends ScriptableObject {
+public final class CollisionMatrix extends ScriptableObject {
     public HashMap<String, List<String>> CollisionsLayers = new HashMap<>();
 
     @Override

@@ -6,11 +6,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.Components.Transform;
 import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
+import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 
 import java.io.Serializable;
@@ -258,6 +260,45 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
 
     public void RemoveTag(String tag) {
         this.tags.remove(tag);
+    }
+
+
+    public void OnCollisionEnter(Collision collision) {
+        for (MonoBehaviour component : Components.values()) {
+            if (component == null) { continue; }
+            component.OnCollisionEnter(collision);
+        }
+    }
+    public void OnCollisionStay(Collision collision) {
+        for (MonoBehaviour component : Components.values()) {
+            if (component == null) { continue; }
+            component.OnCollisionStay(collision);
+        }
+    }
+    public void OnCollisionExit(Collider collider) {
+        for (MonoBehaviour component : Components.values()) {
+            if (component == null) { continue; }
+            component.OnCollisionExit(collider);
+        }
+    }
+
+    public void OnTriggerEnter(Collider collider) {
+        for (MonoBehaviour component : Components.values()) {
+            if (component == null) { continue; }
+            component.OnTriggerEnter(collider);
+        }
+    }
+    public void OnTriggerStay(Collider collider) {
+        for (MonoBehaviour component : Components.values()) {
+            if (component == null) { continue; }
+            component.OnTriggerStay(collider);
+        }
+    }
+    public void OnTriggerExit(Collider collider) {
+        for (MonoBehaviour component : Components.values()) {
+            if (component == null) { continue; }
+            component.OnTriggerExit(collider);
+        }
     }
 
 }

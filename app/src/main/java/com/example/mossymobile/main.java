@@ -23,8 +23,6 @@ public class main extends Activity {
         Debug.SetConfig(BuildConfig.DEBUG);
         this.setContentView(R.layout.mainscreen);
 
-        //Log.d("Test", "Test");
-
         gameView = findViewById(R.id.gameView);
         if (Debug.GetConfig() == BuildConfig.PRODUCTION)
         {

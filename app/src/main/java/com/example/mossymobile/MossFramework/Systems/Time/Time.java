@@ -21,7 +21,15 @@ public class Time {
     public static void UpdateDeltaTime(float newDT)
     {
         if (Application.IsFrameUpdate()) {
-            deltaTime = newDT;
+            if (newDT > 0.1f)
+            {
+                deltaTime = 0.1f;
+            }
+            else
+            {
+                deltaTime = newDT;
+            }
+
             return;
         }
         Debug.LogError("Time::UpdateDeltaTime(" + newDT + ")", "Delta time is a read-only value and cannot be manually modified.");

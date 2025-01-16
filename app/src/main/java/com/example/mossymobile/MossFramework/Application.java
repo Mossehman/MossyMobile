@@ -3,6 +3,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Math.Vector2Int;
@@ -32,9 +33,12 @@ public class Application {
 
     ///This is to check if application should close (no shit sherlock)
     public static boolean closeApplication = false;
+    public static boolean pause = false;
+
 
     ///This is to check if the game loop has started, mainly to prevent us from doing certain things at runtime (eg: creating new scenes)
     protected static boolean isRunning = false;
+
 
     ///This is to check if deltaTime should be updated, else it should be read-only and unmodifiable
     protected static boolean nextFrameUpdate = false;
@@ -129,8 +133,18 @@ public class Application {
 
             nextFrameUpdate = false;
 
-            Objects.requireNonNull(GameView.GetInstance()).canvas = Objects.requireNonNull(GameView.GetInstance()).LockCanvas();
-            Objects.requireNonNull(GameView.GetInstance()).canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+            TextView fpsCounter = GameView.GetInstance().GetActivity().findViewById(R.id.frames);
+            GameView.GetInstance().GetActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    fpsCounter.setText(1 / dt + " FPS");
+                }
+            });
+
+            if (!pause) {
+                Objects.requireNonNull(GameView.GetInstance()).canvas = Objects.requireNonNull(GameView.GetInstance()).LockCanvas();
+                Objects.requireNonNull(GameView.GetInstance()).canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+            }
 
             if (!SceneManager.UpdateScenes()) //if scene list is empty, function will return false, if so, break program
             {
@@ -145,7 +159,6 @@ public class Application {
             }
 
             AudioPlayer.Update();
-
             Objects.requireNonNull(GameView.GetInstance()).UnlockCanvasAndPost(Objects.requireNonNull(GameView.GetInstance()).canvas);
         }
     }

@@ -1,6 +1,7 @@
 package com.example.mossymobile.MossFramework.Systems.Physics;
 
 import com.example.mossymobile.MossFramework.Application;
+import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.Vector2;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class Collision {
+public final class Collision {
     final static String CollisionMatrixFilepath = "CollisionMatrix";
     private static CollisionMatrix mtx = null;
     public static LinkedHashMap<String, List<String>> CollisionLayers = new LinkedHashMap<>();
@@ -43,6 +44,13 @@ public class Collision {
         }
     }
 
+    public Collision(GameObject GO, Vector2 collisionNormal, Collider collider)
+    {
+        this.gameObject = GO;
+        this.collisionNormal = collisionNormal;
+        this.collider = collider;
+    }
+
     public static void SaveCollisionMatrix()
     {
         mtx.CollisionsLayers = new HashMap<>(CollisionLayers);
@@ -63,6 +71,7 @@ public class Collision {
     private GameObject gameObject;
     private RigidBody rigidbody;
     private Vector2 collisionNormal;
+    private Collider collider;
 
     public GameObject GetGameObject() {
         return this.gameObject;
@@ -75,4 +84,6 @@ public class Collision {
     public RigidBody GetRigidbody() {
         return this.rigidbody;
     }
+
+    public Collider GetCollider() { return this.collider; }
 }

@@ -6,10 +6,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorData;
+import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 
 import java.io.Serializable;
@@ -179,6 +181,14 @@ public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI
     }
 
     public void OnDrawGizmos() { return; }
+
+    public void OnCollisionEnter(Collision collision) {}
+    public void OnCollisionStay(Collision collision) {}
+    public void OnCollisionExit(Collider collider) {}
+
+    public void OnTriggerEnter(Collider collider) {}
+    public void OnTriggerStay(Collider collider) {}
+    public void OnTriggerExit(Collider collider) {}
 
 
 
