@@ -45,11 +45,10 @@ public class UI extends Singleton<UI> {
     public View AddLayoutToUI(int layoutID) {
 
         if (UIContainer == null) { Debug.Log("UI", "UI was null!"); return null; }
-        final View[] inflatedLayout = { null };
+        final View[] inflatedLayout = { Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(layoutID, UIContainer, false) };
         Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                inflatedLayout[0] = Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(layoutID, UIContainer, false);
                 if (inflatedLayout[0] != null) {
                     UIContainer.addView(inflatedLayout[0]);
                 }
@@ -69,11 +68,10 @@ public class UI extends Singleton<UI> {
      */
     public View AddViewLayoutToUI(int layoutID, LinearLayout.LayoutParams params) {
         if (UIContainer == null) { return null; }
-        final View[] inflatedLayout = {null};
+        final View[] inflatedLayout = {Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(layoutID, UIContainer, false)};
         Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                inflatedLayout[0] = Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(layoutID, UIContainer, false);
                 if (inflatedLayout[0] != null) {
                     inflatedLayout[0].setLayoutParams(params);
                     UIContainer.addView(inflatedLayout[0]);
