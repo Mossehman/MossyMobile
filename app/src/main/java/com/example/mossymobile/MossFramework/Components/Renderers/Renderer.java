@@ -86,8 +86,6 @@ public class Renderer extends MonoBehaviour {
         }
 
 
-        transform.SetPosition(new Vector2(transform.GetPosition().x, transform.GetPosition().y + 1));
-
         position = Vector2.Mul(Application.GetViewToScreenRatio(), transform.GetPosition());
         scale = Vector2.Mul(Application.GetViewToScreenRatio(), transform.GetScale());
 
