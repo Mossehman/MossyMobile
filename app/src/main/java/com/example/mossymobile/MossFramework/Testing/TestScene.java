@@ -1,5 +1,6 @@
 package com.example.mossymobile.MossFramework.Testing;
 
+import android.view.View;
 import android.widget.Button;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
@@ -8,12 +9,17 @@ import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Scene;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
 
 public class TestScene extends Scene {
     @Override
     protected void Init() {
+        View v = UI.GetInstance().AddLayoutToUI(R.layout.matrix);
+        if (v == null) {
+            Debug.Log("Added view", "View was null!");
+        }
 
         GameObject go = new GameObject();
         BoxCollider col = go.AddComponent(BoxCollider.class);
