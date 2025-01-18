@@ -100,7 +100,7 @@ public class Application {
 
         Collision.InitialiseCollisionMatrix();
 
-        UI.GetInstance().SetUIContainer(R.id.gameUI);
+        UI.GetInstance().SetUIContainer(R.id.gameUIDocker);
 
         return OnStart();
     }

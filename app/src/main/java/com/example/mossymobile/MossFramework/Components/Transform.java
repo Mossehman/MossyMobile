@@ -7,7 +7,7 @@ import com.example.mossymobile.MossFramework.MonoBehaviour;
 public final class Transform extends MonoBehaviour {
 
     private Vector2 position = new Vector2();
-    private Vector2 scale = new Vector2();
+    private Vector2 scale = new Vector2(1, 1);
     private MutableWrapper<Float> rotation = new MutableWrapper<>(0.0f);
 
     @Override

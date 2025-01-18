@@ -2,6 +2,7 @@ package com.example.mossymobile.MossFramework.Testing;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
@@ -20,6 +21,8 @@ public class TestScene extends Scene {
         if (v == null) {
             Debug.Log("Added view", "View was null!");
         }
+
+        TextView text = v.findViewById(R.id.testID);
 
         GameObject go = new GameObject();
         BoxCollider col = go.AddComponent(BoxCollider.class);
