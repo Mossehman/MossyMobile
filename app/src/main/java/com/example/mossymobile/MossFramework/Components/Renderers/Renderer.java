@@ -1,4 +1,4 @@
-package com.example.mossymobile.MossFramework.Components;
+package com.example.mossymobile.MossFramework.Components.Renderers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,12 +7,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.example.mossymobile.MossFramework.Application;
+import com.example.mossymobile.MossFramework.Components.Transform;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
-import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 
 import java.util.Objects;
 
@@ -49,7 +49,17 @@ public class Renderer extends MonoBehaviour {
         transform = gameObject.GetTransform();
         rotation = transform.GetRotation();
 
-        sprite = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), ResourceID);
+        if (Application.cachedSprites.containsKey(ResourceID)) {
+            sprite = Application.cachedSprites.get(ResourceID);
+        }
+        else
+        {
+            Bitmap bmp = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), ResourceID);
+            Application.cachedSprites.put(ResourceID, bmp);
+
+            this.sprite = bmp;
+        }
+
         if (sprite == null)
         {
             Debug.LogError("Sprite", "sprite is null");

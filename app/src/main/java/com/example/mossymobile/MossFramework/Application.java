@@ -1,4 +1,5 @@
 package com.example.mossymobile.MossFramework;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -16,6 +17,7 @@ import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.Messaging.MessageHub;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
+import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.MossFramework.Testing.TestScene;
 import com.example.mossymobile.R;
 
@@ -25,7 +27,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Application {
-
     private AtomicInteger completedThreads = new AtomicInteger(0);
     private final Object cleanupLock = new Object();
 
@@ -43,6 +44,9 @@ public class Application {
     ///This is to check if deltaTime should be updated, else it should be read-only and unmodifiable
     protected static boolean nextFrameUpdate = false;
     protected static Vector2 renderingRatio = new Vector2();
+
+    public static HashMap<Integer, Bitmap> cachedSprites = new HashMap<>();
+
 
     public final boolean Start()
     {
@@ -95,6 +99,8 @@ public class Application {
         Collision.CreateCollisionLayer("Layer5");
 
         Collision.InitialiseCollisionMatrix();
+
+        UI.GetInstance().SetUIContainer(R.id.gameUI);
 
         return OnStart();
     }

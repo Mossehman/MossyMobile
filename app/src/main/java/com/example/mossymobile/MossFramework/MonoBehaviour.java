@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
+import com.example.mossymobile.MossFramework.Components.Transform;
 import com.example.mossymobile.MossFramework.DesignPatterns.Factory;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Inspector.ICustomInspectorGUI;
@@ -189,6 +190,12 @@ public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI
     public void OnTriggerEnter(Collider collider) {}
     public void OnTriggerStay(Collider collider) {}
     public void OnTriggerExit(Collider collider) {}
+
+
+    public Transform GetTransform() {
+        return gameObject.GetTransform();
+    }
+
 
 
 

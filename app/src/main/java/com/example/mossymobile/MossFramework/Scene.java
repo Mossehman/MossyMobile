@@ -1,8 +1,7 @@
 package com.example.mossymobile.MossFramework;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
-import com.example.mossymobile.MossFramework.Components.Renderer;
-import com.example.mossymobile.MossFramework.Components.RigidBody;
+import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
@@ -20,6 +19,9 @@ public abstract class Scene implements Serializable {
     protected List<GameObject> gameObjectsToRemove = new ArrayList<>();
     protected List<Renderer> objectsToRender = new ArrayList<>();
     protected List<Collider> collidersToCheck = new ArrayList<>();
+
+    public Vector2 quadtreePos = new Vector2(1200, 500);
+    public Vector2 quadtreeScale = new Vector2(800, 400);
 
     protected QuadTree tree;
 
@@ -64,7 +66,7 @@ public abstract class Scene implements Serializable {
         Update();
 
         //construct the tree each frame
-        tree = new QuadTree(2, new QuadTree.Rectangle(new Vector2(1200, 500), new Vector2(800, 400)));
+        tree = new QuadTree(2, new QuadTree.Rectangle(quadtreePos, quadtreeScale));
 
         for (GameObject gameObject : gameObjects)
         {
