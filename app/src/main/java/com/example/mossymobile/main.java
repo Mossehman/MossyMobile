@@ -11,9 +11,11 @@ import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
+import com.example.mossymobile.VibeoGeam.GameApplication;
 
 public class main extends Activity {
-    private final Application app = new Application();
+    //private final Application app = new Application();
+    private final GameApplication app = new GameApplication();
     GameView gameView;
 
     @Override
