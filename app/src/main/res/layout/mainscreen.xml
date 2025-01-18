@@ -71,29 +71,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
+                <Button
+                    android:id="@+id/closeBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save SO Data" />
+
+                <TextView
+                    android:id="@+id/frames"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:text="FPS"
+                    android:textColor="#FFFFFF" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/gameUI"
+                    android:id="@+id/gameUIDocker"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
 
-                    <Button
-                        android:id="@+id/closeBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Save SO Data" />
-
-                    <TextView
-                        android:id="@+id/frames"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="FPS"
-                        android:textColor="#FFFFFF"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.871"
-                        app:layout_constraintStart_toEndOf="@+id/closeBtn"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.058" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
 
