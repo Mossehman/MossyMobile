@@ -2,6 +2,7 @@ package com.example.mossymobile.MossFramework.Systems.UserInput;
 
 import android.view.MotionEvent;
 import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 
 ///Allows us to get the user's touch position, adjusted for multi-touch compatibility
 public final class Input {
@@ -48,6 +49,7 @@ public final class Input {
                 if (event.getPointerId(i) != returnVal) { continue; }
                 touchPosRef.x = event.getX(i);
                 touchPosRef.y = event.getY(i);
+
                 break;
             }
         }

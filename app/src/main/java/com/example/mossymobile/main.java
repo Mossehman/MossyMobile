@@ -2,6 +2,7 @@ package com.example.mossymobile;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -11,6 +12,7 @@ import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
+import com.example.mossymobile.MossFramework.Systems.UserInput.Input;
 import com.example.mossymobile.VibeoGeam.GameApplication;
 
 public class main extends Activity {
@@ -75,5 +77,11 @@ public class main extends Activity {
     protected void onStop() {
         super.onStop();
         app.Exit();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Input.UpdateTouch(event);
+        return true;
     }
 }
