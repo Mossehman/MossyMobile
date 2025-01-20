@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.mossymobile.MossFramework.Components.Camera;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
@@ -36,6 +37,8 @@ public class TestScene extends Scene {
         col.hitboxDimensions.y = 20;
         rb.SetGravityEnabled(false);
         rb.SetKinematic(true);
+
+        go.AddComponent(Camera.class);
 
 
         for (int i = 0; i < 2; i++)
