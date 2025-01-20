@@ -16,6 +16,7 @@
             android:id="@+id/joystick_knob"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:background="#14FFFFFF"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             app:layout_constraintBottom_toBottomOf="parent"

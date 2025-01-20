@@ -54,7 +54,6 @@ public class UI extends Singleton<UI> {
                 }
             }
         });
-
         return inflatedLayout[0];
     }
 
