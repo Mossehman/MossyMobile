@@ -42,29 +42,12 @@ public class Renderer extends MonoBehaviour {
         this.imageRatio = ratio;
     }
     public int ResourceID = -1;
+    protected int InitialResID = -1;
 
 
     @Override
     public void Start() {
         transform = gameObject.GetTransform();
-        rotation = transform.GetRotation();
-
-        if (Application.cachedSprites.containsKey(ResourceID)) {
-            sprite = Application.cachedSprites.get(ResourceID);
-        }
-        else
-        {
-            Bitmap bmp = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), ResourceID);
-            Application.cachedSprites.put(ResourceID, bmp);
-
-            this.sprite = bmp;
-        }
-
-        if (sprite == null)
-        {
-            Debug.LogError("Sprite", "sprite is null");
-        }
-
     }
 
     @Override
@@ -77,6 +60,20 @@ public class Renderer extends MonoBehaviour {
 
     @Override
     public void Update() {
+
+        if (InitialResID != ResourceID) {
+            if (Application.cachedSprites.containsKey(ResourceID)) {
+                sprite = Application.cachedSprites.get(ResourceID);
+            }
+            else
+            {
+                Bitmap bmp = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), ResourceID);
+                Application.cachedSprites.put(ResourceID, bmp);
+
+                this.sprite = bmp;
+            }
+            InitialResID = ResourceID;
+        }
 
         if (!IsEnabled ||           //Renderer is not enabled, do not render
             transform == null ||    //GameObject has no positional value, do not render
