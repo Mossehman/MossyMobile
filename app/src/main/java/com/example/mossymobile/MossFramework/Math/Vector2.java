@@ -291,6 +291,53 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
         }
     }
 
+    public static float DirectionToAngle(Vector2 dir){
+        float dx = dir.x;
+        float dy = dir.y;
+
+        // Calculate angle in radians and convert to degrees
+        float angleRadians = (float) Math.atan2(dx, -dy); // Negate dx for upward 0 degrees
+        float angleDegrees = (float) Math.toDegrees(angleRadians);
+
+        // Normalize to [0, 360)
+        return (angleDegrees + 360) % 360;
+    }
+
+    public float DirectionToAngle() {
+        float dx = x;
+        float dy = y;
+
+        // Calculate angle in radians and convert to degrees
+        float angleRadians = (float) Math.atan2(dx, -dy); // Negate dx for upward 0 degrees
+        float angleDegrees = (float) Math.toDegrees(angleRadians);
+
+        // Normalize to [0, 360)
+        return (angleDegrees + 360) % 360;
+    }
+
+    public static Vector2 RotateVector(Vector2 vector, float angleDegrees) {
+        double angleRadians = Math.toRadians(angleDegrees);
+        float cos = (float) Math.cos(angleRadians);
+        float sin = (float) Math.sin(angleRadians);
+
+        float x = vector.x * cos - vector.y * sin;
+        float y = vector.x * sin + vector.y * cos;
+
+        return new Vector2(x, y);
+    }
+
+    public void RotateVector(float angleDegrees) {
+        double angleRadians = Math.toRadians(angleDegrees);
+        float cos = (float) Math.cos(angleRadians);
+        float sin = (float) Math.sin(angleRadians);
+
+        float newX = x * cos - y * sin;
+        float newY = x * sin + y * cos;
+
+        this.x = newX;
+        this.y = newY;
+    }
+
 
     /**
      * Checks whether the {@code x} and {@code y} components of the {@code Vector2} match with another {@code Vector2}.
