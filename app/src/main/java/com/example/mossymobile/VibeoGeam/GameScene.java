@@ -51,6 +51,7 @@ public class GameScene extends Scene {
             r.ResourceID = R.drawable.bluecircle;
 
             knobfunction.knob = joystickUI.findViewById(R.id.joystick_knob);
+            knobfunction.minDistance = 5f;
             playerScript.movement = knobfunction;
         }
         {
@@ -67,14 +68,17 @@ public class GameScene extends Scene {
             r.ResourceID = R.drawable.redcircle;
 
             knobfunction.knob = joystickUI.findViewById(R.id.joystick_knob2);
+            knobfunction.resetDirection = false;
+            knobfunction.minDistance = 50f;
             playerScript.look = knobfunction;
         }
 
-        bulletData.add(new BulletInfo(10f, 12f, 0,  2f, 0, 0.4f, 1.0f, 4f)); // Basic single shot
+        bulletData.add(new BulletInfo(10f, 45f, 0,  1f, 0, 0.40f, 1.0f, 4.0f, R.drawable.cannon)); // Basic single shot
+        bulletData.add(new BulletInfo( 6f, 50f, 0,  3f, 2, 0.10f, 1.0f, 3.0f, R.drawable.cannon2xx));
+        bulletData.add(new BulletInfo( 4f, 55f, 0,  5f, 2, 0.04f, 1.0f, 1.6f, R.drawable.cannon3xx));
 
-        playerScript.bulletInfo = bulletData.get(0);
+        playerScript.bulletInfo = bulletData.get(2);
 
-        GameObject instBullet = null;
-        instBullet.GetTransform().SetScale(new Vector2(20,20));
     }
+
 }

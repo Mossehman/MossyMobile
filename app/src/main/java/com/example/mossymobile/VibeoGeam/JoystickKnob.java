@@ -26,8 +26,13 @@ public class JoystickKnob extends MonoBehaviour {
 
     private int touchId = -1; // Default: no touch is registered
     private final float maxDistance = 100f; // Maximum distance the knob can move
+    public float minDistance = 5f; // Minimum distance the knob can move
 
     public boolean isJoystickUp = false; // Boolean for when the joystick was just let go off
+    public boolean isJoystickDown = false; // Boolean for when the joystick was just touched
+    public boolean isJoystickHeld = false;  // Boolean for when the joystick is held down
+    public boolean isJoystickDead = false;  // Boolean for when the joystick is inside the minDistance radius
+    public boolean resetDirection = true;  // Boolean for whether to reset direction to zero when joystick is let go
 
     // Offset for display position
     public Vector2 offset = new Vector2(
@@ -50,9 +55,12 @@ public class JoystickKnob extends MonoBehaviour {
             knob.setOnTouchListener((v, event) -> {
                 Vector2 touchPos = new Vector2(event.getX(), event.getY()); // Get touch position relative to the view
 
+                isJoystickDown = false;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         isJoystickUp = false;
+                        isJoystickHeld = true;
+                        isJoystickDown = true;
                         // Register the touch ID and set the original touch position
                         if (touchId == -1) { // Only process if no other touch is active
                             touchId = event.getPointerId(0); // Capture the first pointer
@@ -63,16 +71,33 @@ public class JoystickKnob extends MonoBehaviour {
                     case MotionEvent.ACTION_MOVE:
                         if (touchId == event.getPointerId(0)) {
                             currentTouchPosition = touchPos;
+                            isJoystickHeld = true;
+                            isJoystickDown = false;
+                            // Calculate direction vector
+                            Vector2 calcDirection  = Vector2.Sub(currentTouchPosition, originalTouchPosition);
 
-                            // Calculate direction vector and clamp movement to max distance
-                            direction = Vector2.Sub(currentTouchPosition, originalTouchPosition);
-                            if (direction.Magnitude() > maxDistance) {
-                                direction.Normalize();
-                                direction.Mul(maxDistance);
+
+                            if (calcDirection.Magnitude() <= minDistance){ // In deadzone
+                                if (resetDirection) direction = new Vector2(0,0);
+                                isJoystickDead = true;
+                                
+                                GetTransform().SetPosition(new Vector2(0, 0));
                             }
+                            else if (calcDirection.Magnitude() > maxDistance) { // Outside region
+                                calcDirection.Normalize();
+                                calcDirection.Mul(maxDistance);
+                                direction = calcDirection;
+                                isJoystickDead = false;
 
+                                GetTransform().SetPosition(Vector2.Add(offset, direction));
+                            }
+                            else { // In between, set direction
+                                direction = calcDirection;
+                                isJoystickDead = false;
+
+                                GetTransform().SetPosition(Vector2.Add(offset, direction));
+                            }
                             // Update the visual knob position based on direction and offset
-                            GetTransform().SetPosition(Vector2.Add(offset, direction));
                         }
                         break;
 
@@ -81,9 +106,10 @@ public class JoystickKnob extends MonoBehaviour {
                         if (touchId == event.getPointerId(0)) {
                             // Reset the knob position and touch ID
                             touchId = -1;
-                            direction = new Vector2(0f, 0f);
+                            if (resetDirection) direction = new Vector2(0f, 0f);
                             GetTransform().SetPosition(offset); // Reset to the original offset position
                             isJoystickUp = true;
+                            isJoystickHeld = false;
                         }
                         break;
                 }

@@ -9,7 +9,11 @@ public class BulletInfo {
     public float fireinterval = 0.4f; // time between each shot
     public float ammocost = 1f; // cost to fire this bullet
     public float lifetime = 4f; // how long can the bullet exist
-    public BulletInfo(float damage, float speed, int pierce, float spread, int firetype, float fireinterval, float ammocost, float lifetime){
+    public int spriteResourceID = -1; // sprite image for the player
+    public BulletInfo(float damage, float speed, int pierce, float spread,
+                      int firetype, float fireinterval, float ammocost, float lifetime,
+                      int spriteResourceID)
+    {
         this.damage = damage;
         this.speed = speed;
         this.pierce = pierce;
@@ -18,5 +22,6 @@ public class BulletInfo {
         this.fireinterval = fireinterval;
         this.ammocost = ammocost;
         this.lifetime = lifetime;
+        this.spriteResourceID = spriteResourceID;
     }
 }
