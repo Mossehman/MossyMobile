@@ -1,21 +1,25 @@
 package com.example.mossymobile.VibeoGeam;
 
+import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.FrameLayout;
 
-import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
+import com.example.mossymobile.MossFramework.Components.Colliders.CircleCollider;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
-import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Scene;
-import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class GameScene extends Scene {
+    List<BulletInfo> bulletData = new ArrayList<>();
     @Override
     protected void Init() {
         //GameObject go = new GameObject();
@@ -31,17 +35,46 @@ public class GameScene extends Scene {
         //rb.SetGravityEnabled(false);
         //rb.SetKinematic(true);
 
-        View joystickUI = UI.GetInstance().AddLayoutToUI(R.layout.ui_game);
-        GameObject joystick = new GameObject();
-        JoystickKnob knobfunction = joystick.AddComponent(JoystickKnob.class);
-        Renderer r = joystick.AddComponent(Renderer.class);
-        r.ResourceID = R.drawable.baubau;
-        knobfunction.knob = joystickUI.findViewById(R.id.joystick_knob);
-
         GameObject player = new GameObject();
-        player.AddComponent(Player.class).movement = knobfunction;
-        player.AddComponent(Renderer.class).ResourceID = R.drawable.objlogo;
+        player.AddComponent(Renderer.class).ResourceID = R.drawable.cannon;
+        Player playerScript = player.AddComponent(Player.class);
+        player.AddComponent(RigidBody.class).SetGravityEnabled(false);
+        player.AddComponent(CircleCollider.class).Radius = 20;
+        View joystickUI = UI.GetInstance().AddLayoutToUI(R.layout.ui_game);
+        {
+            FrameLayout knob = joystickUI.findViewById(R.id.joystick_region);
 
+            GameObject joystick = new GameObject();
+            JoystickKnob knobfunction = joystick.AddComponent(JoystickKnob.class);
 
+            Renderer r = joystick.AddComponent(Renderer.class);
+            r.ResourceID = R.drawable.bluecircle;
+
+            knobfunction.knob = joystickUI.findViewById(R.id.joystick_knob);
+            playerScript.movement = knobfunction;
+        }
+        {
+            FrameLayout knob = joystickUI.findViewById(R.id.joystick_region2);
+
+            GameObject joystick = new GameObject();
+            JoystickKnob knobfunction = joystick.AddComponent(JoystickKnob.class);
+            knobfunction.offset = new Vector2(
+                    Objects.requireNonNull(GameView.GetInstance()).getWidth() - 170f,
+                    Objects.requireNonNull(GameView.GetInstance()).getHeight() - 300f
+            );
+
+            Renderer r = joystick.AddComponent(Renderer.class);
+            r.ResourceID = R.drawable.redcircle;
+
+            knobfunction.knob = joystickUI.findViewById(R.id.joystick_knob2);
+            playerScript.look = knobfunction;
+        }
+
+        bulletData.add(new BulletInfo(10f, 12f, 0,  2f, 0, 0.4f, 1.0f, 4f)); // Basic single shot
+
+        playerScript.bulletInfo = bulletData.get(0);
+
+        GameObject instBullet = null;
+        instBullet.GetTransform().SetScale(new Vector2(20,20));
     }
 }

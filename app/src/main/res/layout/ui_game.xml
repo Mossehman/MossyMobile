@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:id="@+id/joystick_region"
         android:layout_width="200dp"
         android:layout_height="200dp"
@@ -16,15 +16,22 @@
             android:id="@+id/joystick_knob"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="#14FFFFFF"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_gravity="center"
+            android:background="#0007EAFF" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/joystick_region2"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="bottom|right">
+
+        <Button
+            android:id="@+id/joystick_knob2"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="#0007EAFF" />
+    </FrameLayout>
 
 </FrameLayout>

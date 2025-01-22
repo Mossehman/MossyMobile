@@ -27,8 +27,10 @@ public class JoystickKnob extends MonoBehaviour {
     private int touchId = -1; // Default: no touch is registered
     private final float maxDistance = 100f; // Maximum distance the knob can move
 
+    public boolean isJoystickUp = false; // Boolean for when the joystick was just let go off
+
     // Offset for display position
-    private final Vector2 offset = new Vector2(
+    public Vector2 offset = new Vector2(
             300f,
             new Vector2Int(
                     Objects.requireNonNull(GameView.GetInstance()).getWidth(),
@@ -50,6 +52,7 @@ public class JoystickKnob extends MonoBehaviour {
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        isJoystickUp = false;
                         // Register the touch ID and set the original touch position
                         if (touchId == -1) { // Only process if no other touch is active
                             touchId = event.getPointerId(0); // Capture the first pointer
@@ -64,14 +67,12 @@ public class JoystickKnob extends MonoBehaviour {
                             // Calculate direction vector and clamp movement to max distance
                             direction = Vector2.Sub(currentTouchPosition, originalTouchPosition);
                             if (direction.Magnitude() > maxDistance) {
-                                direction.Normalize();//.Scale(maxDistance);
-                                direction.Mul(new Vector2(maxDistance, maxDistance));
+                                direction.Normalize();
+                                direction.Mul(maxDistance);
                             }
 
                             // Update the visual knob position based on direction and offset
                             GetTransform().SetPosition(Vector2.Add(offset, direction));
-
-                            //Debug.Log("Joystick Moved", "Direction: " + direction.toString());
                         }
                         break;
 
@@ -82,8 +83,7 @@ public class JoystickKnob extends MonoBehaviour {
                             touchId = -1;
                             direction = new Vector2(0f, 0f);
                             GetTransform().SetPosition(offset); // Reset to the original offset position
-
-                            //Debug.Log("Joystick Released", "Resetting position");
+                            isJoystickUp = true;
                         }
                         break;
                 }
@@ -94,7 +94,6 @@ public class JoystickKnob extends MonoBehaviour {
 
     @Override
     public void Update(){
-
     }
 
 

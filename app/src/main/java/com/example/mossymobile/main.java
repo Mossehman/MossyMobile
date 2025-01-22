@@ -24,7 +24,7 @@ public class main extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Debug.SetConfig(BuildConfig.PRODUCTION);
+        Debug.SetConfig(BuildConfig.DEBUG);
         this.setContentView(R.layout.mainscreen);
 
         gameView = findViewById(R.id.gameView);
