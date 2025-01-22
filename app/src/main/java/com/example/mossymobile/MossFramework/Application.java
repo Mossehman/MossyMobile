@@ -93,13 +93,6 @@ public class Application {
 
         ///TODO: Move this into OnStart() for actual project
         Collision.CreateCollisionLayer("Default");
-        Collision.CreateCollisionLayer("Layer1");
-        Collision.CreateCollisionLayer("Layer2");
-        Collision.CreateCollisionLayer("Layer3");
-        Collision.CreateCollisionLayer("Layer4");
-        Collision.CreateCollisionLayer("Layer5");
-
-        Collision.InitialiseCollisionMatrix();
 
         UI.GetInstance().SetUIContainer(R.id.gameUIDocker);
 
@@ -108,8 +101,10 @@ public class Application {
 
     public final void Run()
     {
+
         while (!Objects.requireNonNull(GameView.GetInstance()).IsSurfaceReady() && Objects.requireNonNull(GameView.GetInstance()).IsSurfaceValid()) { continue; }
 
+        Collision.InitialiseCollisionMatrix();
         //In the event our game view is invalid (this should not happen)
         if (!Objects.requireNonNull(GameView.GetInstance()).IsSurfaceValid())
         {
