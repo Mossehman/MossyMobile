@@ -8,6 +8,8 @@ import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
 
+import java.util.Objects;
+
 public class BoxCollider extends Collider {
 
     public Vector2 hitboxDimensions = new Vector2();
@@ -102,9 +104,12 @@ public class BoxCollider extends Collider {
 
         for (Collider col : collidersToCheck)
         {
-            if (col.HasCheckedCollision(this) || this.HasCheckedCollision(col)) {
+            if (col.HasCheckedCollision(this) || this.HasCheckedCollision(col) || 
+                    Objects.requireNonNull(Collision.CollisionLayers.get(this.CollisionLayer)).contains(col.GetCollisionLayer())) {
                 continue;
             }
+            
+
             Vector2 otherPosition = Vector2.Add(col.GetGameObject().GetTransform().GetPosition(), col.Offset);
 
             if (col.collisionType == COLLISION_TYPE.BOX)
