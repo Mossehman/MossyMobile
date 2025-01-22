@@ -7,7 +7,6 @@ import com.example.mossymobile.MossFramework.Testing.TestScene;
 public class testApplication extends Application {
     @Override
     protected boolean OnStart() {
-        SceneManager.AddToSceneList("TestScene", new TestScene());
         return true;
     }
 

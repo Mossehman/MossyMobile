@@ -18,37 +18,32 @@ import com.example.mossymobile.R;
 public class TestScene extends Scene {
     @Override
     protected void Init() {
-        View v = UI.GetInstance().AddLayoutToUI(R.layout.matrix);
-        if (v == null) {
-            Debug.Log("Added view", "View was null!");
-        }
-
-        TextView text = v.findViewById(R.id.testID);
-
-        GameObject go = new GameObject();
-        BoxCollider col = go.AddComponent(BoxCollider.class);
-        //col.Radius = 10;
-        RigidBody rb = go.AddComponent(RigidBody.class);
-        //go.AddComponent(MovingScript.class);
-        rb.SetMass(5);
-        go.GetTransform().SetPosition(new Vector2(1200, 800));
-
-        col.hitboxDimensions.x = 400;
-        col.hitboxDimensions.y = 20;
-        rb.SetGravityEnabled(false);
-        rb.SetKinematic(true);
-
-        go.AddComponent(Camera.class);
+        //GameObject go = new GameObject();
+        //BoxCollider col = go.AddComponent(BoxCollider.class);
+        ////col.Radius = 10;
+        //RigidBody rb = go.AddComponent(RigidBody.class);
+        ////go.AddComponent(MovingScript.class);
+        //rb.SetMass(5);
+        //go.GetTransform().SetPosition(new Vector2(1200, 800));
+//
+        //col.hitboxDimensions.x = 400;
+        //col.hitboxDimensions.y = 20;
+        //rb.SetGravityEnabled(false);
+        //rb.SetKinematic(true);
+//
+        //go.AddComponent(Camera.class);
 
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 300; i++)
         {
             GameObject otherGO = new GameObject();
             BoxCollider otherCol = otherGO.AddComponent(BoxCollider.class);
-            RigidBody otherRb = otherGO.AddComponent(RigidBody.class);
-            otherRb.SetMass(10);
+            //RigidBody otherRb = otherGO.AddComponent(RigidBody.class);
+            //otherRb.SetMass(10);
+            otherGO.AddComponent(MovingScript.class);
 
-            otherGO.GetTransform().SetPosition(new Vector2(1200, 300 - i * 300));
+
+            otherGO.GetTransform().SetPosition(new Vector2(MossMath.randFloatMinMax(600, 1400), MossMath.randFloatMinMax(200, 900)));
             otherCol.hitboxDimensions.x = 20;
             otherCol.hitboxDimensions.y = 20;
         }
