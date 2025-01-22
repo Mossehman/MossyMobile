@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.mossymobile.MossFramework.Components.Camera;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
+import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.MossMath;
@@ -34,18 +35,25 @@ public class TestScene extends Scene {
         //go.AddComponent(Camera.class);
 
 
-        for (int i = 0; i < 300; i++)
-        {
-            GameObject otherGO = new GameObject();
-            BoxCollider otherCol = otherGO.AddComponent(BoxCollider.class);
-            //RigidBody otherRb = otherGO.AddComponent(RigidBody.class);
-            //otherRb.SetMass(10);
-            otherGO.AddComponent(MovingScript.class);
+        //for (int i = 0; i < 300; i++)
+        //{
+        //    GameObject otherGO = new GameObject();
+        //    BoxCollider otherCol = otherGO.AddComponent(BoxCollider.class);
+        //    //RigidBody otherRb = otherGO.AddComponent(RigidBody.class);
+        //    //otherRb.SetMass(10);
+        //    otherGO.AddComponent(MovingScript.class);
+//
+//
+        //    otherGO.GetTransform().SetPosition(new Vector2(MossMath.randFloatMinMax(600, 1400), MossMath.randFloatMinMax(200, 900)));
+        //    otherCol.hitboxDimensions.x = 20;
+        //    otherCol.hitboxDimensions.y = 20;
+        //}
 
-
-            otherGO.GetTransform().SetPosition(new Vector2(MossMath.randFloatMinMax(600, 1400), MossMath.randFloatMinMax(200, 900)));
-            otherCol.hitboxDimensions.x = 20;
-            otherCol.hitboxDimensions.y = 20;
-        }
+        GameObject go = new GameObject();
+        go.GetTransform().SetScale(new Vector2(300, 300));
+        Renderer renderer = go.AddComponent(Renderer.class);
+        renderer.ResourceID = R.drawable.baubau;
+        go.GetTransform().SetPosition(new Vector2(1200, 400));
+        go.AddComponent(Camera.class);
     }
 }
