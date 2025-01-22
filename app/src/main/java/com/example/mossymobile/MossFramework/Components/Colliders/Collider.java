@@ -40,7 +40,7 @@ public abstract class Collider extends MonoBehaviour {
     ///Adds to the position when calculating the hitbox center
     public Vector2 Offset = new Vector2();
 
-    private String CollisionLayer = "Default";
+    protected String CollisionLayer = "Default";
 
     @Override
     public void Awake() {
