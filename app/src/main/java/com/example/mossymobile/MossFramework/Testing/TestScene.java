@@ -34,18 +34,18 @@ public class TestScene extends Scene {
         //go.AddComponent(Camera.class);
 
 
-        for (int i = 0; i < 300; i++)
-        {
-            GameObject otherGO = new GameObject();
-            BoxCollider otherCol = otherGO.AddComponent(BoxCollider.class);
-            //RigidBody otherRb = otherGO.AddComponent(RigidBody.class);
-            //otherRb.SetMass(10);
-            otherGO.AddComponent(MovingScript.class);
-
-
-            otherGO.GetTransform().SetPosition(new Vector2(MossMath.randFloatMinMax(600, 1400), MossMath.randFloatMinMax(200, 900)));
-            otherCol.hitboxDimensions.x = 20;
-            otherCol.hitboxDimensions.y = 20;
-        }
+        //for (int i = 0; i < 300; i++)
+        //{
+        //    GameObject otherGO = new GameObject();
+        //    BoxCollider otherCol = otherGO.AddComponent(BoxCollider.class);
+        //    //RigidBody otherRb = otherGO.AddComponent(RigidBody.class);
+        //    //otherRb.SetMass(10);
+        //    otherGO.AddComponent(MovingScript.class);
+//
+//
+        //    otherGO.GetTransform().SetPosition(new Vector2(MossMath.randFloatMinMax(600, 1400), MossMath.randFloatMinMax(200, 900)));
+        //    otherCol.hitboxDimensions.x = 20;
+        //    otherCol.hitboxDimensions.y = 20;
+        //}
     }
 }

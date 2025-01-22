@@ -191,6 +191,12 @@ public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI
     public void OnTriggerStay(Collider collider) {}
     public void OnTriggerExit(Collider collider) {}
 
+    public void Destroy(GameObject go) {
+        if (go != null) {
+            go.GetScene().gameObjectsToRemove.add(go);
+        }
+    }
+
 
     public Transform GetTransform() {
         return gameObject.GetTransform();
