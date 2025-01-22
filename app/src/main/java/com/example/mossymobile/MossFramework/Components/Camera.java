@@ -28,14 +28,12 @@ public class Camera extends MonoBehaviour {
         list.add(12);
 
         strLisr.put("hi", "hashmap");
-
-        gameObject.GetComponent(RigidBody.class).AddForce(new Vector2(-900, 0), Physics.ForceMode2D.IMPULSE);
     }
 
     @Override
     public void Update() {
-        pointerID = Input.GetTouchPosition(touchPos, pointerID);
-        Debug.Log("Touch", touchPos);
+        GetTransform().SetRotation(GetTransform().GetRotation() + 0.5f);
+
     }
 
     @Override

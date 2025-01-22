@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.mossymobile.MossFramework.Components.Camera;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
+import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.MossMath;
@@ -47,5 +48,12 @@ public class TestScene extends Scene {
         //    otherCol.hitboxDimensions.x = 20;
         //    otherCol.hitboxDimensions.y = 20;
         //}
+
+        GameObject go = new GameObject();
+        go.GetTransform().SetScale(new Vector2(300, 300));
+        Renderer renderer = go.AddComponent(Renderer.class);
+        renderer.ResourceID = R.drawable.baubau;
+        go.GetTransform().SetPosition(new Vector2(1200, 400));
+        go.AddComponent(Camera.class);
     }
 }

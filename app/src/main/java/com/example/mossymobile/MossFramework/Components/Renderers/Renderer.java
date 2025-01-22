@@ -88,6 +88,7 @@ public class Renderer extends MonoBehaviour {
 
         position = Vector2.Mul(Application.GetViewToScreenRatio(), transform.GetPosition());
         scale = Vector2.Mul(Application.GetViewToScreenRatio(), transform.GetScale());
+        rotation = transform.GetRotation();
 
 
         if (gameObject.GetScene() != null) {
@@ -132,8 +133,8 @@ public class Renderer extends MonoBehaviour {
         spriteScaling.x = (scale.x * srcEnd.x) * 0.5f;
         spriteScaling.y = (scale.y * srcEnd.y) * 0.5f;
 
-        float centerX = position.x + (scale.x * srcEnd.x) * 0.5f + RenderOffset.x;
-        float centerY = position.y + (scale.y * srcEnd.y) * 0.5f + RenderOffset.y;
+        float centerX = dstRect.centerX();
+        float centerY = dstRect.centerY();
 
         canvas.translate(centerX, centerY);
         canvas.rotate(rotation);
