@@ -28,6 +28,7 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
     List<String> tags = new ArrayList<>();
 
     private LinkedHashMap<Class<?>, MonoBehaviour> Components = new LinkedHashMap<>();
+    private List<MonoBehaviour> ComponentsToAdd = new ArrayList<>();
     private List<MonoBehaviour> ComponentsToRemove = new ArrayList<>();
     private Transform transform = null;
     public boolean ToRender = false;
@@ -89,7 +90,7 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
         component.SetGameObject(this);
         component.Awake();
 
-        Components.put(componentType, component);
+        ComponentsToAdd.add(component);
     }
 
     public <T extends MonoBehaviour> T AddComponent(Class<T> type)
@@ -147,7 +148,12 @@ public final class GameObject implements Serializable, ICustomInspectorGUI {
     ///Init is called once per frame to run the Start functions of all components that have not run their start function yet. If run, they will be skipped.
     public void Init()
     {
-        if (Components.isEmpty()) { return; }
+        if (Components.isEmpty() && ComponentsToAdd.isEmpty()) { return; }
+        for (MonoBehaviour component : ComponentsToAdd)
+        {
+            Components.put(component.getClass(), component);
+        }
+        ComponentsToAdd.clear();
 
         for (MonoBehaviour component : Components.values())
         {
