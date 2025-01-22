@@ -91,9 +91,18 @@ public abstract class MonoBehaviour implements Serializable, ICustomInspectorGUI
 
     public GameObject Instantiate(GameObject gameObject)
     {
-        GameObject go = Factory.CopyObject(gameObject);
-        if (go != null && SceneManager.GetCurrScene().GetGameObjects().contains(gameObject)) {
-            SceneManager.GetCurrScene().AddGOToScene(go);
+        if (gameObject == null) { return null; }
+
+        GameObject go;
+        if (SceneManager.GetCurrScene().GetGameObjects().contains(gameObject))
+        {
+            go = Factory.CopyObject(gameObject);
+            if (go != null) {
+                SceneManager.GetCurrScene().AddGOToScene(go);
+            }
+        }
+        else {
+            go = gameObject;
         }
 
         return go;
