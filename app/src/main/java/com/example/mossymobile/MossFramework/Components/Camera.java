@@ -35,7 +35,7 @@ public class Camera extends MonoBehaviour {
     @Override
     public void Update() {
         pointerID = Input.GetTouchPosition(touchPos, pointerID);
-
+        Debug.Log("Touch", touchPos);
     }
 
     @Override

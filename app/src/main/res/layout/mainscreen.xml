@@ -166,7 +166,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
-                            tools:srcCompat="@drawable/baubau" />
+                            android:src="@drawable/debugicon" />
 
                         <Button
                             android:id="@+id/debugBtn"
@@ -187,7 +187,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
-                            tools:srcCompat="@drawable/baubau" />
+                            android:src="@drawable/collisionicon" />
 
                         <Button
                             android:id="@+id/collisionBtn"
@@ -270,7 +270,7 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintWidth_default="wrap"
-                                app:srcCompat="@drawable/downarrow" />
+                                android:src="@drawable/downarrow" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
 

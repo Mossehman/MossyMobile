@@ -99,7 +99,7 @@ public abstract class Scene implements Serializable {
             gameObject.Gizmos();
         }
 
-        //tree.Render();
+        tree.Render();
 
         if (!gameObjectsToRemove.isEmpty())
         {

@@ -119,6 +119,12 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
         this.y *= otherVec2.y;
     }
 
+    public void Mul(float val)
+    {
+        this.x *= val;
+        this.y *= val;
+    }
+
     /**
      * Returns a new {@code Vector2} with the multiplied {@code x} and {@code y} components of 2 other {@code Vector2}s.
      *
@@ -132,6 +138,10 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
         return new Vector2(firstVec2.x * secondVec2.x, firstVec2.y * secondVec2.y);
     }
 
+    public static Vector2 Mul(Vector2 vec2, float val){
+        return new Vector2(vec2.x * val, vec2.y * val);
+    }
+
     /**
      * Directly divides the {@code x} and {@code y} components of the current {@code Vector2} with another {@code Vector2}.
      *
@@ -141,6 +151,12 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
     {
         this.x /= otherVec2.x;
         this.y /= otherVec2.y;
+    }
+
+    public void Div(float val)
+    {
+        this.x /= val;
+        this.y /= val;
     }
 
     /**
@@ -154,6 +170,11 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
     public static Vector2 Div(Vector2 firstVec2, Vector2 secondVec2)
     {
         return new Vector2(firstVec2.x / secondVec2.x, firstVec2.y / secondVec2.y);
+    }
+
+    public static Vector2 Div(Vector2 vec2, float val)
+    {
+        return new Vector2(vec2.x / val, vec2.y / val);
     }
 
     /**
