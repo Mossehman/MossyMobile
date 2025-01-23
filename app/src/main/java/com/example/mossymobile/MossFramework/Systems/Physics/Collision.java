@@ -44,6 +44,22 @@ public final class Collision {
         }
     }
 
+    public static void ConfigureCollisionLayer(String layer, String otherLayer, boolean canCollide)
+    {
+        if (!CollisionLayers.containsKey(layer) || !CollisionLayers.containsKey(otherLayer)) { return; }
+        if (canCollide)
+        {
+            Objects.requireNonNull(CollisionLayers.get(layer)).add(otherLayer);
+            Objects.requireNonNull(CollisionLayers.get(otherLayer)).add(layer);
+        }
+        else
+        {
+            Objects.requireNonNull(CollisionLayers.get(layer)).remove(otherLayer);
+            Objects.requireNonNull(CollisionLayers.get(otherLayer)).remove(layer);
+        }
+    }
+
+
     public Collision(GameObject GO, Vector2 collisionNormal, Collider collider)
     {
         this.gameObject = GO;
