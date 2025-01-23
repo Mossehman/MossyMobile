@@ -48,6 +48,7 @@ public class Renderer extends MonoBehaviour {
     @Override
     public void Start() {
         transform = gameObject.GetTransform();
+        Debug.Log("Transform", "transform");
     }
 
     @Override
@@ -60,7 +61,6 @@ public class Renderer extends MonoBehaviour {
 
     @Override
     public void Update() {
-
         if (InitialResID != ResourceID) {
             if (Application.cachedSprites.containsKey(ResourceID)) {
                 sprite = Application.cachedSprites.get(ResourceID);
@@ -156,4 +156,21 @@ public class Renderer extends MonoBehaviour {
 
         return new Vector2((srcEnd.x * scale.x) * 0.5f, (srcEnd.y * scale.y) * 0.5f);
     }
+
+    public final void SetSprite(int resourceID) {
+        if (Application.cachedSprites.containsKey(resourceID)) {
+            sprite = Application.cachedSprites.get(resourceID);
+        }
+        else
+        {
+            Bitmap bmp = BitmapFactory.decodeResource(Objects.requireNonNull(GameView.GetInstance()).GetContext().getResources(), resourceID);
+            Application.cachedSprites.put(resourceID, bmp);
+
+            this.sprite = bmp;
+        }
+        this.ResourceID = resourceID;
+        InitialResID = resourceID;
+
+    }
+
 }
