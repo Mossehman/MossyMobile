@@ -188,5 +188,14 @@ public final class RigidBody extends MonoBehaviour {
         return this.gravityEnabled.value;
     }
 
+    public void SetRoughness(float roughness) {
+        this.roughness.value = roughness;
+    }
+
+    public float GetRoughness() {
+        return this.roughness.value;
+    }
+
+
 
 }
