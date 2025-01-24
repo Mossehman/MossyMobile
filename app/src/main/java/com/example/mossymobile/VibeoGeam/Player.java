@@ -1,12 +1,18 @@
 package com.example.mossymobile.VibeoGeam;
 
+import android.graphics.Color;
+import android.view.KeyEvent;
+
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
+import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
+import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
 
@@ -18,7 +24,10 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     private RigidBody rb;
 
-    public float Health = 100f;
+    public MutableWrapper<Float> Health = new MutableWrapper<>(100f);
+    public MutableWrapper<Float> Ammo = new MutableWrapper<>(100f);
+    public MutableWrapper<Float> Exp = new MutableWrapper<>(0f);
+    public float Reload = 5f;
     public CannonInfo cannonInfo;
     private float fireTimer = 0f;
 
@@ -37,6 +46,9 @@ public class Player extends MonoBehaviour implements IDamageable {
         rb = gameObject.GetComponent(RigidBody.class);
         rb.SetRoughness(10f);
         sprite = gameObject.GetComponent(Renderer.class);
+
+        gameObject.GetScene().quadtreeScale = new Vector2(Objects.requireNonNull(GameView.GetInstance()).getWidth(),
+                Objects.requireNonNull(GameView.GetInstance()).getHeight());
     }
 
     @Override
@@ -48,7 +60,6 @@ public class Player extends MonoBehaviour implements IDamageable {
         if (look != null && movement != null) {
             if (moveDirection.MagnitudeSq() > 0)
                 rb.AddVelocity(Vector2.Mul(moveDirection, 0.1f));
-                //GetTransform().GetPosition().Add(Vector2.Mul(moveDirection, 0.1f));
 
             boolean fireCondition = false;
             switch (cannonInfo.firetype){
@@ -60,6 +71,13 @@ public class Player extends MonoBehaviour implements IDamageable {
             if (fireCondition && FireCooldown() && look.direction.MagnitudeSq() > 0) { // Shooting
                 FireBullet(currentFireDirection);
                 look.isJoystickUp = false;
+            }
+            else {
+                if (Ammo.value < 100f) Ammo.value += Time.GetDeltaTime() * Reload;
+                Ammo.value = MossMath.clamp(Ammo.value, 0f, 100f);
+                if (Health.value < 100f) Health.value += Time.GetDeltaTime() * Reload;
+                Health.value = MossMath.clamp(Health.value, 0f, 100f);
+
             }
             if (look.isJoystickHeld) { // Aiming
                 Vector2 targetDirection = look.isJoystickDead && moveDirection.MagnitudeSq() > 0 ?
@@ -78,6 +96,10 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     private void FireBullet(Vector2 targetDirection)
     {
+        if (Ammo.value < cannonInfo.ammocost){
+            return;
+        }
+        Ammo.value -= cannonInfo.ammocost;
         fireTimer = cannonInfo.fireinterval;
 
         Vector2 fireDirection = targetDirection;
@@ -91,7 +113,7 @@ public class Player extends MonoBehaviour implements IDamageable {
         bulletfunc.cannonInfo = cannonInfo;
         bulletfunc.direction = fireDirection;
         instBullet.AddComponent(Renderer.class).ResourceID = R.drawable.bluecircle;
-        instBullet.GetTransform().SetPosition(GetTransform().GetPosition());
+        instBullet.GetTransform().SetPosition(Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(fireDirection, 80f)));
         instBullet.GetTransform().SetScale(new Vector2(50,50));
     }
 
@@ -108,7 +130,12 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     @Override
     public void ModifyHealth(float amt) {
-        Health -= amt;
+        Health.value -= amt;
+    }
+
+    @Override
+    public void OnDrawGizmos() {
+        Gizmos.DrawLine(GetTransform().GetPosition(), Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(currentFireDirection, 400f)), Color.WHITE);
     }
 
     private Vector2 Slerp(Vector2 from, Vector2 to, float t) {
@@ -146,17 +173,5 @@ public class Player extends MonoBehaviour implements IDamageable {
 
         return new Vector2(x, y);
     }
-
-    private float SlerpFloat(float from, float to, float t) {
-        // Wrap angles to [-180, 180]
-        float delta = (to - from + 180f) % 360f - 180f;
-
-        // Interpolate using the delta
-        float result = from + delta * t;
-
-        // Wrap the result to [0, 360) for consistency
-        return (result + 360f) % 360f;
-    }
-
 
 }
