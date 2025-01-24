@@ -14,6 +14,10 @@ public class GameApplication extends Application {
         Collision.CreateCollisionLayer("PlayerBullet");
         Collision.CreateCollisionLayer("Enemy");
         Collision.CreateCollisionLayer("EnemyBullet");
+
+        Collision.ConfigureCollisionLayer("PlayerBullet", "EnemyBullet", false);
+        Collision.ConfigureCollisionLayer("Enemy", "EnemyBullet", false);
+        Collision.ConfigureCollisionLayer("Player", "PlayerBullet", false);
         return true;
     }
 

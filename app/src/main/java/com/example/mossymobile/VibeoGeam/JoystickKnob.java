@@ -81,7 +81,7 @@ public class JoystickKnob extends MonoBehaviour {
                                 if (resetDirection) direction = new Vector2(0,0);
                                 isJoystickDead = true;
                                 
-                                GetTransform().SetPosition(new Vector2(0, 0));
+                                GetTransform().SetPosition(new Vector2(offset));
                             }
                             else if (calcDirection.Magnitude() > maxDistance) { // Outside region
                                 calcDirection.Normalize();

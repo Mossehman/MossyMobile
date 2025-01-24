@@ -3,10 +3,14 @@ package com.example.mossymobile.VibeoGeam;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
+import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
+import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
+
+import java.util.Objects;
 
 public class Player extends MonoBehaviour implements IDamageable {
     public JoystickKnob movement;
@@ -15,7 +19,7 @@ public class Player extends MonoBehaviour implements IDamageable {
     private RigidBody rb;
 
     public float Health = 100f;
-    public BulletInfo bulletInfo;
+    public CannonInfo cannonInfo;
     private float fireTimer = 0f;
 
     private Vector2 moveDirection = new Vector2();
@@ -26,38 +30,44 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     @Override
     public void Start() {
-        GetTransform().SetPosition(new Vector2(0f,0f));
+        GetTransform().SetPosition(
+                new Vector2(Objects.requireNonNull(GameView.GetInstance()).getWidth() * 0.5f,
+                        Objects.requireNonNull(GameView.GetInstance()).getHeight() * 0.5f));
         GetTransform().SetScale(new Vector2(200f, 200f));
         rb = gameObject.GetComponent(RigidBody.class);
+        rb.SetRoughness(10f);
         sprite = gameObject.GetComponent(Renderer.class);
     }
 
     @Override
     public void Update() {
-        if (sprite.ResourceID != bulletInfo.spriteResourceID){
-            sprite.ResourceID = bulletInfo.spriteResourceID;
+        gameObject.GetScene().quadtreePos = GetTransform().GetPosition();
+        if (sprite.ResourceID != cannonInfo.spriteResourceID){
+            sprite.ResourceID = cannonInfo.spriteResourceID;
         }
         if (look != null && movement != null) {
             if (moveDirection.MagnitudeSq() > 0)
-                GetTransform().GetPosition().Add(Vector2.Mul(moveDirection, 0.1f));
+                rb.AddVelocity(Vector2.Mul(moveDirection, 0.1f));
+                //GetTransform().GetPosition().Add(Vector2.Mul(moveDirection, 0.1f));
 
             boolean fireCondition = false;
-            switch (bulletInfo.firetype){
+            switch (cannonInfo.firetype){
                 case 0:
                 case 1: fireCondition = look.isJoystickUp; break;
                 case 2: fireCondition = look.isJoystickHeld; break;
                 default: break;
             }
-            if (fireCondition && FireCooldown() && look.direction.MagnitudeSq() > 0) {
-                Vector2 targetDirecion = look.isJoystickDead && moveDirection.MagnitudeSq() > 0 ?
-                        moveDirection.Normalized(): lookDirection.Normalized();
-                FireBullet(targetDirecion);
+            if (fireCondition && FireCooldown() && look.direction.MagnitudeSq() > 0) { // Shooting
+                FireBullet(currentFireDirection);
                 look.isJoystickUp = false;
             }
-            if (look.isJoystickHeld){
+            if (look.isJoystickHeld) { // Aiming
+                Vector2 targetDirection = look.isJoystickDead && moveDirection.MagnitudeSq() > 0 ?
+                        moveDirection.Normalized() : lookDirection.Normalized();
+                currentFireDirection = Slerp(currentFireDirection, targetDirection, cannonInfo.aimspeed);
                 GetTransform().SetRotation(Vector2.DirectionToAngle(currentFireDirection));
             }
-            else if (moveDirection.MagnitudeSq() > 0) {
+            else if (moveDirection.MagnitudeSq() > 0) { // Moving Look
                 currentFireDirection = Slerp(currentFireDirection, moveDirection, 0.1f);
                 GetTransform().SetRotation(Vector2.DirectionToAngle(currentFireDirection));
             }
@@ -68,19 +78,17 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     private void FireBullet(Vector2 targetDirection)
     {
-        fireTimer = bulletInfo.fireinterval;
+        fireTimer = cannonInfo.fireinterval;
 
-        currentFireDirection = Slerp(currentFireDirection, targetDirection, 0.05f);
-
-        Vector2 fireDirection = currentFireDirection;
+        Vector2 fireDirection = targetDirection;
         GameObject instBullet = Instantiate(new GameObject());
-        float spreadAngle = bulletInfo.spread; // Spread in degrees
+        float spreadAngle = cannonInfo.spread; // Spread in degrees
         if (spreadAngle > 0) {
             float randomOffset = (float) (Math.random() * spreadAngle - (spreadAngle / 2.0)); // Random angle within spread
             fireDirection = Vector2.RotateVector(fireDirection, randomOffset);
         }
         Bullet bulletfunc = instBullet.AddComponent(Bullet.class);
-        bulletfunc.bulletInfo = bulletInfo;
+        bulletfunc.cannonInfo = cannonInfo;
         bulletfunc.direction = fireDirection;
         instBullet.AddComponent(Renderer.class).ResourceID = R.drawable.bluecircle;
         instBullet.GetTransform().SetPosition(GetTransform().GetPosition());

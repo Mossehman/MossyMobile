@@ -1,15 +1,16 @@
 package com.example.mossymobile.VibeoGeam;
 
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.Colliders.CircleCollider;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Scene;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameScene extends Scene {
-    List<BulletInfo> bulletData = new ArrayList<>();
+    List<CannonInfo> bulletData = new ArrayList<>();
     @Override
     protected void Init() {
         //GameObject go = new GameObject();
@@ -35,11 +36,44 @@ public class GameScene extends Scene {
         //rb.SetGravityEnabled(false);
         //rb.SetKinematic(true);
 
+
+
+        float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
+        float screenHeight = Objects.requireNonNull(GameView.GetInstance()).getHeight();
+
+        Vector2[] wallcoords = {
+                new Vector2(screenWidth * 0.5f, 0),
+                new Vector2(screenWidth * 0.5f, screenHeight),
+                new Vector2(0, screenHeight * 0.5f),
+                new Vector2(screenWidth, screenHeight * 0.5f),
+        };
+
+        Vector2[] wallscales = {
+                new Vector2(screenWidth, 100),
+                new Vector2(screenWidth, 100),
+                new Vector2(100, screenHeight),
+                new Vector2(100, screenHeight),
+        };
+
+        for (int i = 0; i < 4; i++) {
+            GameObject wall = new GameObject();
+            BoxCollider col = wall.AddComponent(BoxCollider.class);
+            RigidBody rb = wall.AddComponent(RigidBody.class);
+            rb.SetGravityEnabled(false);
+            rb.SetKinematic(true);
+            //wall.AddComponent(Renderer.class).ResourceID = R.drawable.bluesquare;
+            wall.GetTransform().SetPosition(wallcoords[i]);
+            wall.GetTransform().SetScale(wallscales[i]);
+            col.hitboxDimensions = wallscales[i];
+        }
+
         GameObject player = new GameObject();
         player.AddComponent(Renderer.class).ResourceID = R.drawable.cannon;
         Player playerScript = player.AddComponent(Player.class);
         player.AddComponent(RigidBody.class).SetGravityEnabled(false);
-        player.AddComponent(CircleCollider.class).Radius = 20;
+        BoxCollider playerHitbox = player.AddComponent(BoxCollider.class);
+        playerHitbox.hitboxDimensions = new Vector2(20f, 20f);
+        playerHitbox.SetCollisionLayer("Player");
         View joystickUI = UI.GetInstance().AddLayoutToUI(R.layout.ui_game);
         {
             FrameLayout knob = joystickUI.findViewById(R.id.joystick_region);
@@ -60,8 +94,8 @@ public class GameScene extends Scene {
             GameObject joystick = new GameObject();
             JoystickKnob knobfunction = joystick.AddComponent(JoystickKnob.class);
             knobfunction.offset = new Vector2(
-                    Objects.requireNonNull(GameView.GetInstance()).getWidth() - 170f,
-                    Objects.requireNonNull(GameView.GetInstance()).getHeight() - 300f
+                    screenWidth - 170f,
+                    screenHeight - 300f
             );
 
             Renderer r = joystick.AddComponent(Renderer.class);
@@ -73,12 +107,20 @@ public class GameScene extends Scene {
             playerScript.look = knobfunction;
         }
 
-        bulletData.add(new BulletInfo(10f, 45f, 0,  1f, 0, 0.40f, 1.0f, 4.0f, R.drawable.cannon)); // Basic single shot
-        bulletData.add(new BulletInfo( 6f, 50f, 0,  3f, 2, 0.10f, 1.0f, 3.0f, R.drawable.cannon2xx));
-        bulletData.add(new BulletInfo( 4f, 55f, 0,  5f, 2, 0.04f, 1.0f, 1.6f, R.drawable.cannon3xx));
+        bulletData.add(new CannonInfo(10f, 45f, 0, 1f, 0, 0.10f, 1.0f, 4.0f, 0.70f, R.drawable.cannon)); // Basic single shot
+        bulletData.add(new CannonInfo(6f, 50f, 0, 3f, 2, 0.10f, 1.0f, 3.0f, 0.10f, R.drawable.cannon2xx));
+        bulletData.add(new CannonInfo(4f, 55f, 0, 5f, 2, 0.04f, 1.0f, 1.6f, 0.05f, R.drawable.cannon3xx));
 
-        playerScript.bulletInfo = bulletData.get(2);
+        playerScript.cannonInfo = bulletData.get(0);
+        GameObject waveSpawner = new GameObject();
+        waveSpawner.AddComponent(EnemySpawner.class).player = player;
+
+        GameObject healthBar = new GameObject();
+        BarMeter hpfunc = healthBar.AddComponent(BarMeter.class);
+        hpfunc.resID = R.drawable.redsquare;
+        healthBar.GetTransform().SetPosition(new Vector2(100, 100));
+        healthBar.GetTransform().SetScale(new Vector2(200, 200));
+
 
     }
-
 }
