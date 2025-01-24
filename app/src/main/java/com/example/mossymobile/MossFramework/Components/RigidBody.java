@@ -138,7 +138,9 @@ public final class RigidBody extends MonoBehaviour {
     @Override
     public void OnCollisionStay(Collision collision) {
         if (this.isKinematic.value) {
-            collision.GetCollider().ResolveHalfCollision(collider, Vector2.Mul(collision.GetCollisionNormal(), new Vector2(-1, -1)));
+            if (!collision.GetGameObject().GetComponent(RigidBody.class).GetKinematic()) {
+                collision.GetCollider().ResolveHalfCollision(collider, Vector2.Mul(collision.GetCollisionNormal(), new Vector2(-1, -1)));
+            }
             return;
         }
 
