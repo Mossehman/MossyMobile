@@ -143,8 +143,8 @@ public class Application {
                 }
             });
 
+            Objects.requireNonNull(GameView.GetInstance()).canvas = Objects.requireNonNull(GameView.GetInstance()).LockCanvas();
             if (!pause) {
-                Objects.requireNonNull(GameView.GetInstance()).canvas = Objects.requireNonNull(GameView.GetInstance()).LockCanvas();
                 Objects.requireNonNull(GameView.GetInstance()).canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
             }
 
