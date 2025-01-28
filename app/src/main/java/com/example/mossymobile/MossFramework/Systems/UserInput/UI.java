@@ -92,6 +92,37 @@ public class UI extends Singleton<UI> {
         });
     }
 
+    public View AddLayoutToContainer(int layoutID, LinearLayout layout, LinearLayout.LayoutParams params)
+    {
+        if (layout == null) { return null; }
+        final View[] inflatedLayout = {Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(layoutID, layout, false)};
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (inflatedLayout[0] != null) {
+                    inflatedLayout[0].setLayoutParams(params);
+                    layout.addView(inflatedLayout[0]);
+                }
+            }
+        });
+        return inflatedLayout[0];
+    }
+
+    public View AddLayoutToContainer(int layoutID, LinearLayout layout)
+    {
+        if (layout == null) { return null; }
+        final View[] inflatedLayout = {Objects.requireNonNull(GameView.GetInstance()).GetActivity().getLayoutInflater().inflate(layoutID, layout, false)};
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (inflatedLayout[0] != null) {
+                    layout.addView(inflatedLayout[0]);
+                }
+            }
+        });
+        return inflatedLayout[0];
+    }
+
 
 
 }

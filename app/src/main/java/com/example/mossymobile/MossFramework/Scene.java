@@ -9,6 +9,7 @@ import com.example.mossymobile.MossFramework.Systems.Physics.QuadTree;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -131,6 +132,7 @@ public abstract class Scene implements Serializable {
     public void RenderGameObject(Renderer renderer)
     {
         objectsToRender.add(renderer);
+        objectsToRender.sort(Comparator.comparingInt(Renderer -> renderer.GetZLayer()));
     }
 
     public QuadTree GetTree()
