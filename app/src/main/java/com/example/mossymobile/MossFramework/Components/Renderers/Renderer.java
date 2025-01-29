@@ -8,6 +8,7 @@ import android.graphics.RectF;
 
 import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Components.Transform;
+import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Math.Vector2Int;
@@ -23,6 +24,7 @@ public class Renderer extends MonoBehaviour {
     protected Transform transform = null;
 
     public boolean DoAntiAliasing = false;
+    protected MutableWrapper<Integer> zLayer = new MutableWrapper<>(0);
 
     Vector2 position = new Vector2();
     Vector2 scale = new Vector2();
@@ -57,6 +59,7 @@ public class Renderer extends MonoBehaviour {
         ShowInInspector("Sprite", sprite);
         ShowInInspector("ResourceID", ResourceID);
         ShowInInspector("Size", spriteScaling);
+        EditInInspector("Layer", zLayer);
     }
 
     @Override
@@ -171,6 +174,16 @@ public class Renderer extends MonoBehaviour {
         this.ResourceID = resourceID;
         InitialResID = resourceID;
 
+    }
+
+    public final void SetZLayer(int layer)
+    {
+        this.zLayer.value = layer;
+    }
+
+    public final int GetZLayer()
+    {
+        return this.zLayer.value;
     }
 
 }
