@@ -123,6 +123,58 @@ public class UI extends Singleton<UI> {
         return inflatedLayout[0];
     }
 
+    public void AddViewToUI(View v, LinearLayout.LayoutParams params)
+    {
+        if (UIContainer == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (v != null) {
+                    v.setLayoutParams(params);
+                    UIContainer.addView(v);
+                }
+            }
+        });
+    }
 
+    public void AddViewToUI(View v)
+    {
+        if (UIContainer == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (v != null) {
+                    UIContainer.addView(v);
+                }
+            }
+        });
+    }
+
+    public void AddViewToContainer(View v, LinearLayout layout, LinearLayout.LayoutParams params)
+    {
+        if (layout == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (v != null) {
+                    v.setLayoutParams(params);
+                    layout.addView(v);
+                }
+            }
+        });
+    }
+
+    public void AddViewToContainer(View v, LinearLayout layout)
+    {
+        if (layout == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (v != null) {
+                    layout.addView(v);
+                }
+            }
+        });
+    }
 
 }
