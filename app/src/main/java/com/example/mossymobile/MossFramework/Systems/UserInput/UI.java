@@ -1,6 +1,8 @@
 package com.example.mossymobile.MossFramework.Systems.UserInput;
 
 import android.view.View;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -165,6 +167,33 @@ public class UI extends Singleton<UI> {
     }
 
     public void AddViewToContainer(View v, LinearLayout layout)
+    {
+        if (layout == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (v != null) {
+                    layout.addView(v);
+                }
+            }
+        });
+    }
+
+    public void AddViewToContainer(View v, GridLayout layout, GridLayout.LayoutParams params)
+    {
+        if (layout == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (v != null) {
+                    v.setLayoutParams(params);
+                    layout.addView(v);
+                }
+            }
+        });
+    }
+
+    public void AddViewToContainer(View v, GridLayout layout)
     {
         if (layout == null) { return; }
         Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
