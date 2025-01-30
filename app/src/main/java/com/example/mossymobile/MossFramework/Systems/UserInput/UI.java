@@ -205,4 +205,26 @@ public class UI extends Singleton<UI> {
         });
     }
 
+    public void RemoveViewsFromLayout(LinearLayout layout)
+    {
+        if (layout == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                layout.removeAllViews();
+            }
+        });
+    }
+
+    public void RemoveViewsFromLayout(GridLayout layout)
+    {
+        if (layout == null) { return; }
+        Objects.requireNonNull(GameView.GetInstance()).GetActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                layout.removeAllViews();
+            }
+        });
+    }
+
 }
