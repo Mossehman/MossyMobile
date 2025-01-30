@@ -1,36 +1,79 @@
 package com.example.mossymobile.VibeoGeam;
 
-import android.app.Activity;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
 import com.example.mossymobile.MossFramework.Scene;
+import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
 
 public class UpgradeScene extends Scene {
+    int selectedUpgrade = 0;
+    int currentUpgradePath = 0;
+    LinearLayout uidocker;
+    Context context;
+    View ui;
+    GridLayout upgradesGrid;
+
     @Override
     protected void Init() {
-        LinearLayout uidocker = UI.GetInstance().GetUIContainer().findViewById(R.id.upgrades_ui);
-        Context context = uidocker.getContext();
-        //if (uidocker != null) Log.d("UpgradeScene", "UI Docker found");
-        View ui = UI.GetInstance().AddLayoutToContainer(R.layout.ui_upgradeshop, uidocker);
-        GridLayout upgradesGrid = ui.findViewById(R.id.upgrade_grid);
-        //if (upgradesGrid != null) Log.d("UpgradeScene", "Upgrade Grid found");
+        uidocker = UI.GetInstance().GetUIContainer().findViewById(R.id.upgrades_ui);
+        context = uidocker.getContext();
+        ui = UI.GetInstance().AddLayoutToContainer(R.layout.ui_upgradeshop, uidocker);
+        upgradesGrid = ui.findViewById(R.id.upgrade_grid);
+        InitalizeUI();
+
+        Button buyBtn = ui.findViewById(R.id.upgrade_button);
+
+        buyBtn.setOnClickListener(l -> {
+            //if (selectedUpgrade != -1 &&
+            //    CannonManager.GetInstance().PlayerLevelPoints >= CannonManager.GetInstance().FetchCannon(selectedUpgrade).lvlcost) {
+                if (selectedUpgrade != -1){
+                CannonManager.GetInstance().PlayerLevelPoints -= CannonManager.GetInstance().FetchCannon(selectedUpgrade).lvlcost;
+                CannonManager.GetInstance().PlayerCannonLevel = selectedUpgrade;
+                CannonManager.GetInstance().ScheduledCannonSwitch = true;
+
+                // Lock the upgrade path once a purchase is made
+                if (currentUpgradePath == 0) {
+                    currentUpgradePath = (selectedUpgrade <= 3) ? 1 : (selectedUpgrade <= 6) ? 2 : 3;
+                }
+Log.d("UpgradeScene", "Pressed");
+                // Refresh UI to reflect locked paths and new upgrade state
+                InitalizeUI();
+            }
+        });
+
+        Button exitBtn = ui.findViewById(R.id.upgrade_exit_button);
+        exitBtn.setOnClickListener(l ->{
+            UI.GetInstance().RemoveViewsFromLayout(uidocker);
+            SceneManager.UnloadScene("UpgradeScene");
+        });
+
+    }
+
+    private void InitalizeUI(){
         UI.GetInstance().RemoveViewsFromLayout(upgradesGrid);
 
-        CannonManager.GetInstance().cannonData.size();
-        for (int i = 0; i < 15; i++) {
+        TextView points = ui.findViewById(R.id.player_points);
+
+        ImageView cannonImagePreview = ui.findViewById(R.id.cannon);
+
+        for (int i = 1; i < CannonManager.GetInstance().cannonData.size(); i++) {
+            CannonInfo cannonInfo = CannonManager.GetInstance().cannonData.get(i);
             // Create a new ImageButton
-            ImageButton twinBarrelsButton = new ImageButton(context);
+            ImageButton upgradeBtn = new ImageButton(context);
 
             // Set layout parameters (width and height in dp)
             int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics());
@@ -39,12 +82,50 @@ public class UpgradeScene extends Scene {
             layoutParams.width = width;
             layoutParams.height = height;
 
+
+            // Determine the upgrade path
+            int upgradePath = (i <= 3) ? 1 : (i <= 6) ? 2 : 3;
+            int prerequisiteUpgrade = (i % 3 == 1) ? 0 : i - 1; // First in each path has no prerequisite
+
+            // Set background color based on path
+            int colorId;
+            switch (upgradePath) {
+                case 1: colorId = R.color.teal_200; break;
+                case 2: colorId = R.color.purple_200; break;
+                case 3: colorId = R.color.orange_200; break;
+                default: colorId = R.color.black; break;
+            }
+
             // Set properties of the ImageButton
-            twinBarrelsButton.setLayoutParams(layoutParams);
-            twinBarrelsButton.setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200));
-            twinBarrelsButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            twinBarrelsButton.setImageResource(R.drawable.cannon1xx);
-            UI.GetInstance().AddViewToContainer(twinBarrelsButton, upgradesGrid);
+            upgradeBtn.setLayoutParams(layoutParams);
+            upgradeBtn.setBackgroundColor(ContextCompat.getColor(context, colorId));
+            upgradeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            upgradeBtn.setImageResource(cannonInfo.spriteResourceID);
+            // Determine if upgrade is locked
+            //boolean isUnlocked = (prerequisiteUpgrade == 0 || CannonManager.GetInstance().PlayerCannonLevel >= prerequisiteUpgrade);
+            //boolean isCorrectPath = (currentUpgradePath == 0 || currentUpgradePath == upgradePath);
+            boolean isAvailable = (prerequisiteUpgrade == 0 || CannonManager.GetInstance().PlayerCannonLevel >= prerequisiteUpgrade) &&
+                    (currentUpgradePath == 0 || currentUpgradePath == upgradePath);
+            //if (!isUnlocked || !isCorrectPath) {
+            //    upgradeBtn.setColorFilter(colorId, PorterDuff.Mode.MULTIPLY); // Tint unavailable upgrades
+            //upgradeBtn.setEnabled(false);
+            //}
+
+            if (!isAvailable) upgradeBtn.setColorFilter(colorId, PorterDuff.Mode.MULTIPLY);
+            int finalI = i;
+            upgradeBtn.setOnClickListener(l -> {
+                //if (isUnlocked && isCorrectPath) {
+                cannonImagePreview.setImageResource(cannonInfo.spriteResourceID);
+                if (isAvailable) {
+                    selectedUpgrade = finalI;
+                    cannonImagePreview.setColorFilter(0);
+                }
+                else{
+                    cannonImagePreview.setColorFilter(R.color.black, PorterDuff.Mode.MULTIPLY);
+                }
+            });
+
+            UI.GetInstance().AddViewToContainer(upgradeBtn, upgradesGrid);
         }
     }
 }

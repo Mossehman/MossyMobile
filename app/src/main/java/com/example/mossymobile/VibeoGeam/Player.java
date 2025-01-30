@@ -83,7 +83,10 @@ public class Player extends MonoBehaviour implements IDamageable {
                 Ammo.value = MossMath.clamp(Ammo.value, 0f, 100f);
                 if (Health.value < 100f) Health.value += Time.GetDeltaTime() * Reload;
                 Health.value = MossMath.clamp(Health.value, 0f, 100f);
-
+                if (Exp.value >= 100f) {
+                    Exp.value -= 100f;
+                    CannonManager.GetInstance().PlayerLevelPoints++;
+                }
             }
             if (look.isJoystickHeld) { // Aiming
                 Vector2 targetDirection = look.isJoystickDead && moveDirection.MagnitudeSq() > 0 ?
@@ -109,18 +112,23 @@ public class Player extends MonoBehaviour implements IDamageable {
         fireTimer = cannonInfo.fireinterval;
 
         Vector2 fireDirection = targetDirection;
-        GameObject instBullet = Instantiate(new GameObject());
-        float spreadAngle = cannonInfo.spread; // Spread in degrees
-        if (spreadAngle > 0) {
-            float randomOffset = (float) (Math.random() * spreadAngle - (spreadAngle / 2.0)); // Random angle within spread
-            fireDirection = Vector2.RotateVector(fireDirection, randomOffset);
+        int n = 1;
+        if (cannonInfo.firetype == 1) n = (int)cannonInfo.spread;
+        for (int i = 0; i < n; i++) {
+            GameObject instBullet = Instantiate(new GameObject());
+            float spreadAngle = cannonInfo.spread; // Spread in degrees
+            if (spreadAngle > 0) {
+                float randomOffset = (float) (Math.random() * spreadAngle - (spreadAngle / 2.0)); // Random angle within spread
+                fireDirection = Vector2.RotateVector(fireDirection, randomOffset);
+            }
+            Bullet bulletfunc = instBullet.AddComponent(Bullet.class);
+            bulletfunc.cannonInfo = cannonInfo;
+            bulletfunc.direction = fireDirection;
+            instBullet.AddComponent(Renderer.class).ResourceID = R.drawable.bluecircle;
+            instBullet.GetTransform().SetPosition(Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(fireDirection, 80f)));
+            instBullet.GetTransform().SetScale(new Vector2(50, 50));
+
         }
-        Bullet bulletfunc = instBullet.AddComponent(Bullet.class);
-        bulletfunc.cannonInfo = cannonInfo;
-        bulletfunc.direction = fireDirection;
-        instBullet.AddComponent(Renderer.class).ResourceID = R.drawable.bluecircle;
-        instBullet.GetTransform().SetPosition(Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(fireDirection, 80f)));
-        instBullet.GetTransform().SetScale(new Vector2(50,50));
     }
 
     private boolean FireCooldown(){

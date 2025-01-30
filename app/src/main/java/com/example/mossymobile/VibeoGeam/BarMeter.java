@@ -27,6 +27,8 @@ public class BarMeter extends MonoBehaviour {
 
     @Override
     public void Update() {
+        if (valueRef == null || valueRef.value == null) Destroy(gameObject);
+
         if (lerp){
             fill = Lerp(fill,barLength * (valueRef.value / maximumValue), 0.1f);
             GetTransform().SetScale(new Vector2(fill, GetTransform().GetScale().y));

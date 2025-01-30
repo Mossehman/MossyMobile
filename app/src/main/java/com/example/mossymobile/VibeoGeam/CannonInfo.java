@@ -11,9 +11,10 @@ public class CannonInfo {
     public float lifetime = 4f; // how long can the bullet exist
     public float aimspeed = 1f; // how long the gun takes to turn
     public int spriteResourceID = -1; // sprite image for the player
+    public int lvlcost = 1;
     public CannonInfo(float damage, float speed, int pierce, float spread,
                       int firetype, float fireinterval, float ammocost, float lifetime,
-                      float aimspeed, int spriteResourceID)
+                      float aimspeed, int spriteResourceID, int lvlcost)
     {
         this.damage = damage;
         this.speed = speed;
@@ -25,5 +26,6 @@ public class CannonInfo {
         this.lifetime = lifetime;
         this.aimspeed = aimspeed;
         this.spriteResourceID = spriteResourceID;
+        this.lvlcost = lvlcost;
     }
 }

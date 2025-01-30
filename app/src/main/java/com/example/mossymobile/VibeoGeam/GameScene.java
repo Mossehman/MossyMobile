@@ -3,6 +3,7 @@ package com.example.mossymobile.VibeoGeam;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
@@ -26,6 +27,7 @@ import java.util.Objects;
 
 public class GameScene extends Scene {
     boolean IsPaused = false;
+    Player playerScript;
     @Override
     protected void Init() {
         float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
@@ -59,7 +61,7 @@ public class GameScene extends Scene {
 
         GameObject player = new GameObject("Player");
         player.AddComponent(Renderer.class).ResourceID = R.drawable.cannon;
-        Player playerScript = player.AddComponent(Player.class);
+        playerScript = player.AddComponent(Player.class);
         player.AddComponent(RigidBody.class).SetGravityEnabled(false);
         BoxCollider playerHitbox = player.AddComponent(BoxCollider.class);
         playerHitbox.hitboxDimensions = new Vector2(20f, 20f);
@@ -99,18 +101,21 @@ public class GameScene extends Scene {
         {
             Button upgradesBtn = viewUI.findViewById(R.id.upgrades_btn);
             upgradesBtn.setOnClickListener(v -> {
-                if (!IsPaused) {
+                //if (!IsPaused)
+                {
                     IsPaused = true;
                     SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
                 }
-                else {
-                    IsPaused = false;
-                    SceneManager.UnloadScene("UpgradeScene");
-                }
+                //else {
+                //    IsPaused = false;
+                //    SceneManager.UnloadScene("UpgradeScene");
+                //    View ui = UI.GetInstance().GetUIContainer().findViewById(R.id.upgrades_ui);
+                //    UI.GetInstance().RemoveViewsFromLayout((LinearLayout)ui);
+                //}
             });
         }
 
-        playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(0);
+        playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(8);
         GameObject waveSpawner = new GameObject("WaveSpawner");
         waveSpawner.AddComponent(EnemySpawner.class).player = player;
 
@@ -142,5 +147,14 @@ public class GameScene extends Scene {
 
         GameObject wallSpawner = new GameObject("WallSpawner");
         wallSpawner.AddComponent(WallSpawner.class);
+    }
+
+    @Override
+    protected void Update() {
+        if (CannonManager.GetInstance().ScheduledCannonSwitch)
+        {
+            playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(CannonManager.GetInstance().PlayerCannonLevel);
+            CannonManager.GetInstance().ScheduledCannonSwitch = false;
+        }
     }
 }
