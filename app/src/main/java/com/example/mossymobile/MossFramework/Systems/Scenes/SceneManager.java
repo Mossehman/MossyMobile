@@ -115,6 +115,7 @@ public class SceneManager {
             RunningScene = NextScene;
             NextScene.Start();
             CurrentScenes.add(NextScene);
+            NextScene = null;
         }
 
         if (!ScenesToUnload.isEmpty())
