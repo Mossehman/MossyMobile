@@ -90,6 +90,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <LinearLayout
+                        android:id="@+id/upgrades_ui"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"></LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
 

@@ -1,8 +1,10 @@
 package com.example.mossymobile.VibeoGeam;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
+import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.Colliders.CircleCollider;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
@@ -13,6 +15,8 @@ import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Scene;
+import com.example.mossymobile.MossFramework.Systems.Scenes.SceneLoadMode;
+import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
 
@@ -21,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameScene extends Scene {
-    List<CannonInfo> bulletData = new ArrayList<>();
+    boolean IsPaused = false;
     @Override
     protected void Init() {
         float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
@@ -53,31 +57,31 @@ public class GameScene extends Scene {
             col.hitboxDimensions = wallscales[i];
         }
 
-        GameObject player = new GameObject();
+        GameObject player = new GameObject("Player");
         player.AddComponent(Renderer.class).ResourceID = R.drawable.cannon;
         Player playerScript = player.AddComponent(Player.class);
         player.AddComponent(RigidBody.class).SetGravityEnabled(false);
         BoxCollider playerHitbox = player.AddComponent(BoxCollider.class);
         playerHitbox.hitboxDimensions = new Vector2(20f, 20f);
         playerHitbox.SetCollisionLayer("Player");
-        View joystickUI = UI.GetInstance().AddLayoutToUI(R.layout.ui_game);
+        View viewUI = UI.GetInstance().AddLayoutToUI(R.layout.ui_game);
         {
-            FrameLayout knob = joystickUI.findViewById(R.id.joystick_region);
+            FrameLayout knob = viewUI.findViewById(R.id.joystick_region);
 
-            GameObject joystick = new GameObject();
+            GameObject joystick = new GameObject("MovementJoystick");
             JoystickKnob knobfunction = joystick.AddComponent(JoystickKnob.class);
 
             Renderer r = joystick.AddComponent(Renderer.class);
             r.ResourceID = R.drawable.bluecircle;
 
-            knobfunction.knob = joystickUI.findViewById(R.id.joystick_knob);
+            knobfunction.knob = viewUI.findViewById(R.id.joystick_knob);
             knobfunction.minDistance = 5f;
             playerScript.movement = knobfunction;
         }
         {
-            FrameLayout knob = joystickUI.findViewById(R.id.joystick_region2);
+            FrameLayout knob = viewUI.findViewById(R.id.joystick_region2);
 
-            GameObject joystick = new GameObject();
+            GameObject joystick = new GameObject("LookJoystick");
             JoystickKnob knobfunction = joystick.AddComponent(JoystickKnob.class);
             knobfunction.offset = new Vector2(
                     screenWidth - 170f,
@@ -87,22 +91,26 @@ public class GameScene extends Scene {
             Renderer r = joystick.AddComponent(Renderer.class);
             r.ResourceID = R.drawable.redcircle;
 
-            knobfunction.knob = joystickUI.findViewById(R.id.joystick_knob2);
+            knobfunction.knob = viewUI.findViewById(R.id.joystick_knob2);
             knobfunction.resetDirection = false;
             knobfunction.minDistance = 50f;
             playerScript.look = knobfunction;
         }
+        {
+            Button upgradesBtn = viewUI.findViewById(R.id.upgrades_btn);
+            upgradesBtn.setOnClickListener(v -> {
+                if (!IsPaused)
+                    IsPaused = SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
+                else
+                    IsPaused = !SceneManager.UnloadScene("UpgradeScene");
+            });
+        }
 
-        bulletData.add(new CannonInfo(10f, 600f, 0, 1f, 0, 0.10f, 20.0f, 4.0f, 0.70f, R.drawable.cannon)); // Basic single shot
-        bulletData.add(new CannonInfo( 8f, 600f, 0, 2f, 2, 0.30f, 02.0f, 3.0f, 0.35f, R.drawable.cannon1xx)); // 1xx
-        bulletData.add(new CannonInfo( 4f, 750f, 1, 3f, 2, 0.10f, 01.0f, 3.0f, 0.10f, R.drawable.cannon2xx)); // 2xx
-        bulletData.add(new CannonInfo( 3f, 900f, 2, 5f, 2, 0.04f, 00.5f, 1.6f, 0.05f, R.drawable.cannon3xx)); // 3xx
-
-        playerScript.cannonInfo = bulletData.get(3);
-        GameObject waveSpawner = new GameObject();
+        playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(0);
+        GameObject waveSpawner = new GameObject("WaveSpawner");
         waveSpawner.AddComponent(EnemySpawner.class).player = player;
 
-        GameObject healthBar = new GameObject();
+        GameObject healthBar = new GameObject("HealthBar");
         BarMeter hpfunc = healthBar.AddComponent(BarMeter.class);
         hpfunc.resID = R.drawable.redsquare;
         hpfunc.valueRef = playerScript.Health;
@@ -110,15 +118,15 @@ public class GameScene extends Scene {
         healthBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 100));
         healthBar.GetTransform().SetScale(new Vector2(200, 50));
 
-        GameObject ammoBar = new GameObject();
+        GameObject ammoBar = new GameObject("AmmoBar");
         BarMeter ammofunc = ammoBar.AddComponent(BarMeter.class);
-        ammofunc.resID = R.drawable.orangesquare;
+        ammofunc.resID = R.drawable.yellowsquare;
         ammofunc.valueRef = playerScript.Ammo;
         ammofunc.barLength = 2000;
         ammoBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 150));
         ammoBar.GetTransform().SetScale(new Vector2(200, 50));
 
-        GameObject expBar = new GameObject();
+        GameObject expBar = new GameObject("ExpBar");
         BarMeter expfunc = expBar.AddComponent(BarMeter.class);
         expfunc.resID = R.drawable.bluesquare;
         expfunc.valueRef = playerScript.Exp;
@@ -127,5 +135,8 @@ public class GameScene extends Scene {
         expfunc.maximumValue = 100f;
         expBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 200));
         expBar.GetTransform().SetScale(new Vector2(200, 50));
+
+        GameObject wallSpawner = new GameObject("WallSpawner");
+        wallSpawner.AddComponent(WallSpawner.class);
     }
 }

@@ -83,10 +83,8 @@ public class Bullet extends MonoBehaviour {
                 Objects.equals(collider.GetCollisionLayer(), "EnemyBullet")) {
             return;
         }
-        //else {
-        //    Debug.Log("Bullet", "MiscEnter");
-        //    Destroy(this.gameObject);
-        //    return;
-        //}
+        if (Objects.equals(collider.GetCollisionLayer(), "Wall")) {
+            Destroy(this.gameObject);
+        }
     }
 }

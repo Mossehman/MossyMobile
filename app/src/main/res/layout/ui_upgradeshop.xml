@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <!-- Title -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|top"
+                android:layout_marginBottom="16dp"
+                android:text="Upgrade Shop"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/player_level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Player Level: 1"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/cannon"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Cannon"
+                android:scaleType="fitCenter"
+                android:src="@drawable/cannon" />
+
+            <Button
+                android:id="@+id/upgrade_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#4CAF50"
+                android:padding="12dp"
+                android:text="Upgrade"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <GridLayout
+            android:id="@+id/upgrade_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:alignmentMode="alignMargins"
+            android:columnCount="3"
+            android:padding="8dp"
+            android:rowCount="3"
+            android:useDefaultMargins="true">
+
+            <!-- Icons -->
+            <ImageButton
+                android:id="@+id/twin_barrels"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/teal_200"
+                android:contentDescription="Twin Barrels"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannon1xx"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/machine_gun"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/teal_200"
+                android:contentDescription="Machine Gun"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannon2xx"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/minigun"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/teal_200"
+                android:contentDescription="Minigun"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannon3xx"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/longer_barrel"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/purple_200"
+                android:contentDescription="Longer Barrel"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannonx1x"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/higher_calibre"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/purple_200"
+                android:contentDescription="Higher Calibre"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannonx2x"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/anti_material"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/purple_200"
+                android:contentDescription="Anti-Material"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannonx3x"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/buckshot"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/purple_700"
+                android:contentDescription="Buckshot"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannonxx1"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/birdshot"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/purple_700"
+                android:contentDescription="Birdshot"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannonxx2"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/flechette"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@color/purple_700"
+                android:contentDescription="Flechette"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cannonxx2"
+                android:visibility="gone" />
+        </GridLayout>
+    </LinearLayout>
+
+    <!-- Player Level Number -->
+
+    <!-- Upgrade Icons Grid -->
+
+    <!-- Upgrade Button -->
+
+</RelativeLayout>

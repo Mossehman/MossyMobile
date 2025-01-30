@@ -44,7 +44,7 @@ public class Player extends MonoBehaviour implements IDamageable {
                         Objects.requireNonNull(GameView.GetInstance()).getHeight() * 0.5f));
         GetTransform().SetScale(new Vector2(200f, 200f));
         rb = gameObject.GetComponent(RigidBody.class);
-        rb.SetRoughness(10f);
+        rb.SetRoughness(20f);
         sprite = gameObject.GetComponent(Renderer.class);
 
         gameObject.GetScene().quadtreeScale = new Vector2(Objects.requireNonNull(GameView.GetInstance()).getWidth(),
@@ -57,6 +57,12 @@ public class Player extends MonoBehaviour implements IDamageable {
         if (sprite.ResourceID != cannonInfo.spriteResourceID){
             sprite.ResourceID = cannonInfo.spriteResourceID;
         }
+        float x = GetTransform().GetPosition().x;
+        float y = GetTransform().GetPosition().y;
+
+        x = MossMath.clamp(x, 0f, (float)Objects.requireNonNull(GameView.GetInstance()).getWidth());
+        y = MossMath.clamp(y, 0f, (float)Objects.requireNonNull(GameView.GetInstance()).getHeight());
+        GetTransform().SetPosition(new Vector2(x,y));
         if (look != null && movement != null) {
             if (moveDirection.MagnitudeSq() > 0)
                 rb.AddVelocity(Vector2.Mul(moveDirection, 0.1f));
@@ -135,7 +141,14 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     @Override
     public void OnDrawGizmos() {
-        Gizmos.DrawLine(GetTransform().GetPosition(), Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(currentFireDirection, 400f)), Color.WHITE);
+        Vector2 direction = new Vector2(0,0);
+        if (look.isJoystickHeld) { // Aiming
+            direction = lookDirection;
+        }
+        else if (moveDirection.MagnitudeSq() > 0) { // Moving Look
+            direction = moveDirection;
+        }
+        Gizmos.DrawLine(GetTransform().GetPosition(), Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(direction, 400f)), Color.WHITE);
     }
 
     private Vector2 Slerp(Vector2 from, Vector2 to, float t) {

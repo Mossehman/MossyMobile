@@ -11,13 +11,13 @@ import com.example.mossymobile.R;
 
 import java.util.Objects;
 
-public class EnemyYellowCube extends Enemy {
+public class EnemyPurpleTriangle extends Enemy {
     private Renderer renderer;
     private BoxCollider hitbox;
     private RigidBody rb;
     private GameObject bar;
-    EnemyYellowCube() {
-        super(20, 5, 20, 5, R.drawable.yellowsquare);
+    EnemyPurpleTriangle() {
+        super(5, 20, 40, 15, R.drawable.redcircle);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class EnemyYellowCube extends Enemy {
             hpBar.valueRef = super.health;
             hpBar.GetTransform().SetScale(new Vector2(200, 10));
             hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
-            hpBar.barLength = 100;
+            hpBar.barLength = 25;
         }
     }
     @Override

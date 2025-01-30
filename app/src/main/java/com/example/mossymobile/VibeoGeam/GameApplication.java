@@ -9,15 +9,23 @@ public class GameApplication extends Application {
     @Override
     protected boolean OnStart(){
         SceneManager.AddToSceneList("GameScene", new GameScene());
+        SceneManager.AddToSceneList("UpgradeScene", new UpgradeScene());
 
         Collision.CreateCollisionLayer("Player");
         Collision.CreateCollisionLayer("PlayerBullet");
         Collision.CreateCollisionLayer("Enemy");
         Collision.CreateCollisionLayer("EnemyBullet");
+        Collision.CreateCollisionLayer("Wall");
+        Collision.CreateCollisionLayer("NoWallCollision");
 
         Collision.ConfigureCollisionLayer("PlayerBullet", "EnemyBullet", false);
         Collision.ConfigureCollisionLayer("Enemy", "EnemyBullet", false);
         Collision.ConfigureCollisionLayer("Player", "PlayerBullet", false);
+        Collision.ConfigureCollisionLayer("NoWallCollision", "Wall", false);
+
+        CannonManager.GetInstance().PopulateData();
+
+        SceneManager.LoadScene("GameScene");
         return true;
     }
 
