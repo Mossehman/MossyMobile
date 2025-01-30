@@ -35,15 +35,15 @@ public abstract class Scene implements Serializable {
 
     protected void Render() {}
     public final void Exit() {
-        for (GameObject gameObject : gameObjects)
-        {
-            gameObject.OnDestroy();
+
+        if (!gameObjects.isEmpty()) {
+            for (GameObject gameObject : gameObjects) {
+                gameObject.OnDestroy();
+            }
         }
 
         gameObjects.clear();
-        gameObjects = null;
         gameObjectsToAdd.clear();
-        gameObjectsToAdd = null;
     }
 
     public final void Start()
