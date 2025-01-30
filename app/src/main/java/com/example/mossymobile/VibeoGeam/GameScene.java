@@ -99,10 +99,14 @@ public class GameScene extends Scene {
         {
             Button upgradesBtn = viewUI.findViewById(R.id.upgrades_btn);
             upgradesBtn.setOnClickListener(v -> {
-                if (!IsPaused)
-                    IsPaused = SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
-                else
-                    IsPaused = !SceneManager.UnloadScene("UpgradeScene");
+                if (!IsPaused) {
+                    IsPaused = true;
+                    SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
+                }
+                else {
+                    IsPaused = false;
+                    SceneManager.UnloadScene("UpgradeScene");
+                }
             });
         }
 

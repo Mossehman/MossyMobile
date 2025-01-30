@@ -1,6 +1,8 @@
 package com.example.mossymobile.VibeoGeam;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.GridLayout;
@@ -17,33 +19,32 @@ import com.example.mossymobile.R;
 public class UpgradeScene extends Scene {
     @Override
     protected void Init() {
-        //Application.pause = true;
-
-        //View viewUI = UI.GetInstance().AddLayoutToUI(R.layout.ui_upgradeshop);
         LinearLayout uidocker = UI.GetInstance().GetUIContainer().findViewById(R.id.upgrades_ui);
-        UI.GetInstance().AddLayoutToContainer(R.layout.ui_upgradeshop, uidocker);
-        uidocker.removeAllViews();
-        GridLayout upgradesGrid = uidocker.findViewById(R.id.upgrade_grid);
-
         Context context = uidocker.getContext();
-        // Create a new ImageButton
-        ImageButton twinBarrelsButton = new ImageButton(context);
+        //if (uidocker != null) Log.d("UpgradeScene", "UI Docker found");
+        View ui = UI.GetInstance().AddLayoutToContainer(R.layout.ui_upgradeshop, uidocker);
+        GridLayout upgradesGrid = ui.findViewById(R.id.upgrade_grid);
+        //if (upgradesGrid != null) Log.d("UpgradeScene", "Upgrade Grid found");
+        UI.GetInstance().RemoveViewsFromLayout(upgradesGrid);
 
-        // Set layout parameters (width and height in dp)
-        int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics());
-        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
+        CannonManager.GetInstance().cannonData.size();
+        for (int i = 0; i < 15; i++) {
+            // Create a new ImageButton
+            ImageButton twinBarrelsButton = new ImageButton(context);
 
-        // Set properties of the ImageButton
-        twinBarrelsButton.setId(View.generateViewId());
-        twinBarrelsButton.setLayoutParams(layoutParams);
-        twinBarrelsButton.setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200));
-        twinBarrelsButton.setContentDescription("Twin Barrels");
-        twinBarrelsButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        twinBarrelsButton.setImageResource(R.drawable.cannon1xx);
+            // Set layout parameters (width and height in dp)
+            int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics());
+            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics());
+            GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = height;
 
-        //upgradesGrid.addView(twinBarrelsButton);
-        //upgradesGrid.AddViewToContainer(twinBarrelsButton);
-        UI.GetInstance().AddViewToContainer(twinBarrelsButton, upgradesGrid);
+            // Set properties of the ImageButton
+            twinBarrelsButton.setLayoutParams(layoutParams);
+            twinBarrelsButton.setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200));
+            twinBarrelsButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            twinBarrelsButton.setImageResource(R.drawable.cannon1xx);
+            UI.GetInstance().AddViewToContainer(twinBarrelsButton, upgradesGrid);
+        }
     }
 }
