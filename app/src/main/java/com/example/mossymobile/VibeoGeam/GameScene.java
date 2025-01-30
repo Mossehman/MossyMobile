@@ -114,8 +114,9 @@ public class GameScene extends Scene {
                 //}
             });
         }
-
-        playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(8);
+        CannonManager.GetInstance().ScheduledCannonSwitch = true;
+        CannonManager.GetInstance().PlayerCannonLevel = 3;
+        //playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(8);
         GameObject waveSpawner = new GameObject("WaveSpawner");
         waveSpawner.AddComponent(EnemySpawner.class).player = player;
 

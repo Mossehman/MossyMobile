@@ -11,7 +11,8 @@ import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
-import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioClip;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
@@ -49,6 +50,7 @@ public class Player extends MonoBehaviour implements IDamageable {
 
         gameObject.GetScene().quadtreeScale = new Vector2(Objects.requireNonNull(GameView.GetInstance()).getWidth(),
                 Objects.requireNonNull(GameView.GetInstance()).getHeight());
+
     }
 
     @Override
@@ -110,7 +112,7 @@ public class Player extends MonoBehaviour implements IDamageable {
         }
         Ammo.value -= cannonInfo.ammocost;
         fireTimer = cannonInfo.fireinterval;
-
+        AudioPlayer.PlayAudio(new AudioClip(R.raw.lmg_fire), false);
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = (int)cannonInfo.spread;

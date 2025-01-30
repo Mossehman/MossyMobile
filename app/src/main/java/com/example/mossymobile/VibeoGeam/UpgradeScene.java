@@ -22,6 +22,7 @@ import com.example.mossymobile.R;
 public class UpgradeScene extends Scene {
     int selectedUpgrade = 0;
     int currentUpgradePath = 0;
+    boolean canPurchase = false;
     LinearLayout uidocker;
     Context context;
     View ui;
@@ -33,14 +34,18 @@ public class UpgradeScene extends Scene {
         context = uidocker.getContext();
         ui = UI.GetInstance().AddLayoutToContainer(R.layout.ui_upgradeshop, uidocker);
         upgradesGrid = ui.findViewById(R.id.upgrade_grid);
-        InitalizeUI();
 
         Button buyBtn = ui.findViewById(R.id.upgrade_button);
 
+        selectedUpgrade = CannonManager.GetInstance().PlayerCannonLevel;
+        if (selectedUpgrade > 0)
+            currentUpgradePath = (selectedUpgrade <= 3) ? 1 : (selectedUpgrade <= 6) ? 2 : 3;
+
+
+
         buyBtn.setOnClickListener(l -> {
-            //if (selectedUpgrade != -1 &&
-            //    CannonManager.GetInstance().PlayerLevelPoints >= CannonManager.GetInstance().FetchCannon(selectedUpgrade).lvlcost) {
-                if (selectedUpgrade != -1){
+            if (selectedUpgrade != -1 && canPurchase &&
+                CannonManager.GetInstance().PlayerLevelPoints >= CannonManager.GetInstance().FetchCannon(selectedUpgrade).lvlcost) {
                 CannonManager.GetInstance().PlayerLevelPoints -= CannonManager.GetInstance().FetchCannon(selectedUpgrade).lvlcost;
                 CannonManager.GetInstance().PlayerCannonLevel = selectedUpgrade;
                 CannonManager.GetInstance().ScheduledCannonSwitch = true;
@@ -49,7 +54,7 @@ public class UpgradeScene extends Scene {
                 if (currentUpgradePath == 0) {
                     currentUpgradePath = (selectedUpgrade <= 3) ? 1 : (selectedUpgrade <= 6) ? 2 : 3;
                 }
-Log.d("UpgradeScene", "Pressed");
+                canPurchase = false;
                 // Refresh UI to reflect locked paths and new upgrade state
                 InitalizeUI();
             }
@@ -61,14 +66,19 @@ Log.d("UpgradeScene", "Pressed");
             SceneManager.UnloadScene("UpgradeScene");
         });
 
+        InitalizeUI();
     }
 
     private void InitalizeUI(){
         UI.GetInstance().RemoveViewsFromLayout(upgradesGrid);
 
         TextView points = ui.findViewById(R.id.player_points);
+        points.setText(CannonManager.GetInstance().PlayerLevelPoints + " Available Points");
 
         ImageView cannonImagePreview = ui.findViewById(R.id.cannon);
+        cannonImagePreview.setImageResource(CannonManager.GetInstance().FetchCannon(CannonManager.GetInstance().PlayerCannonLevel).spriteResourceID);
+
+        Button buyBtn = ui.findViewById(R.id.upgrade_button);
 
         for (int i = 1; i < CannonManager.GetInstance().cannonData.size(); i++) {
             CannonInfo cannonInfo = CannonManager.GetInstance().cannonData.get(i);
@@ -85,7 +95,7 @@ Log.d("UpgradeScene", "Pressed");
 
             // Determine the upgrade path
             int upgradePath = (i <= 3) ? 1 : (i <= 6) ? 2 : 3;
-            int prerequisiteUpgrade = (i % 3 == 1) ? 0 : i - 1; // First in each path has no prerequisite
+            int prerequisiteUpgrade = (i % 3 == 1) ? 0 : i - 1;
 
             // Set background color based on path
             int colorId;
@@ -114,15 +124,18 @@ Log.d("UpgradeScene", "Pressed");
             if (!isAvailable) upgradeBtn.setColorFilter(colorId, PorterDuff.Mode.MULTIPLY);
             int finalI = i;
             upgradeBtn.setOnClickListener(l -> {
-                //if (isUnlocked && isCorrectPath) {
                 cannonImagePreview.setImageResource(cannonInfo.spriteResourceID);
                 if (isAvailable) {
                     selectedUpgrade = finalI;
+                    canPurchase = finalI > CannonManager.GetInstance().PlayerCannonLevel;
                     cannonImagePreview.setColorFilter(0);
                 }
                 else{
+                    canPurchase = false;
                     cannonImagePreview.setColorFilter(R.color.black, PorterDuff.Mode.MULTIPLY);
                 }
+                if (canPurchase) buyBtn.setText("Buy");
+                else buyBtn.setText("Locked");
             });
 
             UI.GetInstance().AddViewToContainer(upgradeBtn, upgradesGrid);
