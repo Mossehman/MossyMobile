@@ -1,5 +1,7 @@
 package com.example.mossymobile.MossFramework;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.hardware.SensorManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -18,6 +20,7 @@ import com.example.mossymobile.MossFramework.Systems.Messaging.MessageHub;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.MossFramework.Systems.UserInput.Input;
+import com.example.mossymobile.MossFramework.Systems.UserInput.Sensors;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.MossFramework.Testing.TestScene;
 import com.example.mossymobile.R;
@@ -95,6 +98,7 @@ public class Application {
         Collision.CreateCollisionLayer("Default");
 
         UI.GetInstance().SetUIContainer(R.id.gameUIDocker);
+        Sensors.sensorManager = (SensorManager)  Objects.requireNonNull(GameView.GetInstance()).GetContext().getSystemService(Context.SENSOR_SERVICE);
 
         return OnStart();
     }
