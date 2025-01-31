@@ -132,7 +132,10 @@ public abstract class Scene implements Serializable {
     public void RenderGameObject(Renderer renderer)
     {
         objectsToRender.add(renderer);
-        objectsToRender.sort(Comparator.comparingInt(Renderer -> renderer.GetZLayer()));
+        objectsToRender.sort(
+                Comparator.comparingInt(Renderer::GetZLayer)
+                        .thenComparingInt(System::identityHashCode) // Ensures unique order for same Z
+        );
     }
 
     public QuadTree GetTree()
