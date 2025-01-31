@@ -1,8 +1,11 @@
-package com.example.mossymobile.VibeoGeam;
+package com.example.mossymobile.VibeoGeam.Enemy;
 
 import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
+import com.example.mossymobile.VibeoGeam.BarMeter;
+import com.example.mossymobile.VibeoGeam.IDamageable;
+import com.example.mossymobile.VibeoGeam.Player;
 
 import java.util.Objects;
 

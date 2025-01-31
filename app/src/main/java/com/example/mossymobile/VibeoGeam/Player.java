@@ -1,7 +1,6 @@
 package com.example.mossymobile.VibeoGeam;
 
 import android.graphics.Color;
-import android.view.KeyEvent;
 
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
@@ -16,6 +15,9 @@ import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
+import com.example.mossymobile.VibeoGeam.Tank.Bullet;
+import com.example.mossymobile.VibeoGeam.Tank.CannonInfo;
+import com.example.mossymobile.VibeoGeam.Tank.UpgradesManager;
 
 import java.util.Objects;
 
@@ -29,13 +31,16 @@ public class Player extends MonoBehaviour implements IDamageable {
     public MutableWrapper<Float> Ammo = new MutableWrapper<>(100f);
     public MutableWrapper<Float> Exp = new MutableWrapper<>(0f);
     public float cumulativeExpEarned = 0f;
-    public float Reload = 5f;
     public CannonInfo cannonInfo;
     private float fireTimer = 0f;
     private Vector2 moveDirection = new Vector2();
     private Vector2 lookDirection = new Vector2();
     private Vector2 currentFireDirection = new Vector2();
     private Renderer sprite;
+    public float Regen = 2f;
+    public float Reload = 4f;
+
+    private UpgradesManager upgrades = UpgradesManager.GetInstance();
 
     @Override
     public void Start() {
@@ -82,14 +87,14 @@ public class Player extends MonoBehaviour implements IDamageable {
                 look.isJoystickUp = false;
             }
             if (!look.isJoystickHeld){
-                if (Ammo.value < 100f) Ammo.value += Time.GetDeltaTime() * Reload;
+                if (Ammo.value < 100f) Ammo.value += Time.GetDeltaTime() * (Reload + upgrades.FetchBaseUpgrade(1).GetCurrentMod());
                 Ammo.value = MossMath.clamp(Ammo.value, 0f, 100f);
-                if (Health.value < 100f) Health.value += Time.GetDeltaTime() * Reload;
-                Health.value = MossMath.clamp(Health.value, 0f, 100f);
+                if (Health.value < upgrades.FetchBaseUpgrade(2).GetCurrentMod()) Health.value += Time.GetDeltaTime() * (Regen + upgrades.FetchBaseUpgrade(0).GetCurrentMod());
+                Health.value = MossMath.clamp(Health.value, 0f, upgrades.FetchBaseUpgrade(2).GetCurrentMod());
             }
             if (Exp.value >= 100f) {
                 Exp.value -= 100f;
-                CannonManager.GetInstance().PlayerLevelPoints++;
+                UpgradesManager.GetInstance().PlayerLevelPoints++;
             }
             if (look.isJoystickHeld) { // Aiming
                 Vector2 targetDirection = look.isJoystickDead && moveDirection.MagnitudeSq() > 0 ?

@@ -3,9 +3,15 @@ package com.example.mossymobile.VibeoGeam;
 import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
-import com.example.mossymobile.MossFramework.Testing.TestScene;
+import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
+import com.example.mossymobile.VibeoGeam.Scenes.GameScene;
+import com.example.mossymobile.VibeoGeam.Scenes.MenuScene;
+import com.example.mossymobile.VibeoGeam.Scenes.UpgradeScene;
+import com.example.mossymobile.VibeoGeam.Tank.UpgradesManager;
 
 public class GameApplication extends Application {
+
+    public static boolean isResetting = false;
     @Override
     protected boolean OnStart(){
         SceneManager.AddToSceneList("MenuScene", new MenuScene());
@@ -24,7 +30,8 @@ public class GameApplication extends Application {
         Collision.ConfigureCollisionLayer("Player", "PlayerBullet", false);
         Collision.ConfigureCollisionLayer("NoWallCollision", "Wall", false);
 
-        CannonManager.GetInstance().PopulateData();
+        UpgradesManager.GetInstance().PopulateData();
+        Leaderboard lb = ScriptableObject.Create("highscores", Leaderboard.class, true);
 
         SceneManager.LoadScene("MenuScene");
         return true;

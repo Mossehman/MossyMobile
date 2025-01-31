@@ -1,26 +1,23 @@
-package com.example.mossymobile.VibeoGeam;
+package com.example.mossymobile.VibeoGeam.Tank;
 
 import com.example.mossymobile.MossFramework.DesignPatterns.Singleton;
-import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
 import com.example.mossymobile.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class CannonManager extends Singleton<CannonManager> {
-    public static CannonManager GetInstance()
-    {
-        return Singleton.GetInstance(CannonManager.class);
-    }
+public class UpgradesManager extends Singleton<UpgradesManager> {
+    public static UpgradesManager GetInstance() {return Singleton.GetInstance(UpgradesManager.class);}
     public List<CannonInfo> cannonData = new ArrayList<>(){};
+    public List<TankUpgrade> tankData = new ArrayList<>(){};
+
     public int PlayerCannonLevel = 0;
     public int PlayerLevelPoints = 0;
     public boolean ScheduledCannonSwitch = false;
 
     public void Init(){
         PlayerCannonLevel = 0;
-        PlayerLevelPoints = 0;
+        PlayerLevelPoints = 90;
     }
     public void PopulateData()
     {
@@ -38,10 +35,15 @@ public class CannonManager extends Singleton<CannonManager> {
         cannonData.add(new CannonInfo( 8f, 650f, 1,16.f, 1, 0.15f, 08.0f, 1.5f, 0.90f, R.drawable.cannonxx2, 2).SetCannonName("Birdshot").SetBurstFireInfo(28, 0.4f).SetBulletSize(4.0f));
         cannonData.add(new CannonInfo(24f, 700f, 5,5.0f, 1, 0.10f, 20.0f, 2.0f, 0.87f, R.drawable.cannonxx3, 3).SetCannonName("Flechette").SetBurstFireInfo(20, 0.3f).SetBulletSize(9.5f));
 
+        tankData.add(new BaseUpgrade("Repair", R.drawable.upgrade1xx, new int[]{0,1,1,2,3,4}, new float[]{0,0.5f,0.8f,1.3f,1.8f,2.4f}));
+        tankData.add(new BaseUpgrade("Reload", R.drawable.upgrade2xx, new int[]{0,1,1,3,3,4}, new float[]{0,0.2f,0.4f,1.2f,2.0f,2.6f}));
+        tankData.add(new BaseUpgrade("Reinforcement", R.drawable.upgrade3xx, new int[]{0,1,2,2,3,4}, new float[]{100f,120f,140f,160f,200f,250f}));
     }
 
     public CannonInfo FetchCannon(int id)
     {
         return cannonData.get(id);
     }
+
+    public BaseUpgrade FetchBaseUpgrade(int id) { return (BaseUpgrade)tankData.get(id); }
 }

@@ -1,6 +1,4 @@
-package com.example.mossymobile.VibeoGeam;
-
-import android.util.Log;
+package com.example.mossymobile.VibeoGeam.Enemy;
 
 import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.GameObject;
@@ -9,6 +7,7 @@ import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
+import com.example.mossymobile.VibeoGeam.Player;
 
 import java.util.Objects;
 

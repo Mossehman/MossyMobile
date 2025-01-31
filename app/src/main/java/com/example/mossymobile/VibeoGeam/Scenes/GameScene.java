@@ -1,33 +1,37 @@
-package com.example.mossymobile.VibeoGeam;
+package com.example.mossymobile.VibeoGeam.Scenes;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
-import com.example.mossymobile.MossFramework.Components.Colliders.CircleCollider;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
-import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
-import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Scene;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneLoadMode;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
+import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
+import com.example.mossymobile.VibeoGeam.BarMeter;
+import com.example.mossymobile.VibeoGeam.Enemy.EnemySpawner;
+import com.example.mossymobile.VibeoGeam.GameApplication;
+import com.example.mossymobile.VibeoGeam.JoystickKnob;
+import com.example.mossymobile.VibeoGeam.Leaderboard;
+import com.example.mossymobile.VibeoGeam.Player;
+import com.example.mossymobile.VibeoGeam.Tank.UpgradesManager;
+import com.example.mossymobile.VibeoGeam.WallSpawner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class GameScene extends Scene {
     Player playerScript;
+    boolean hasLost = false;
     @Override
     protected void Init() {
         float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
@@ -104,7 +108,9 @@ public class GameScene extends Scene {
                 SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
             });
         }
-        CannonManager.GetInstance().ScheduledCannonSwitch = true;
+
+        UpgradesManager.GetInstance().ScheduledCannonSwitch = true;
+        UpgradesManager.GetInstance().Init();
         //CannonManager.GetInstance().PlayerCannonLevel = 3;
         //playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(8);
 
@@ -143,15 +149,35 @@ public class GameScene extends Scene {
 
     @Override
     protected void Update() {
-        if (CannonManager.GetInstance().ScheduledCannonSwitch)
+        if (UpgradesManager.GetInstance().ScheduledCannonSwitch)
         {
-            playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(CannonManager.GetInstance().PlayerCannonLevel);
-            CannonManager.GetInstance().ScheduledCannonSwitch = false;
+            playerScript.cannonInfo = UpgradesManager.GetInstance().FetchCannon(UpgradesManager.GetInstance().PlayerCannonLevel);
+            UpgradesManager.GetInstance().ScheduledCannonSwitch = false;
         }
-        if (playerScript.Health.value <= 0)
+        if (playerScript.Health.value <= 0 && !hasLost)
         {
-            SceneManager.LoadScene("MenuScene");
+            //SceneManager.LoadScene("MenuScene");
+            DisplayScoreSubmission();
+            GameApplication.isResetting = true;
+            hasLost = true;
         }
     }
 
+    private void DisplayScoreSubmission(){
+        View ui = UI.GetInstance().AddLayoutToUI(R.layout.gameover);
+        TextView score = ui.findViewById(R.id.score_txt);
+        float finalScore = playerScript.cumulativeExpEarned;
+        playerScript.Destroy(playerScript.GetGameObject());
+        score.setText("Final Score: " + finalScore);
+        EditText usernameI = ui.findViewById(R.id.username_input);
+        ui.findViewById(R.id.score_submit_btn).setOnClickListener(l -> {
+            String userInput = usernameI.getText().toString();
+
+            Leaderboard lb = ScriptableObject.Create("highscores", Leaderboard.class, true);
+            lb.Leaderboard.put(userInput, finalScore);
+            lb.SaveToExternalStorage();
+            hasLost = false;
+            SceneManager.LoadScene("MenuScene");
+        });
+    }
 }

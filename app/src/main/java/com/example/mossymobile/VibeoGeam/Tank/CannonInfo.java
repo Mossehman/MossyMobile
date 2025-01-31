@@ -1,4 +1,4 @@
-package com.example.mossymobile.VibeoGeam;
+package com.example.mossymobile.VibeoGeam.Tank;
 
 public class CannonInfo {
     public float damage = 10f; // damage it will deal

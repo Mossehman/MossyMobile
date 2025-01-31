@@ -1,4 +1,4 @@
-package com.example.mossymobile.VibeoGeam;
+package com.example.mossymobile.VibeoGeam.Enemy;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
@@ -8,6 +8,7 @@ import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
 import com.example.mossymobile.R;
+import com.example.mossymobile.VibeoGeam.BarMeter;
 
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class EnemyPurpleTriangle extends Enemy {
     private boolean isDying = false; // Prevent multiple destroy calls
 
     EnemyPurpleTriangle() {
-        super(5, 20, 40, 15, R.drawable.redcircle);
+        super(5, 50, 40, 25, R.drawable.redcircle);
     }
 
     @Override

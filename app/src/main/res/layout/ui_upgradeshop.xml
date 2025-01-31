@@ -100,23 +100,22 @@
 
         </LinearLayout>
 
-        <HorizontalScrollView
+        <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
             <GridLayout
                 android:id="@+id/upgrade_grid"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:alignmentMode="alignMargins"
                 android:columnCount="3"
                 android:padding="8dp"
-                android:rowCount="3"
+                android:rowCount="6"
                 android:useDefaultMargins="true">
 
-                <!-- Icons -->
                 <ImageButton
                     android:id="@+id/twin_barrels"
                     android:layout_width="100dp"
@@ -207,8 +206,19 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/cannonxx2"
                     android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/flechette2"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/purple_700"
+                    android:contentDescription="Flechette"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannonxx2"
+                    android:visibility="visible" />
             </GridLayout>
-        </HorizontalScrollView>
+        </ScrollView>
+
 
         <LinearLayout
             android:id="@+id/upgrade_stats"

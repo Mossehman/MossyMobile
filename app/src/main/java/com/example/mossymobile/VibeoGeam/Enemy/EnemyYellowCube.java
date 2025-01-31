@@ -1,4 +1,4 @@
-package com.example.mossymobile.VibeoGeam;
+package com.example.mossymobile.VibeoGeam.Enemy;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
@@ -8,6 +8,7 @@ import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
 import com.example.mossymobile.R;
+import com.example.mossymobile.VibeoGeam.BarMeter;
 
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class EnemyYellowCube extends Enemy {
     private boolean isDying = false; // Prevent multiple destroy calls
 
     EnemyYellowCube() {
-        super(20, 5, 20, 5, R.drawable.yellowsquare);
+        super(20, 15, 20, 10, R.drawable.yellowsquare);
     }
 
     @Override
