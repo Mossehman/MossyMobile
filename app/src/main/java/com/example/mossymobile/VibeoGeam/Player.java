@@ -9,11 +9,13 @@ import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioClip;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
+import com.example.mossymobile.MossFramework.Systems.UserInput.Vibration;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Tank.Bullet;
 import com.example.mossymobile.VibeoGeam.Tank.CannonInfo;
@@ -153,6 +155,7 @@ public class Player extends MonoBehaviour implements IDamageable {
     @Override
     public void ModifyHealth(float amt) {
         Health.value -= amt;
+        Vibration.Vibrate(new Vector2Int(500, 10));
     }
 
     @Override
