@@ -12,6 +12,11 @@ public class CannonInfo {
     public float aimspeed = 1f; // how long the gun takes to turn
     public int spriteResourceID = -1; // sprite image for the player
     public int lvlcost = 1;
+    public int numofpellets = 1; // number of pellets fired per shot, only available when firetype == 1
+    public float randspeed = 0f; // random modifier to bullet speed (+- multiplicative), only available when firetype == 1
+    public float bulletsize = 10f; // size of the bullet
+    public int soundResourceID = -1; // sound effect for the shooting
+    public String cannonname; // name of the cannon
     public CannonInfo(float damage, float speed, int pierce, float spread,
                       int firetype, float fireinterval, float ammocost, float lifetime,
                       float aimspeed, int spriteResourceID, int lvlcost)
@@ -27,5 +32,26 @@ public class CannonInfo {
         this.aimspeed = aimspeed;
         this.spriteResourceID = spriteResourceID;
         this.lvlcost = lvlcost;
+    }
+
+    public CannonInfo SetBurstFireInfo(int numofpellets, float randspeed){
+        this.numofpellets = numofpellets;
+        this.randspeed = randspeed;
+        return this;
+    }
+
+    public CannonInfo SetBulletSize(float bulletsize) {
+        this.bulletsize = bulletsize;
+        return this;
+    }
+
+    public CannonInfo SetSoundResourceID(int soundResourceID) {
+        this.soundResourceID = soundResourceID;
+        return this;
+    }
+
+    public CannonInfo SetCannonName(String cannonname){
+        this.cannonname = cannonname;
+        return this;
     }
 }

@@ -2,20 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#FFFFFF">
-
-    <!-- Title -->
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#80FFFFFF"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <TextView
@@ -50,6 +49,28 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/cannon" />
 
+            <TextView
+                android:id="@+id/upgrade_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:text="Cannon"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cannon_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:text="Cost 1 Points"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -61,6 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:backgroundTint="@color/purple_500"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="Exit"
@@ -71,125 +93,152 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:backgroundTint="#4CAF50"
-                    android:padding="12dp"
+                    android:backgroundTint="@color/lime"
                     android:text="Buy"
-                    android:textColor="#FFFFFF"
                     android:textSize="18sp" />
             </LinearLayout>
 
         </LinearLayout>
 
-        <GridLayout
-            android:id="@+id/upgrade_grid"
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <GridLayout
+                android:id="@+id/upgrade_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:alignmentMode="alignMargins"
+                android:columnCount="3"
+                android:padding="8dp"
+                android:rowCount="3"
+                android:useDefaultMargins="true">
+
+                <!-- Icons -->
+                <ImageButton
+                    android:id="@+id/twin_barrels"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/teal_200"
+                    android:contentDescription="Twin Barrels"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannon1xx"
+                    android:tint="@color/transparent_black"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/machine_gun"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/teal_200"
+                    android:contentDescription="Machine Gun"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannon2xx"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/minigun"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/teal_200"
+                    android:contentDescription="Minigun"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannon3xx"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/longer_barrel"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/purple_200"
+                    android:contentDescription="Longer Barrel"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannonx1x"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/higher_calibre"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/purple_200"
+                    android:contentDescription="Higher Calibre"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannonx2x"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/anti_material"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/purple_200"
+                    android:contentDescription="Anti-Material"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannonx3x"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/buckshot"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/purple_700"
+                    android:contentDescription="Buckshot"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannonxx1"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/birdshot"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/purple_700"
+                    android:contentDescription="Birdshot"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannonxx2"
+                    android:visibility="visible" />
+
+                <ImageButton
+                    android:id="@+id/flechette"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@color/purple_700"
+                    android:contentDescription="Flechette"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cannonxx2"
+                    android:visibility="visible" />
+            </GridLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:id="@+id/upgrade_stats"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:alignmentMode="alignMargins"
-            android:columnCount="3"
-            android:padding="8dp"
-            android:rowCount="3"
-            android:useDefaultMargins="true">
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="10dp" >
 
-            <!-- Icons -->
-            <ImageButton
-                android:id="@+id/twin_barrels"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/teal_200"
-                android:contentDescription="Twin Barrels"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannon1xx"
-                android:tint="@color/transparent_black"
-                android:visibility="visible" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/machine_gun"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/teal_200"
-                android:contentDescription="Machine Gun"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannon2xx"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
 
-            <ImageButton
-                android:id="@+id/minigun"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/teal_200"
-                android:contentDescription="Minigun"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannon3xx"
-                android:visibility="gone" />
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminateDrawable="@drawable/bluesquare"
+                    android:progressDrawable="@drawable/baubau" />
 
-            <ImageButton
-                android:id="@+id/longer_barrel"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/purple_200"
-                android:contentDescription="Longer Barrel"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannonx1x"
-                android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/higher_calibre"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/purple_200"
-                android:contentDescription="Higher Calibre"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannonx2x"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/anti_material"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/purple_200"
-                android:contentDescription="Anti-Material"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannonx3x"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/buckshot"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/purple_700"
-                android:contentDescription="Buckshot"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannonxx1"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/birdshot"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/purple_700"
-                android:contentDescription="Birdshot"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannonxx2"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/flechette"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@color/purple_700"
-                android:contentDescription="Flechette"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cannonxx2"
-                android:visibility="gone" />
-        </GridLayout>
     </LinearLayout>
-
-    <!-- Player Level Number -->
-
-    <!-- Upgrade Icons Grid -->
-
-    <!-- Upgrade Button -->
 
 </RelativeLayout>

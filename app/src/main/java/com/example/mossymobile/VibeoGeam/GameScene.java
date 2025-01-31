@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameScene extends Scene {
-    boolean IsPaused = false;
     Player playerScript;
     @Override
     protected void Init() {
@@ -75,7 +75,7 @@ public class GameScene extends Scene {
 
             Renderer r = joystick.AddComponent(Renderer.class);
             r.ResourceID = R.drawable.bluecircle;
-
+            r.SetZLayer(10);
             knobfunction.knob = viewUI.findViewById(R.id.joystick_knob);
             knobfunction.minDistance = 5f;
             playerScript.movement = knobfunction;
@@ -92,7 +92,7 @@ public class GameScene extends Scene {
 
             Renderer r = joystick.AddComponent(Renderer.class);
             r.ResourceID = R.drawable.redcircle;
-
+            r.SetZLayer(10);
             knobfunction.knob = viewUI.findViewById(R.id.joystick_knob2);
             knobfunction.resetDirection = false;
             knobfunction.minDistance = 50f;
@@ -101,30 +101,18 @@ public class GameScene extends Scene {
         {
             Button upgradesBtn = viewUI.findViewById(R.id.upgrades_btn);
             upgradesBtn.setOnClickListener(v -> {
-                //if (!IsPaused)
-                {
-                    IsPaused = true;
-                    SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
-                }
-                //else {
-                //    IsPaused = false;
-                //    SceneManager.UnloadScene("UpgradeScene");
-                //    View ui = UI.GetInstance().GetUIContainer().findViewById(R.id.upgrades_ui);
-                //    UI.GetInstance().RemoveViewsFromLayout((LinearLayout)ui);
-                //}
+                SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
             });
         }
         CannonManager.GetInstance().ScheduledCannonSwitch = true;
-        CannonManager.GetInstance().PlayerCannonLevel = 3;
+        //CannonManager.GetInstance().PlayerCannonLevel = 3;
         //playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(8);
-        GameObject waveSpawner = new GameObject("WaveSpawner");
-        waveSpawner.AddComponent(EnemySpawner.class).player = player;
 
         GameObject healthBar = new GameObject("HealthBar");
         BarMeter hpfunc = healthBar.AddComponent(BarMeter.class);
         hpfunc.resID = R.drawable.redsquare;
         hpfunc.valueRef = playerScript.Health;
-        hpfunc.barLength = 2000;
+        hpfunc.barLength = 1000;
         healthBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 100));
         healthBar.GetTransform().SetScale(new Vector2(200, 50));
 
@@ -132,7 +120,7 @@ public class GameScene extends Scene {
         BarMeter ammofunc = ammoBar.AddComponent(BarMeter.class);
         ammofunc.resID = R.drawable.yellowsquare;
         ammofunc.valueRef = playerScript.Ammo;
-        ammofunc.barLength = 2000;
+        ammofunc.barLength = 1000;
         ammoBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 150));
         ammoBar.GetTransform().SetScale(new Vector2(200, 50));
 
@@ -140,7 +128,7 @@ public class GameScene extends Scene {
         BarMeter expfunc = expBar.AddComponent(BarMeter.class);
         expfunc.resID = R.drawable.bluesquare;
         expfunc.valueRef = playerScript.Exp;
-        expfunc.barLength = 2000;
+        expfunc.barLength = 1000;
         expfunc.startsAtZero = true;
         expfunc.maximumValue = 100f;
         expBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 200));
@@ -148,6 +136,9 @@ public class GameScene extends Scene {
 
         GameObject wallSpawner = new GameObject("WallSpawner");
         wallSpawner.AddComponent(WallSpawner.class);
+
+        GameObject waveSpawner = new GameObject("WaveSpawner");
+        waveSpawner.AddComponent(EnemySpawner.class).player = playerScript;
     }
 
     @Override
@@ -157,5 +148,10 @@ public class GameScene extends Scene {
             playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(CannonManager.GetInstance().PlayerCannonLevel);
             CannonManager.GetInstance().ScheduledCannonSwitch = false;
         }
+        if (playerScript.Health.value <= 0)
+        {
+            SceneManager.LoadScene("MenuScene");
+        }
     }
+
 }

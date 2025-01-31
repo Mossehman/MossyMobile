@@ -6,12 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/upgrades_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="Button" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="bottom|end"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/upgrades_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/purple_500"
+            android:backgroundTint="@color/purple_500"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="Upgrades"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/joystick_region"

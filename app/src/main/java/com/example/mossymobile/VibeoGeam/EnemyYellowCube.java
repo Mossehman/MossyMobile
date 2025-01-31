@@ -17,6 +17,8 @@ public class EnemyYellowCube extends Enemy {
     private RigidBody rb;
     private GameObject bar;
     private float originalHp;
+    private boolean isDying = false; // Prevent multiple destroy calls
+
     EnemyYellowCube() {
         super(20, 5, 20, 5, R.drawable.yellowsquare);
     }
@@ -36,44 +38,64 @@ public class EnemyYellowCube extends Enemy {
 
     @Override
     public void Update() {
-        if (super.health.value <= 0) {
-            numOfEnemies.value--;
-            player.GetComponentFast(Player.class).Exp.value += super.expGain;
-            Destroy(this.gameObject);
-        }
-        else if (hpBar != null){
-            hpBar.position.value = Vector2.Add(GetTransform().GetPosition(), new Vector2(0, -40));
-        }
-        Vector2 moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
+        if (!isDying) {
+            if (super.health.value <= 0) {
+                isDying = true; // Prevent multiple destroy calls
+                if (hpBar != null) {
+                    Destroy(bar);
+                    hpBar = null;
+                }
+                numOfEnemies.value--;
+                player.earnExp(super.expGain);
+                Destroy(this.gameObject);
+                return; // Stop further execution
+            } else if (hpBar != null) {
+                hpBar.position.value = Vector2.Add(GetTransform().GetPosition(), new Vector2(0, -40));
+            }
 
-        rb.AddVelocity(moveDirection);
-        if (health.value < originalHp && hpBar == null && health.value > 0) {
-            bar = new GameObject();
-            hpBar = bar.AddComponent(BarMeter.class);
-            hpBar.resID = R.drawable.redsquare;
-            hpBar.valueRef = super.health;
-            hpBar.GetTransform().SetScale(new Vector2(200, 10));
-            hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
-            hpBar.barLength = 100;
+            Vector2 moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
+            rb.AddVelocity(moveDirection);
+
+            if (health.value < originalHp && hpBar == null && health.value > 0) {
+                bar = new GameObject();
+                hpBar = bar.AddComponent(BarMeter.class);
+                hpBar.resID = R.drawable.redsquare;
+                hpBar.valueRef = super.health;
+                hpBar.GetTransform().SetScale(new Vector2(200, 10));
+                hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
+                hpBar.barLength = 100;
+            }
+
+            if (GetTransform().GetPosition().MagnitudeSq() >= 2000 * 2000) {
+                Destroy(gameObject);
+            }
         }
-        if (GetTransform().GetPosition().MagnitudeSq() >= 2000*2000) Destroy(gameObject);
     }
 
     @Override
     public void ModifyHealth(float amt) {
-        super.health.value -= amt;
+        if (!isDying) {
+            super.health.value -= amt;
+        }
     }
+
     @Override
     public void OnCollisionEnter(Collision collision) {
-        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player")){
-            collision.GetGameObject().GetComponent(Player.class).ModifyHealth(super.damage);
-            if (hpBar != null) Destroy(bar);
-            Destroy(this.gameObject);
+        super.OnCollisionEnter(collision);
+        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player")) {
+            if (hpBar != null) {
+                Destroy(bar);
+                hpBar = null;
+            }
         }
     }
 
     @Override
     public void OnDestroy() {
-        Destroy(bar);
+        super.OnDestroy();
+        if (hpBar != null) {
+            Destroy(bar);
+            hpBar = null;
+        }
     }
 }

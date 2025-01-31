@@ -16,65 +16,86 @@ public class EnemyPurpleTriangle extends Enemy {
     private BoxCollider hitbox;
     private RigidBody rb;
     private GameObject bar;
+    private float originalHp;
+    private boolean isDying = false; // Prevent multiple destroy calls
+
     EnemyPurpleTriangle() {
         super(5, 20, 40, 15, R.drawable.redcircle);
     }
 
     @Override
     public void Start() {
-        GetTransform().SetScale(new Vector2(60f, 60f));
+        GetTransform().SetScale(new Vector2(30f, 30f));
         hitbox = gameObject.AddComponent(BoxCollider.class);
         rb = gameObject.AddComponent(RigidBody.class);
         renderer = gameObject.AddComponent(Renderer.class);
-        hitbox.hitboxDimensions = new Vector2(20f, 20f);
+        hitbox.hitboxDimensions = new Vector2(10f, 10f);
         hitbox.SetCollisionLayer("Enemy");
         rb.SetRoughness(10f);
         renderer.ResourceID = super.resourceID;
+        originalHp = super.health.value;
     }
 
     @Override
     public void Update() {
-        if (super.health.value <= 0) {
-            numOfEnemies.value--;
-            player.GetComponentFast(Player.class).Exp.value += super.expGain;
-            Destroy(this.gameObject);
+        if (!isDying) {
+            if (super.health.value <= 0) {
+                isDying = true; // Prevent multiple destroy calls
+                if (hpBar != null) {
+                    Destroy(bar);
+                    hpBar = null;
+                }
+                numOfEnemies.value--;
+                player.earnExp(super.expGain);
+                Destroy(this.gameObject);
+                return; // Stop further execution
+            } else if (hpBar != null) {
+                hpBar.position.value = Vector2.Add(GetTransform().GetPosition(), new Vector2(0, -40));
+            }
+
+            Vector2 moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
+            rb.AddVelocity(moveDirection);
+
+            if (health.value < originalHp && hpBar == null && health.value > 0) {
+                bar = new GameObject();
+                hpBar = bar.AddComponent(BarMeter.class);
+                hpBar.resID = R.drawable.redsquare;
+                hpBar.valueRef = super.health;
+                hpBar.GetTransform().SetScale(new Vector2(200, 10));
+                hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
+                hpBar.barLength = 100;
+            }
+
+            if (GetTransform().GetPosition().MagnitudeSq() >= 2000 * 2000) {
+                Destroy(gameObject);
+            }
         }
-        else if (hpBar != null){
-            //Vector2 pos = new Vector2(GetTransform().GetPosition());
-            //hpBar.GetTransform().SetPosition(Vector2.Add(pos, new Vector2(0, 0)));
-            //hpBar.renderer.RenderOffset = new Vector2(0, 20);
-            hpBar.position.value = Vector2.Add(GetTransform().GetPosition(), new Vector2(0, -40));
-        }
-        Vector2 moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
-        //rb.AddForce(Vector2.Mul(moveDirection, 5.0f));
-        rb.AddVelocity(moveDirection);
-        //GetTransform().GetPosition().Add(Vector2.Mul(moveDirection, 0.1f));
     }
 
     @Override
     public void ModifyHealth(float amt) {
-        super.health.value -= amt;
-        if (hpBar == null) {
-            bar = new GameObject();
-            hpBar = bar.AddComponent(BarMeter.class);
-            hpBar.resID = R.drawable.redsquare;
-            hpBar.valueRef = super.health;
-            hpBar.GetTransform().SetScale(new Vector2(200, 10));
-            hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
-            hpBar.barLength = 25;
+        if (!isDying) {
+            super.health.value -= amt;
         }
     }
+
     @Override
     public void OnCollisionEnter(Collision collision) {
-        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player")){
-            collision.GetGameObject().GetComponent(Player.class).ModifyHealth(super.damage);
-            if (hpBar != null) Destroy(bar);
-            Destroy(this.gameObject);
+        super.OnCollisionEnter(collision);
+        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player")) {
+            if (hpBar != null) {
+                Destroy(bar);
+                hpBar = null;
+            }
         }
     }
 
     @Override
     public void OnDestroy() {
-        if (hpBar != null) Destroy(bar);
+        super.OnDestroy();
+        if (hpBar != null) {
+            Destroy(bar);
+            hpBar = null;
+        }
     }
 }

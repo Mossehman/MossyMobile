@@ -8,6 +8,7 @@ import com.example.mossymobile.MossFramework.Testing.TestScene;
 public class GameApplication extends Application {
     @Override
     protected boolean OnStart(){
+        SceneManager.AddToSceneList("MenuScene", new MenuScene());
         SceneManager.AddToSceneList("GameScene", new GameScene());
         SceneManager.AddToSceneList("UpgradeScene", new UpgradeScene());
 
@@ -25,7 +26,7 @@ public class GameApplication extends Application {
 
         CannonManager.GetInstance().PopulateData();
 
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("MenuScene");
         return true;
     }
 

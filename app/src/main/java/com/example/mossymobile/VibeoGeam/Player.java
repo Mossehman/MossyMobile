@@ -28,14 +28,13 @@ public class Player extends MonoBehaviour implements IDamageable {
     public MutableWrapper<Float> Health = new MutableWrapper<>(100f);
     public MutableWrapper<Float> Ammo = new MutableWrapper<>(100f);
     public MutableWrapper<Float> Exp = new MutableWrapper<>(0f);
+    public float cumulativeExpEarned = 0f;
     public float Reload = 5f;
     public CannonInfo cannonInfo;
     private float fireTimer = 0f;
-
     private Vector2 moveDirection = new Vector2();
     private Vector2 lookDirection = new Vector2();
     private Vector2 currentFireDirection = new Vector2();
-
     private Renderer sprite;
 
     @Override
@@ -55,6 +54,7 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     @Override
     public void Update() {
+        // holy yandere dev if statements
         gameObject.GetScene().quadtreePos = GetTransform().GetPosition();
         if (sprite.ResourceID != cannonInfo.spriteResourceID){
             sprite.ResourceID = cannonInfo.spriteResourceID;
@@ -65,6 +65,7 @@ public class Player extends MonoBehaviour implements IDamageable {
         x = MossMath.clamp(x, 0f, (float)Objects.requireNonNull(GameView.GetInstance()).getWidth());
         y = MossMath.clamp(y, 0f, (float)Objects.requireNonNull(GameView.GetInstance()).getHeight());
         GetTransform().SetPosition(new Vector2(x,y));
+
         if (look != null && movement != null) {
             if (moveDirection.MagnitudeSq() > 0)
                 rb.AddVelocity(Vector2.Mul(moveDirection, 0.1f));
@@ -80,15 +81,15 @@ public class Player extends MonoBehaviour implements IDamageable {
                 FireBullet(currentFireDirection);
                 look.isJoystickUp = false;
             }
-            else {
+            if (!look.isJoystickHeld){
                 if (Ammo.value < 100f) Ammo.value += Time.GetDeltaTime() * Reload;
                 Ammo.value = MossMath.clamp(Ammo.value, 0f, 100f);
                 if (Health.value < 100f) Health.value += Time.GetDeltaTime() * Reload;
                 Health.value = MossMath.clamp(Health.value, 0f, 100f);
-                if (Exp.value >= 100f) {
-                    Exp.value -= 100f;
-                    CannonManager.GetInstance().PlayerLevelPoints++;
-                }
+            }
+            if (Exp.value >= 100f) {
+                Exp.value -= 100f;
+                CannonManager.GetInstance().PlayerLevelPoints++;
             }
             if (look.isJoystickHeld) { // Aiming
                 Vector2 targetDirection = look.isJoystickDead && moveDirection.MagnitudeSq() > 0 ?
@@ -115,7 +116,7 @@ public class Player extends MonoBehaviour implements IDamageable {
         AudioPlayer.PlayAudio(new AudioClip(R.raw.lmg_fire), false);
         Vector2 fireDirection = targetDirection;
         int n = 1;
-        if (cannonInfo.firetype == 1) n = (int)cannonInfo.spread;
+        if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;
         for (int i = 0; i < n; i++) {
             GameObject instBullet = Instantiate(new GameObject());
             float spreadAngle = cannonInfo.spread; // Spread in degrees
@@ -128,8 +129,8 @@ public class Player extends MonoBehaviour implements IDamageable {
             bulletfunc.direction = fireDirection;
             instBullet.AddComponent(Renderer.class).ResourceID = R.drawable.bluecircle;
             instBullet.GetTransform().SetPosition(Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(fireDirection, 80f)));
-            instBullet.GetTransform().SetScale(new Vector2(50, 50));
-
+            instBullet.GetTransform().SetScale(new Vector2(cannonInfo.bulletsize * 5f, cannonInfo.bulletsize * 5f));
+            bulletfunc.speed = cannonInfo.speed * MossMath.randFloatMinMax(1,1+cannonInfo.randspeed);
         }
     }
 
@@ -197,4 +198,9 @@ public class Player extends MonoBehaviour implements IDamageable {
         return new Vector2(x, y);
     }
 
+    public Player earnExp(float exp){
+        Exp.value += exp;
+        cumulativeExpEarned += exp;
+        return this;
+    }
 }

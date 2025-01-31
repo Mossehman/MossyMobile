@@ -1,5 +1,7 @@
 package com.example.mossymobile.VibeoGeam;
 
+import android.util.Log;
+
 import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
@@ -11,7 +13,7 @@ import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import java.util.Objects;
 
 public class EnemySpawner extends MonoBehaviour {
-    public GameObject player;
+    public Player player;
     GameObject YellowCube;
     private MutableWrapper<Integer> numOfEnemies = new MutableWrapper<>(0);
     private float spawnInterval = 3f;

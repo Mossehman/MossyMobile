@@ -20,6 +20,7 @@ public class BarMeter extends MonoBehaviour {
         renderer = gameObject.AddComponent(Renderer.class);
         renderer.RenderOffset = new Vector2(0,0);
         renderer.ResourceID = resID;
+        renderer.SetZLayer(10);
 
         if (!startsAtZero) maximumValue = valueRef.value;
         fill = barLength;

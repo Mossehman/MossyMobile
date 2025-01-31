@@ -16,20 +16,19 @@ public class Bullet extends MonoBehaviour {
     public CannonInfo cannonInfo;
     private int pierce;
     public Vector2 direction;
-    private BoxCollider boxCollider;
-    private RigidBody rb;
+    public float speed;
 
     @Override
     public void Start() {
         timer = cannonInfo.lifetime;
         pierce = cannonInfo.pierce;
-        boxCollider = gameObject.AddComponent(BoxCollider.class);
-        boxCollider.hitboxDimensions = new Vector2(10, 10);
+        BoxCollider boxCollider = gameObject.AddComponent(BoxCollider.class);
+        boxCollider.hitboxDimensions = new Vector2(cannonInfo.bulletsize, cannonInfo.bulletsize);
         boxCollider.SetCollisionLayer("PlayerBullet");
         boxCollider.IsTrigger = true;
-        rb = gameObject.AddComponent(RigidBody.class);
+        RigidBody rb = gameObject.AddComponent(RigidBody.class);
         rb.SetGravityEnabled(false);
-        rb.AddVelocity(Vector2.Mul(direction, cannonInfo.speed));
+        rb.AddVelocity(Vector2.Mul(direction, speed));
     }
 
     @Override
