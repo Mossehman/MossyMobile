@@ -27,16 +27,16 @@ public class ImprovedProgressBar extends MonoBehaviour {
 
     @Override
     public void Update() {
+        if (valueRef == null) return;
         if (lerp){
-            progressValue = Lerp(progressValue,valueRef.value, 0.1f);
+            progressValue = Lerp(progressValue,valueRef.value, 0.7f);
         }
         else {
             progressValue = valueRef.value;
         }
         GameView.GetInstance().GetActivity().runOnUiThread(() -> {
-            ProgressBar view = UI.GetInstance().GetUIContainer().findViewById(R.id.circularProgressBar);
-            view.setProgress((int)(progressValue * 100));
-            view.setMax((int)(maximumValue * 100));
+            bar.setProgress((int)(progressValue * 100));
+            bar.setMax((int)(maximumValue * 100));
         });
     }
 

@@ -325,6 +325,13 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
 
         return new Vector2(x, y);
     }
+    public static Vector2 GetVectorFromAngle(float angleDegrees) {
+        double angleRadians = Math.toRadians(angleDegrees);
+        float x = (float) Math.cos(angleRadians);
+        float y = (float) Math.sin(angleRadians);
+
+        return new Vector2(x, y);
+    }
 
     public void RotateVector(float angleDegrees) {
         double angleRadians = Math.toRadians(angleDegrees);
@@ -338,7 +345,14 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
         this.y = newY;
     }
 
+    public static Vector2 Lerp(Vector2 from, Vector2 to, float t) {
+        t = Math.max(0f, Math.min(1f, t));
 
+        float x = from.x + (to.x - from.x) * t;
+        float y = from.y + (to.y - from.y) * t;
+
+        return new Vector2(x, y);
+    }
     /**
      * Checks whether the {@code x} and {@code y} components of the {@code Vector2} match with another {@code Vector2}.
      *

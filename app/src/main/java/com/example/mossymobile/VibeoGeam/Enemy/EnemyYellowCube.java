@@ -54,7 +54,7 @@ public class EnemyYellowCube extends Enemy {
                 hpBar.position.value = Vector2.Add(GetTransform().GetPosition(), new Vector2(0, -40));
             }
 
-            Vector2 moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
+            moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
             rb.AddVelocity(moveDirection);
 
             if (health.value < originalHp && hpBar == null && health.value > 0) {
@@ -83,20 +83,14 @@ public class EnemyYellowCube extends Enemy {
     @Override
     public void OnCollisionEnter(Collision collision) {
         super.OnCollisionEnter(collision);
-        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player")) {
-            if (hpBar != null) {
-                Destroy(bar);
-                hpBar = null;
-            }
+        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player") || Objects.equals(collision.GetCollider().GetCollisionLayer(), "PlayerNPC")) {
+            Destroy(bar);
         }
     }
 
     @Override
     public void OnDestroy() {
         super.OnDestroy();
-        if (hpBar != null) {
-            Destroy(bar);
-            hpBar = null;
-        }
+        Destroy(bar);
     }
 }

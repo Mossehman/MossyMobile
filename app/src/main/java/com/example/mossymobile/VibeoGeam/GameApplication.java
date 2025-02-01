@@ -24,10 +24,12 @@ public class GameApplication extends Application {
         Collision.CreateCollisionLayer("EnemyBullet");
         Collision.CreateCollisionLayer("Wall");
         Collision.CreateCollisionLayer("NoWallCollision");
+        Collision.CreateCollisionLayer("PlayerNPC");
 
         Collision.ConfigureCollisionLayer("PlayerBullet", "EnemyBullet", false);
         Collision.ConfigureCollisionLayer("Enemy", "EnemyBullet", false);
         Collision.ConfigureCollisionLayer("Player", "PlayerBullet", false);
+        Collision.ConfigureCollisionLayer("Player", "PlayerNPC", false);
         Collision.ConfigureCollisionLayer("NoWallCollision", "Wall", false);
 
         UpgradesManager.GetInstance().PopulateData();

@@ -1,7 +1,12 @@
 package com.example.mossymobile.VibeoGeam.Tank;
 
+import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.DesignPatterns.Singleton;
+import com.example.mossymobile.MossFramework.GameObject;
+import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Systems.Physics.Physics;
 import com.example.mossymobile.R;
+import com.example.mossymobile.VibeoGeam.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,15 +14,23 @@ import java.util.List;
 public class UpgradesManager extends Singleton<UpgradesManager> {
     public static UpgradesManager GetInstance() {return Singleton.GetInstance(UpgradesManager.class);}
     public List<CannonInfo> cannonData = new ArrayList<>(){};
+    public CannonInfo minitankcannon = new CannonInfo(5f, 600f, 0,1.0f, 2, 0.30f, 0.0f, 2.0f, 0.40f, -1, 0).SetBulletSize(5.0f);
     public List<TankUpgrade> tankData = new ArrayList<>(){};
 
     public int PlayerCannonLevel = 0;
+    public int PlayerActiveAbility = -1;
+    public int PlayerPassiveAbility = -1;
     public int PlayerLevelPoints = 0;
     public boolean ScheduledCannonSwitch = false;
+    public Player player;
 
-    public void Init(){
+    public void Init(Player player){
         PlayerCannonLevel = 0;
         PlayerLevelPoints = 90;
+        PlayerActiveAbility = -1;
+        PlayerPassiveAbility = -1;
+        ScheduledCannonSwitch = true;
+        this.player = player;
     }
     public void PopulateData()
     {
@@ -35,15 +48,47 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
         cannonData.add(new CannonInfo( 8f, 650f, 1,16.f, 1, 0.15f, 08.0f, 1.5f, 0.90f, R.drawable.cannonxx2, 2).SetCannonName("Birdshot").SetBurstFireInfo(28, 0.4f).SetBulletSize(4.0f));
         cannonData.add(new CannonInfo(24f, 700f, 5,5.0f, 1, 0.10f, 20.0f, 2.0f, 0.87f, R.drawable.cannonxx3, 3).SetCannonName("Flechette").SetBurstFireInfo(20, 0.3f).SetBulletSize(9.5f));
 
-        tankData.add(new BaseUpgrade("Repair", R.drawable.upgrade1xx, new int[]{0,1,1,2,3,4}, new float[]{0,0.5f,0.8f,1.3f,1.8f,2.4f}));
-        tankData.add(new BaseUpgrade("Reload", R.drawable.upgrade2xx, new int[]{0,1,1,3,3,4}, new float[]{0,0.2f,0.4f,1.2f,2.0f,2.6f}));
-        tankData.add(new BaseUpgrade("Reinforcement", R.drawable.upgrade3xx, new int[]{0,1,2,2,3,4}, new float[]{100f,120f,140f,160f,200f,250f}));
+        tankData.add(new BasicUpgrade("Repair", R.drawable.upgrade1xx, new int[]{0,1,1,2,3,4}, new float[]{0,0.5f,0.8f,1.3f,1.8f,2.4f}));
+        tankData.add(new BasicUpgrade("Reload", R.drawable.upgrade2xx, new int[]{0,1,1,3,3,4}, new float[]{0,0.2f,0.4f,1.2f,2.0f,2.6f}));
+        tankData.add(new BasicUpgrade("Reinforcement", R.drawable.upgrade3xx, new int[]{0,1,2,2,3,4}, new float[]{100f,120f,140f,160f,200f,250f}));
+
+        tankData.add(new ActiveUpgrade("Thruster", R.drawable.upgradex1x,new MutableWrapper<Float>(0.6f), 2)
+                .SetFunction(()->{
+                    Vector2 dir;
+                    if (player.movement.direction.MagnitudeSq() > 0) dir = player.movement.direction.FastNormalize();
+                    else dir = Vector2.GetVectorFromAngle(player.GetTransform().GetRotation()-90);
+                    dir.Mul(500.f);
+                    player.getRb().AddForce(dir, Physics.ForceMode2D.IMPULSE);
+                }).SetDescription("Boosts you in the direction you are moving"));
+        tankData.add(new ActiveUpgrade("Grenade", R.drawable.upgradex2x, new MutableWrapper<Float>(3.f), 4)
+                .SetFunction(()->{
+                    GameObject grenade = new GameObject();
+                    grenade.GetTransform().SetPosition(player.GetTransform().GetPosition());
+                    Grenade src = grenade.AddComponent(Grenade.class);
+                    Vector2 dir;
+                    if (player.movement.direction.MagnitudeSq() > 0) dir = player.movement.direction.FastNormalize();
+                    else dir = Vector2.GetVectorFromAngle(player.GetTransform().GetRotation()-90);
+                    dir.Mul(600.f);
+                    src.targetPosition = Vector2.Add(player.GetTransform().GetPosition(),dir);
+                }).SetDescription("Throws a grenade"));
+        tankData.add(new ActiveUpgrade("Mini Tanks", R.drawable.upgradex3x, new MutableWrapper<Float>(15.f), 8)
+                .SetFunction(()->{
+                    Vector2 playerpos = player.GetTransform().GetPosition();
+                    Vector2[] spawnpos = new Vector2[]{
+                            Vector2.Add(playerpos, new Vector2(0f,-100f)),
+                            Vector2.Add(playerpos, new Vector2(50f, 0.866f * 100f)),
+                            Vector2.Add(playerpos, new Vector2(-50f,0.866f * 100f)),
+                    };
+                    for (int i = 0; i < 3;i++) {
+                        GameObject minitank = new GameObject();
+                        minitank.AddComponent(MiniTank.class).cannonInfo = minitankcannon;
+                        minitank.GetTransform().SetPosition(spawnpos[i]);
+                    }
+                }).SetDescription("Deploys three small tanks to fight"));
     }
 
-    public CannonInfo FetchCannon(int id)
-    {
-        return cannonData.get(id);
-    }
+    public CannonInfo FetchCannon(int id) { return cannonData.get(id); }
+    public BasicUpgrade FetchBaseUpgrade(int id) { return (BasicUpgrade)tankData.get(id); }
+    public ActiveUpgrade FetchActiveUpgrade(int id) { return (ActiveUpgrade)tankData.get(id+3); }
 
-    public BaseUpgrade FetchBaseUpgrade(int id) { return (BaseUpgrade)tankData.get(id); }
 }

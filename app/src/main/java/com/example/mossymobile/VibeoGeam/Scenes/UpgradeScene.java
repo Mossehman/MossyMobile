@@ -20,7 +20,8 @@ import com.example.mossymobile.MossFramework.Scene;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
-import com.example.mossymobile.VibeoGeam.Tank.BaseUpgrade;
+import com.example.mossymobile.VibeoGeam.Tank.ActiveUpgrade;
+import com.example.mossymobile.VibeoGeam.Tank.BasicUpgrade;
 import com.example.mossymobile.VibeoGeam.Tank.CannonInfo;
 import com.example.mossymobile.VibeoGeam.GameApplication;
 import com.example.mossymobile.VibeoGeam.Tank.TankUpgrade;
@@ -80,32 +81,32 @@ public class UpgradeScene extends Scene {
                 else {
                     int selectedUpgrade2 = selectedUpgrade - UpgradesManager.GetInstance().cannonData.size();
                     TankUpgrade upgrade = UpgradesManager.GetInstance().tankData.get(selectedUpgrade2);
-
-                    if (upgrade instanceof BaseUpgrade)
+                    TextView cannoncost = ui.findViewById(R.id.cannon_cost);
+                    TextView upgradename = ui.findViewById(R.id.upgrade_name);
+                    if (upgrade instanceof BasicUpgrade)
                     {
-                        BaseUpgrade baseUpgrade = (BaseUpgrade) upgrade;
-                        TextView cannoncost = ui.findViewById(R.id.cannon_cost);
-                        TextView upgradename = ui.findViewById(R.id.upgrade_name);
-                        if (baseUpgrade.currentLvl < 5) {
-                            int nextLevel = baseUpgrade.currentLvl + 1;
+                        BasicUpgrade basicUpgrade = (BasicUpgrade) upgrade;
+
+                        if (basicUpgrade.currentLvl < 5) {
+                            int nextLevel = basicUpgrade.currentLvl + 1;
 
                             // Ensure nextLevel does not exceed the array bounds
-                            if (nextLevel < baseUpgrade.lvlCosts.length) {
-                                int cost = baseUpgrade.lvlCosts[nextLevel];
+                            if (nextLevel < basicUpgrade.lvlCosts.length) {
+                                int cost = basicUpgrade.lvlCosts[nextLevel];
 
                                 if (UpgradesManager.GetInstance().PlayerLevelPoints >= cost) {
                                     UpgradesManager.GetInstance().PlayerLevelPoints -= cost;
-                                    baseUpgrade.currentLvl++;
+                                    basicUpgrade.currentLvl++;
 
-                                    if (baseUpgrade.currentLvl < baseUpgrade.lvlCosts.length - 1) {
-                                        cannoncost.setText("Costs " + baseUpgrade.lvlCosts[baseUpgrade.currentLvl + 1] + " Points");
+                                    if (basicUpgrade.currentLvl < basicUpgrade.lvlCosts.length - 1) {
+                                        cannoncost.setText("Costs " + basicUpgrade.lvlCosts[basicUpgrade.currentLvl + 1] + " Points");
                                     } else {
                                         cannoncost.setText("MAX Level");
                                         buyBtn.setText("Locked");
                                         buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
                                     }
 
-                                    upgradename.setText(baseUpgrade.upgradename + " Lvl " + baseUpgrade.currentLvl);
+                                    upgradename.setText(basicUpgrade.upgradename + " Lvl " + basicUpgrade.currentLvl);
 
                                     // Refresh UI to reflect purchase
                                     InitializeUI(); RefreshBaseUpgradeStats();
@@ -113,9 +114,18 @@ public class UpgradeScene extends Scene {
                             }
                         }
                     }
-                    else{
-                        buyBtn.setText("Locked");
-                        buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
+                    else if (upgrade instanceof ActiveUpgrade) {
+                        if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0) return;
+                        ActiveUpgrade activeUpgrade = (ActiveUpgrade) upgrade;
+                        int cost = activeUpgrade.cost;
+                        if (UpgradesManager.GetInstance().PlayerLevelPoints >= cost) {
+                            UpgradesManager.GetInstance().PlayerLevelPoints -= cost;
+                            UpgradesManager.GetInstance().PlayerActiveAbility = selectedUpgrade2 - 3;
+
+                            buyBtn.setText("Locked");
+                            buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
+                            InitializeUI();
+                        }
                     }
                 }
             }
@@ -225,11 +235,10 @@ public class UpgradeScene extends Scene {
             layoutParams.height = height;
 
 
-            BaseUpgrade baseUpgrade = null;
             int upgradePath = (i <= 2) ? 1 : (i <= 5) ? 2 : 3;
             int colorId;
             switch (upgradePath) {
-                case 1: colorId = R.color.teal_200; baseUpgrade = (BaseUpgrade)tankUpgrade; break;
+                case 1: colorId = R.color.teal_200; break;
                 case 2: colorId = R.color.purple_200; break;
                 case 3: colorId = R.color.orange_200; break;
                 default: colorId = R.color.black; break;
@@ -240,26 +249,29 @@ public class UpgradeScene extends Scene {
             upgradeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
             upgradeBtn.setImageResource(tankUpgrade.spriteResourceID);
 
-            BaseUpgrade finalBaseUpgrade = baseUpgrade;
+            TankUpgrade finalTankUpgrade = tankUpgrade;
             int finalI = i;
             upgradeBtn.setOnClickListener(l -> {
                 upgradeImagePreview.setImageResource(tankUpgrade.spriteResourceID);
                 upgradeImagePreview.setColorFilter(0);
-                if (finalBaseUpgrade != null) { // Check if it's a BaseUpgrade
-                    if (finalBaseUpgrade.currentLvl < 4) {
-                        int nextCost = finalBaseUpgrade.lvlCosts[finalBaseUpgrade.currentLvl + 1];
+                if (finalTankUpgrade instanceof BasicUpgrade) {
+                    BasicUpgrade basicUpgrade = (BasicUpgrade)finalTankUpgrade;
+                    if (basicUpgrade.currentLvl < 4) {
+                        int nextCost = basicUpgrade.lvlCosts[basicUpgrade.currentLvl + 1];
                         cannoncost.setText("Costs " + nextCost + " Points");
                         canPurchase = (UpgradesManager.GetInstance().PlayerLevelPoints >= nextCost);
                     } else {
                         cannoncost.setText("MAX Level");
                         canPurchase = false;
                     }
-                    upgradename.setText(tankUpgrade.upgradename + " Lvl " + finalBaseUpgrade.currentLvl);
+                    upgradename.setText(tankUpgrade.upgradename + " Lvl " + basicUpgrade.currentLvl);
                     RefreshBaseUpgradeStats();
-                } else { // Single purchase upgrade
-                    cannoncost.setText("Costs " + 5 + " Points"); // Example cost for non-base upgrades
-                    canPurchase = (UpgradesManager.GetInstance().PlayerLevelPoints >= 5);
+                } else if (finalTankUpgrade instanceof ActiveUpgrade) { // Single purchase upgrade
+                    ActiveUpgrade activeUpgrade = (ActiveUpgrade)finalTankUpgrade;
+                    cannoncost.setText("Costs " + activeUpgrade.cost + " Points"); // Example cost for non-base upgrades
+                    canPurchase = UpgradesManager.GetInstance().PlayerActiveAbility < 0;
                     upgradename.setText(tankUpgrade.upgradename);
+                    DisplayUpgradeDescription(tankUpgrade.upgradedescription);
                 }
                 if (canPurchase) {
                     buyBtn.setText("Buy");
@@ -292,11 +304,32 @@ public class UpgradeScene extends Scene {
     private void RefreshBaseUpgradeStats()
     {
         UI.GetInstance().RemoveViewsFromLayout(upgradestatsdocker);
-        ;
         AddStatToContainer("Regen Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(0).GetCurrentMod() * 10f + 20f, 44f);
         AddStatToContainer("Reload Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(1).GetCurrentMod() * 10f + 40f, 66f);
         AddStatToContainer("Maximum HP", UpgradesManager.GetInstance().FetchBaseUpgrade(2).GetCurrentMod(), 250f);
     }
+    private void DisplayUpgradeDescription(String description)
+    {
+        UI.GetInstance().RemoveViewsFromLayout(upgradestatsdocker);
+        LinearLayout statLayout = new LinearLayout(context);
+        statLayout.setOrientation(LinearLayout.VERTICAL);
+        statLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        TextView statText = new TextView(context);
+        statText.setText(description);
+        statText.setTextSize(18);
+        statText.setTextColor(R.color.black);
+        statText.setTypeface(null, Typeface.BOLD);
+        statText.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        statLayout.addView(statText);
+        upgradestatsdocker.addView(statLayout);
+    }
+
     private void AddStatToContainer(String statName, float value, float maxValue) {
         Context context = upgradestatsdocker.getContext();
 

@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:progressDrawable="@drawable/stat_bar_x1x" />
+            android:progressDrawable="@drawable/stat_bar_2xx" />
 
         <ProgressBar
             android:id="@+id/expbar"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:progressDrawable="@drawable/stat_bar_xx1" />
+            android:progressDrawable="@drawable/stat_bar_3xx" />
     </LinearLayout>
 
     <LinearLayout
@@ -99,7 +99,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/purplecircle" />
+            app:srcCompat="@drawable/upgradex2x" />
 
         <ProgressBar
             android:id="@+id/circularProgressBar"

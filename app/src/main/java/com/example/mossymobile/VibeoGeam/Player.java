@@ -56,7 +56,6 @@ public class Player extends MonoBehaviour implements IDamageable {
 
         gameObject.GetScene().quadtreeScale = new Vector2(Objects.requireNonNull(GameView.GetInstance()).getWidth(),
                 Objects.requireNonNull(GameView.GetInstance()).getHeight());
-
     }
 
     @Override
@@ -128,7 +127,7 @@ public class Player extends MonoBehaviour implements IDamageable {
             GameObject instBullet = Instantiate(new GameObject());
             float spreadAngle = cannonInfo.spread; // Spread in degrees
             if (spreadAngle > 0) {
-                float randomOffset = (float) (Math.random() * spreadAngle - (spreadAngle / 2.0)); // Random angle within spread
+                float randomOffset =MossMath.randFloatMinMax(-spreadAngle * 0.5f, spreadAngle * 0.5f);
                 fireDirection = Vector2.RotateVector(fireDirection, randomOffset);
             }
             Bullet bulletfunc = instBullet.AddComponent(Bullet.class);
@@ -185,7 +184,7 @@ public class Player extends MonoBehaviour implements IDamageable {
 
         // If the angle is small, linear interpolation is sufficient
         if (theta < 1e-5) {
-            return Lerp(from, to, t).Normalized();
+            return Vector2.Lerp(from, to, t).Normalized();
         }
 
         // Perform spherical linear interpolation
@@ -195,20 +194,12 @@ public class Player extends MonoBehaviour implements IDamageable {
 
         return Vector2.Add(Vector2.Mul(from, scaleFrom), Vector2.Mul(to, scaleTo));
     }
-    private Vector2 Lerp(Vector2 from, Vector2 to, float t) {
-        // Clamp t between 0 and 1
-        t = Math.max(0f, Math.min(1f, t));
-
-        // Linearly interpolate each component
-        float x = from.x + (to.x - from.x) * t;
-        float y = from.y + (to.y - from.y) * t;
-
-        return new Vector2(x, y);
-    }
 
     public Player earnExp(float exp){
         Exp.value += exp;
         cumulativeExpEarned += exp;
         return this;
     }
+
+    public RigidBody getRb() { return rb; }
 }
