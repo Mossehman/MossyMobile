@@ -3,6 +3,7 @@ package com.example.mossymobile.VibeoGeam;
 import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import com.example.mossymobile.MossFramework.Application;
@@ -17,7 +18,7 @@ import com.example.mossymobile.MossFramework.Systems.UserInput.Input;
 import java.util.Objects;
 
 public class JoystickKnob extends MonoBehaviour {
-    public Button knob;
+    public View knob;
 
     // Logical positions for touch
     public Vector2 originalTouchPosition = new Vector2(0f, 0f);

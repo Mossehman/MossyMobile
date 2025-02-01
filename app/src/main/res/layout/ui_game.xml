@@ -7,13 +7,45 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/stat_bars"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center|start"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/healthbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:progressDrawable="@drawable/stat_bar_1xx" />
+
+        <ProgressBar
+            android:id="@+id/ammobar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:progressDrawable="@drawable/stat_bar_x1x" />
+
+        <ProgressBar
+            android:id="@+id/expbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:progressDrawable="@drawable/stat_bar_xx1" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:gravity="bottom|end"
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/upgrades_btn"
+            android:id="@+id/upgrades_enter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/purple_500"
@@ -38,6 +70,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:background="#0007EAFF" />
+
     </FrameLayout>
 
     <FrameLayout
@@ -52,6 +85,35 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:background="#0007EAFF" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/joystick_region3"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:layout_gravity="end">
+
+        <ImageView
+            android:id="@+id/ability_btn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/purplecircle" />
+
+        <ProgressBar
+            android:id="@+id/circularProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="50"
+
+            android:progressDrawable="@drawable/circular_progress" />
+
+
     </FrameLayout>
 
 </FrameLayout>

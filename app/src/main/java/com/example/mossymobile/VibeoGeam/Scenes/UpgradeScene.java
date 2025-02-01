@@ -51,6 +51,7 @@ public class UpgradeScene extends Scene {
         upgradesGrid = ui.findViewById(R.id.upgrade_grid);
         upgradestatsdocker = ui.findViewById(R.id.upgrade_stats);
 
+
         Button buyBtn = ui.findViewById(R.id.upgrade_button);
 
         selectedUpgrade = UpgradesManager.GetInstance().PlayerCannonLevel;
@@ -123,6 +124,7 @@ public class UpgradeScene extends Scene {
         Button exitBtn = ui.findViewById(R.id.upgrade_exit_button);
         exitBtn.setOnClickListener(l ->{
             Application.pause = false;
+            UI.GetInstance().GetUIContainer().setVisibility(View.VISIBLE);
             UI.GetInstance().RemoveViewsFromLayout(uidocker);
             SceneManager.UnloadScene("UpgradeScene");
         });
@@ -291,8 +293,8 @@ public class UpgradeScene extends Scene {
     {
         UI.GetInstance().RemoveViewsFromLayout(upgradestatsdocker);
         ;
-        AddStatToContainer("Regen Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(0).GetCurrentMod() * 10f, 24f);
-        AddStatToContainer("Reload Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(1).GetCurrentMod() * 10f, 26f);
+        AddStatToContainer("Regen Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(0).GetCurrentMod() * 10f + 20f, 44f);
+        AddStatToContainer("Reload Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(1).GetCurrentMod() * 10f + 40f, 66f);
         AddStatToContainer("Maximum HP", UpgradesManager.GetInstance().FetchBaseUpgrade(2).GetCurrentMod(), 250f);
     }
     private void AddStatToContainer(String statName, float value, float maxValue) {

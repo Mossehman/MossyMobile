@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Background color of the progress bar -->
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <solid android:color="#647687"/> <!-- Light gray -->
+            <solid android:color="#647687"/>
             <corners android:radius="5dp"/>
         </shape>
     </item>
 
-    <!-- Progress fill color -->
     <item android:id="@android:id/progress">
         <clip android:layout_width="wrap_content">
             <shape android:shape="rectangle">
-                <solid android:color="#4CAF50" /> <!-- Green -->
+                <solid android:color="#F0A30A"/> >
                 <corners android:radius="5dp" />
             </shape>
         </clip>

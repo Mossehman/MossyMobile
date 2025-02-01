@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
@@ -18,9 +19,9 @@ import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
-import com.example.mossymobile.VibeoGeam.BarMeter;
 import com.example.mossymobile.VibeoGeam.Enemy.EnemySpawner;
 import com.example.mossymobile.VibeoGeam.GameApplication;
+import com.example.mossymobile.VibeoGeam.ImprovedProgressBar;
 import com.example.mossymobile.VibeoGeam.JoystickKnob;
 import com.example.mossymobile.VibeoGeam.Leaderboard;
 import com.example.mossymobile.VibeoGeam.Player;
@@ -37,32 +38,6 @@ public class GameScene extends Scene {
         float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
         float screenHeight = Objects.requireNonNull(GameView.GetInstance()).getHeight();
 
-        Vector2[] wallcoords = {
-                new Vector2(screenWidth * 0.5f, 0),
-                new Vector2(screenWidth * 0.5f, screenHeight),
-                new Vector2(0, screenHeight * 0.5f),
-                new Vector2(screenWidth, screenHeight * 0.5f),
-        };
-
-        Vector2[] wallscales = {
-                new Vector2(screenWidth, 100),
-                new Vector2(screenWidth, 100),
-                new Vector2(100, screenHeight),
-                new Vector2(100, screenHeight),
-        };
-
-        for (int i = 0; i < 0; i++) {
-            GameObject wall = new GameObject();
-            BoxCollider col = wall.AddComponent(BoxCollider.class);
-            RigidBody rb = wall.AddComponent(RigidBody.class);
-            rb.SetGravityEnabled(false);
-            rb.SetKinematic(true);
-            //wall.AddComponent(Renderer.class).ResourceID = R.drawable.bluesquare;
-            wall.GetTransform().SetPosition(wallcoords[i]);
-            wall.GetTransform().SetScale(wallscales[i]);
-            col.hitboxDimensions = wallscales[i];
-        }
-
         GameObject player = new GameObject("Player");
         player.AddComponent(Renderer.class).ResourceID = R.drawable.cannon;
         playerScript = player.AddComponent(Player.class);
@@ -70,7 +45,93 @@ public class GameScene extends Scene {
         BoxCollider playerHitbox = player.AddComponent(BoxCollider.class);
         playerHitbox.hitboxDimensions = new Vector2(20f, 20f);
         playerHitbox.SetCollisionLayer("Player");
+
         View viewUI = UI.GetInstance().AddLayoutToUI(R.layout.ui_game);
+        InitalizeUI(viewUI);
+        {
+            Button upgradesBtn = viewUI.findViewById(R.id.upgrades_enter_button);
+            upgradesBtn.setOnClickListener(v -> {
+                UI.GetInstance().GetUIContainer().setVisibility(View.GONE);
+                SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
+            });
+        }
+
+        UpgradesManager.GetInstance().ScheduledCannonSwitch = true;
+        UpgradesManager.GetInstance().Init();
+
+/*
+        GameObject healthBar = new GameObject("HealthBar");
+        BarMeter hpfunc = healthBar.AddComponent(BarMeter.class);
+        hpfunc.resID = R.drawable.redsquare;
+        hpfunc.valueRef = playerScript.Health;
+        hpfunc.barLength = 1000;
+        healthBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 100));
+        healthBar.GetTransform().SetScale(new Vector2(200, 50));
+
+        GameObject ammoBar = new GameObject("AmmoBar");
+        BarMeter ammofunc = ammoBar.AddComponent(BarMeter.class);
+        ammofunc.resID = R.drawable.yellowsquare;
+        ammofunc.valueRef = playerScript.Ammo;
+        ammofunc.barLength = 1000;
+        ammoBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 150));
+        ammoBar.GetTransform().SetScale(new Vector2(200, 50));
+
+        GameObject expBar = new GameObject("ExpBar");
+        BarMeter expfunc = expBar.AddComponent(BarMeter.class);
+        expfunc.resID = R.drawable.bluesquare;
+        expfunc.valueRef = playerScript.Exp;
+        expfunc.barLength = 1000;
+        expfunc.startsAtZero = true;
+        expfunc.maximumValue = 100f;
+        expBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 200));
+        expBar.GetTransform().SetScale(new Vector2(200, 50));
+*/
+        GameObject wallSpawner = new GameObject("WallSpawner");
+        wallSpawner.AddComponent(WallSpawner.class);
+
+        GameObject waveSpawner = new GameObject("WaveSpawner");
+        waveSpawner.AddComponent(EnemySpawner.class).player = playerScript;
+    }
+
+    @Override
+    protected void Update() {
+        if (UpgradesManager.GetInstance().ScheduledCannonSwitch)
+        {
+            playerScript.cannonInfo = UpgradesManager.GetInstance().FetchCannon(UpgradesManager.GetInstance().PlayerCannonLevel);
+            UpgradesManager.GetInstance().ScheduledCannonSwitch = false;
+        }
+        if (playerScript.Health.value <= 0 && !hasLost)
+        {
+            //SceneManager.LoadScene("MenuScene");
+            DisplayScoreSubmission();
+            GameApplication.isResetting = true;
+            hasLost = true;
+        }
+
+    }
+
+    private void DisplayScoreSubmission(){
+        View ui = UI.GetInstance().AddLayoutToUI(R.layout.gameover);
+        TextView score = ui.findViewById(R.id.score_txt);
+        float finalScore = playerScript.cumulativeExpEarned;
+        playerScript.Destroy(playerScript.GetGameObject());
+        score.setText("Final Score: " + finalScore);
+        EditText usernameI = ui.findViewById(R.id.username_input);
+        ui.findViewById(R.id.score_submit_btn).setOnClickListener(l -> {
+            String userInput = usernameI.getText().toString();
+
+            Leaderboard lb = ScriptableObject.Create("highscores", Leaderboard.class, true);
+            lb.Leaderboard.put(userInput, finalScore);
+            lb.SaveToExternalStorage();
+            hasLost = false;
+            SceneManager.LoadScene("MenuScene");
+        });
+    }
+
+    private void InitalizeUI(View viewUI)
+    {
+        float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
+        float screenHeight = Objects.requireNonNull(GameView.GetInstance()).getHeight();
         {
             FrameLayout knob = viewUI.findViewById(R.id.joystick_region);
 
@@ -103,81 +164,25 @@ public class GameScene extends Scene {
             playerScript.look = knobfunction;
         }
         {
-            Button upgradesBtn = viewUI.findViewById(R.id.upgrades_btn);
-            upgradesBtn.setOnClickListener(v -> {
-                SceneManager.LoadScene("UpgradeScene", SceneLoadMode.ADDITIVE);
-            });
+            FrameLayout knob = viewUI.findViewById(R.id.joystick_region3);
+            ProgressBar view = viewUI.findViewById(R.id.circularProgressBar);
+            //GameObject abilityProgressbar = new GameObject("AbilityProgress");
+            //abilityProgressbar.AddComponent(ImprovedProgressBar.class).SetProgressBar(view).SetRef(playerScript.Health).SetMax(UpgradesManager.GetInstance().FetchBaseUpgrade(2).GetCurrentMod());
         }
-
-        UpgradesManager.GetInstance().ScheduledCannonSwitch = true;
-        UpgradesManager.GetInstance().Init();
-        //CannonManager.GetInstance().PlayerCannonLevel = 3;
-        //playerScript.cannonInfo = CannonManager.GetInstance().FetchCannon(8);
-
-        GameObject healthBar = new GameObject("HealthBar");
-        BarMeter hpfunc = healthBar.AddComponent(BarMeter.class);
-        hpfunc.resID = R.drawable.redsquare;
-        hpfunc.valueRef = playerScript.Health;
-        hpfunc.barLength = 1000;
-        healthBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 100));
-        healthBar.GetTransform().SetScale(new Vector2(200, 50));
-
-        GameObject ammoBar = new GameObject("AmmoBar");
-        BarMeter ammofunc = ammoBar.AddComponent(BarMeter.class);
-        ammofunc.resID = R.drawable.yellowsquare;
-        ammofunc.valueRef = playerScript.Ammo;
-        ammofunc.barLength = 1000;
-        ammoBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 150));
-        ammoBar.GetTransform().SetScale(new Vector2(200, 50));
-
-        GameObject expBar = new GameObject("ExpBar");
-        BarMeter expfunc = expBar.AddComponent(BarMeter.class);
-        expfunc.resID = R.drawable.bluesquare;
-        expfunc.valueRef = playerScript.Exp;
-        expfunc.barLength = 1000;
-        expfunc.startsAtZero = true;
-        expfunc.maximumValue = 100f;
-        expBar.GetTransform().SetPosition(new Vector2(screenWidth * 0.5f, 200));
-        expBar.GetTransform().SetScale(new Vector2(200, 50));
-
-        GameObject wallSpawner = new GameObject("WallSpawner");
-        wallSpawner.AddComponent(WallSpawner.class);
-
-        GameObject waveSpawner = new GameObject("WaveSpawner");
-        waveSpawner.AddComponent(EnemySpawner.class).player = playerScript;
-    }
-
-    @Override
-    protected void Update() {
-        if (UpgradesManager.GetInstance().ScheduledCannonSwitch)
         {
-            playerScript.cannonInfo = UpgradesManager.GetInstance().FetchCannon(UpgradesManager.GetInstance().PlayerCannonLevel);
-            UpgradesManager.GetInstance().ScheduledCannonSwitch = false;
-        }
-        if (playerScript.Health.value <= 0 && !hasLost)
-        {
-            //SceneManager.LoadScene("MenuScene");
-            DisplayScoreSubmission();
-            GameApplication.isResetting = true;
-            hasLost = true;
-        }
-    }
+            View statbars = viewUI.findViewById(R.id.stat_bars);
+            ProgressBar hp = statbars.findViewById(R.id.healthbar);
+            ProgressBar ammo = statbars.findViewById(R.id.ammobar);
+            ProgressBar exp = statbars.findViewById(R.id.expbar);
 
-    private void DisplayScoreSubmission(){
-        View ui = UI.GetInstance().AddLayoutToUI(R.layout.gameover);
-        TextView score = ui.findViewById(R.id.score_txt);
-        float finalScore = playerScript.cumulativeExpEarned;
-        playerScript.Destroy(playerScript.GetGameObject());
-        score.setText("Final Score: " + finalScore);
-        EditText usernameI = ui.findViewById(R.id.username_input);
-        ui.findViewById(R.id.score_submit_btn).setOnClickListener(l -> {
-            String userInput = usernameI.getText().toString();
+            GameObject bar1 = new GameObject("Health");
+            GameObject bar2 = new GameObject("Ammo");
+            GameObject bar3 = new GameObject("Exp");
 
-            Leaderboard lb = ScriptableObject.Create("highscores", Leaderboard.class, true);
-            lb.Leaderboard.put(userInput, finalScore);
-            lb.SaveToExternalStorage();
-            hasLost = false;
-            SceneManager.LoadScene("MenuScene");
-        });
+            bar1.AddComponent(ImprovedProgressBar.class).SetProgressBar(hp).SetRef(playerScript.Health).SetMax(UpgradesManager.GetInstance().FetchBaseUpgrade(2).GetCurrentMod());
+            bar2.AddComponent(ImprovedProgressBar.class).SetProgressBar(ammo).SetRef(playerScript.Ammo).SetMax(100);
+            bar3.AddComponent(ImprovedProgressBar.class).SetProgressBar(exp).SetRef(playerScript.Exp).SetMax(100);
+
+        }
     }
 }
