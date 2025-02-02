@@ -21,16 +21,16 @@ public class EnemyPurpleTriangle extends Enemy {
     private boolean isDying = false; // Prevent multiple destroy calls
 
     EnemyPurpleTriangle() {
-        super(5, 50, 40, 25, R.drawable.purpletriangle);
+        super(7, 30, 60, 25, R.drawable.purpletriangle);
     }
 
     @Override
     public void Start() {
-        GetTransform().SetScale(new Vector2(30f, 30f));
+        GetTransform().SetScale(new Vector2(15f * 3, 15f * 3));
         hitbox = gameObject.AddComponent(BoxCollider.class);
         rb = gameObject.AddComponent(RigidBody.class);
         renderer = gameObject.AddComponent(Renderer.class);
-        hitbox.hitboxDimensions = new Vector2(10f, 10f);
+        hitbox.hitboxDimensions = new Vector2(15f, 15f);
         hitbox.SetCollisionLayer("Enemy");
         rb.SetRoughness(10f);
         renderer.ResourceID = super.resourceID;
@@ -64,7 +64,7 @@ public class EnemyPurpleTriangle extends Enemy {
                 hpBar.valueRef = super.health;
                 hpBar.GetTransform().SetScale(new Vector2(200, 10));
                 hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
-                hpBar.barLength = 100;
+                hpBar.barLength = 35;
             }
 
             if (GetTransform().GetPosition().MagnitudeSq() >= 2000 * 2000) {

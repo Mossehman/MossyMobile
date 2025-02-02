@@ -1,6 +1,6 @@
 package com.example.mossymobile.VibeoGeam.Tank;
 
-import java.util.function.BiFunction;
+import com.example.mossymobile.MossFramework.GameObject;
 
 public abstract class TankUpgrade {
     public String upgradename;

@@ -14,15 +14,12 @@ import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
-import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.Scene;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneLoadMode;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
-import com.example.mossymobile.MossFramework.Systems.UserInput.Sensors;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
-import com.example.mossymobile.MossFramework.Systems.UserInput.Vibration;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Enemy.EnemySpawner;
 import com.example.mossymobile.VibeoGeam.GameApplication;
@@ -31,6 +28,7 @@ import com.example.mossymobile.VibeoGeam.JoystickKnob;
 import com.example.mossymobile.VibeoGeam.Leaderboard;
 import com.example.mossymobile.VibeoGeam.Player;
 import com.example.mossymobile.VibeoGeam.Tank.ActiveUpgrade;
+import com.example.mossymobile.VibeoGeam.Tank.TankCosmetic;
 import com.example.mossymobile.VibeoGeam.Tank.UpgradesManager;
 import com.example.mossymobile.VibeoGeam.WallSpawner;
 
@@ -42,10 +40,15 @@ public class GameScene extends Scene {
     View viewUI;
     GameObject abilityProgressbar;
     public EnemySpawner enemySpawner;
+    public boolean hasActive = false;
+    public boolean hasPassive = false;
     @Override
     protected void Init() {
         float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
         float screenHeight = Objects.requireNonNull(GameView.GetInstance()).getHeight();
+
+        hasActive = false;
+        hasPassive = false;
 
         GameObject player = new GameObject("Player");
         player.AddComponent(Renderer.class).ResourceID = R.drawable.cannon;
@@ -96,7 +99,7 @@ public class GameScene extends Scene {
             else
                 active.cooldown.value = active.maxcooldown;
 
-            viewUI.findViewById(R.id.joystick_region3).setVisibility(View.VISIBLE);
+
             abilityProgressbar.GetComponent(ImprovedProgressBar.class)
                     .SetRef(active.cooldown)
                     .SetMax(active.maxcooldown);
@@ -106,7 +109,35 @@ public class GameScene extends Scene {
             View ensnared = UI.GetInstance().GetUIContainer().findViewById(R.id.ensnaredlayout);
             if (playerScript.isEnsnared) ensnared.setVisibility(View.VISIBLE);
             else ensnared.setVisibility(View.INVISIBLE);
+
+            if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0) viewUI.findViewById(R.id.joystick_region3).setVisibility(View.VISIBLE);
         });
+
+        if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0 && !hasActive) {
+            GameObject cosmetic = new GameObject();
+            TankCosmetic cos = cosmetic.AddComponent(TankCosmetic.class);
+            cos.attachedObject = playerScript.GetGameObject();
+            switch (UpgradesManager.GetInstance().PlayerActiveAbility){
+                case 0: cos.drawable = R.drawable.thruster; break;
+                case 1: cos.drawable = R.drawable.backpack; break;
+                case 2: cos.drawable = R.drawable.factory; cos.ZLayer = 6; break;
+            }
+            hasActive = true;
+        }
+        if (UpgradesManager.GetInstance().PlayerPassiveAbility >= 0 && !hasPassive) {
+            GameObject cosmetic = new GameObject();
+            TankCosmetic cos = cosmetic.AddComponent(TankCosmetic.class);
+            cos.attachedObject = playerScript.GetGameObject();
+            GameObject passive = UpgradesManager.GetInstance().FetchPassiveUpgrade(UpgradesManager.GetInstance().PlayerPassiveAbility).Initalize();
+            switch (UpgradesManager.GetInstance().PlayerPassiveAbility){
+                case 0: cos.drawable = R.drawable.reactor; break;
+                case 1: cos.drawable = R.drawable.deployer; break;
+                case 2: cos.drawable = R.drawable.turret; cos.ZLayer = 6; cos.attachedObject = passive; break;
+            }
+            hasPassive = true;
+        }
+
+
     }
 
     private void DisplayScoreSubmission(){
@@ -166,7 +197,9 @@ public class GameScene extends Scene {
         {
             FrameLayout region = viewUI.findViewById(R.id.joystick_region3);
             ProgressBar view = viewUI.findViewById(R.id.circularProgressBar);
-            region.setVisibility(View.GONE);
+            GameView.GetInstance().GetActivity().runOnUiThread(() -> {
+                        region.setVisibility(View.GONE);
+                    });
             abilityProgressbar = new GameObject("AbilityProgress");
             abilityProgressbar.AddComponent(ImprovedProgressBar.class).SetProgressBar(view);
                     //.SetRef(UpgradesManager.GetInstance().FetchActiveUpgrade(UpgradesManager.GetInstance().PlayerActiveAbility).cooldown)
@@ -196,7 +229,9 @@ public class GameScene extends Scene {
             bar2.AddComponent(ImprovedProgressBar.class).SetProgressBar(ammo).SetRef(playerScript.Ammo).SetMax(100);
             bar3.AddComponent(ImprovedProgressBar.class).SetProgressBar(exp).SetRef(playerScript.Exp).SetMax(100);
         }
-        ImageView effect = (UI.GetInstance().GetUIContainer().findViewById(R.id.ensnaredlayout)).findViewById(R.id.ensnaredeffect);
-        effect.setImageResource(R.drawable.ensnared);
+        GameView.GetInstance().GetActivity().runOnUiThread(() -> {
+            ImageView effect = (UI.GetInstance().GetUIContainer().findViewById(R.id.ensnaredlayout)).findViewById(R.id.ensnaredeffect);
+            effect.setImageResource(R.drawable.ensnared);
+        });
     }
 }

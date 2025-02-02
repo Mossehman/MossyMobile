@@ -57,7 +57,7 @@ public class Player extends MonoBehaviour implements IDamageable {
         rb = gameObject.GetComponent(RigidBody.class);
         rb.SetRoughness(20f);
         sprite = gameObject.GetComponent(Renderer.class);
-
+        sprite.SetZLayer(4);
         gameObject.GetScene().quadtreeScale = new Vector2(Objects.requireNonNull(GameView.GetInstance()).getWidth(),
                 Objects.requireNonNull(GameView.GetInstance()).getHeight());
 

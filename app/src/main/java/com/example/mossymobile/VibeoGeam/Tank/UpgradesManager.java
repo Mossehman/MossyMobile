@@ -7,6 +7,7 @@ import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Systems.Physics.Physics;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Player;
+import com.example.mossymobile.VibeoGeam.Scenes.GameScene;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.List;
 public class UpgradesManager extends Singleton<UpgradesManager> {
     public static UpgradesManager GetInstance() {return Singleton.GetInstance(UpgradesManager.class);}
     public List<CannonInfo> cannonData = new ArrayList<>(){};
-    public CannonInfo minitankcannon = new CannonInfo(5f, 600f, 0,1.0f, 2, 0.30f, 0.0f, 2.0f, 0.40f, -1, 0).SetBulletSize(5.0f);
     public List<TankUpgrade> tankData = new ArrayList<>(){};
 
     public int PlayerCannonLevel = 0;
@@ -49,7 +49,7 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
         cannonData.add(new CannonInfo(24f, 700f, 5,5.0f, 1, 0.10f, 20.0f, 2.0f, 0.87f, R.drawable.cannonxx3, 3).SetCannonName("Flechette").SetBurstFireInfo(20, 0.3f).SetBulletSize(9.5f));
 
         tankData.add(new BasicUpgrade("Repair", R.drawable.upgrade1xx, new int[]{0,1,1,2,3,4}, new float[]{0,0.5f,0.8f,1.3f,1.8f,2.4f}));
-        tankData.add(new BasicUpgrade("Reload", R.drawable.upgrade2xx, new int[]{0,1,1,3,3,4}, new float[]{0,0.2f,0.4f,1.2f,2.0f,2.6f}));
+        tankData.add(new BasicUpgrade("Reload", R.drawable.upgrade2xx, new int[]{0,1,1,3,3,4}, new float[]{0,0.6f,1.2f,2.0f,3.4f,5.6f}));
         tankData.add(new BasicUpgrade("Reinforcement", R.drawable.upgrade3xx, new int[]{0,1,2,2,3,4}, new float[]{100f,120f,140f,160f,200f,250f}));
 
         tankData.add(new ActiveUpgrade("Thruster", R.drawable.upgradex1x,new MutableWrapper<Float>(0.6f), 2)
@@ -70,7 +70,7 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
                     else dir = Vector2.GetVectorFromAngle(player.GetTransform().GetRotation()-90);
                     dir.Mul(600.f);
                     src.targetPosition = Vector2.Add(player.GetTransform().GetPosition(),dir);
-                }).SetDescription("Throws a grenade"));
+                }).SetDescription("Throws a grenade dealing AOE damage to enemies"));
         tankData.add(new ActiveUpgrade("Mini Tanks", R.drawable.upgradex3x, new MutableWrapper<Float>(15.f), 8)
                 .SetFunction(()->{
                     Vector2 playerpos = player.GetTransform().GetPosition();
@@ -81,14 +81,39 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
                     };
                     for (int i = 0; i < 3;i++) {
                         GameObject minitank = new GameObject();
-                        minitank.AddComponent(MiniTank.class).cannonInfo = minitankcannon;
+                        minitank.AddComponent(MiniTank.class);
                         minitank.GetTransform().SetPosition(spawnpos[i]);
                     }
                 }).SetDescription("Deploys three small tanks to fight"));
+
+
+
+        tankData.add( new PassiveUpgrade("Radioactive", R.drawable.upgradexx1, 18,
+                ()->{
+                    GameObject aura = new GameObject();
+                    aura.AddComponent(Radiation.class).player = player;
+                    return aura;
+                })
+                .SetDescription("Radiates a harmful aura that damages enemies in range"));
+        tankData.add( new PassiveUpgrade("Trapper", R.drawable.upgradexx2, 12,
+                ()->{
+                    GameObject trapper = new GameObject();
+                    trapper.AddComponent(Trapper.class).player = player;
+                    return trapper;
+                })
+                .SetDescription("Periodically deploy caltrops that damage enemies that run into them"));
+        tankData.add( new PassiveUpgrade("Turret", R.drawable.upgradexx3, 24,
+                ()->{
+                    GameObject turret = new GameObject();
+                    turret.AddComponent(Turret.class).player = player;
+                    return turret;
+                })
+                .SetDescription("Automatic turret that shoots at enemies"));
     }
 
     public CannonInfo FetchCannon(int id) { return cannonData.get(id); }
     public BasicUpgrade FetchBaseUpgrade(int id) { return (BasicUpgrade)tankData.get(id); }
     public ActiveUpgrade FetchActiveUpgrade(int id) { return (ActiveUpgrade)tankData.get(id+3); }
+    public PassiveUpgrade FetchPassiveUpgrade(int id) { return (PassiveUpgrade)tankData.get(id+6); }
 
 }

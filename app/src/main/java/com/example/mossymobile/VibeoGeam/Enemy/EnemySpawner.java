@@ -41,7 +41,7 @@ public class EnemySpawner extends MonoBehaviour {
                 int amtToSpawn = MossMath.clamp(numOfEnemies.value + spawnWaveAmt, 1, spawnCountMax) - numOfEnemies.value;
                 for (int i = 0; i < amtToSpawn; i++) {
                     spawnedEnemies.add(SpawnTriangle());
-                    if (MossMath.randIntMinMax(0,100) > 30) {
+                    if (MossMath.randIntMinMax(0,100) >= 10) {
                         spawnedEnemies.add(SpawnCube());
                     } else {
                         spawnedEnemies.add(SpawnTriangle());

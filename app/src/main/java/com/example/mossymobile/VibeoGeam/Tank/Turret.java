@@ -2,7 +2,6 @@ package com.example.mossymobile.VibeoGeam.Tank;
 
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
-import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
@@ -13,48 +12,42 @@ import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Enemy.Enemy;
 import com.example.mossymobile.VibeoGeam.Enemy.EnemySpawner;
+import com.example.mossymobile.VibeoGeam.Player;
 import com.example.mossymobile.VibeoGeam.Scenes.GameScene;
 
 import java.util.List;
 
-public class MiniTank extends MonoBehaviour {
-    private RigidBody rb;
-    float lifetime = 10f;
+public class Turret extends MonoBehaviour {
+
     float fireTimer = 0f;
     float retargetTimer = 0f;
-    CannonInfo cannonInfo = new CannonInfo(5f, 600f, 0,1.0f, 2, 0.30f, 0.0f, 2.0f, 0.40f, -1, 0).SetBulletSize(5.0f);;
+    CannonInfo cannonInfo = new CannonInfo(
+            5f, 600f, 0,
+            5.0f, 2, 0.2f,
+            0.0f, 2.0f, 0.30f, -1, 0)
+            .SetBulletSize(5.f);
 
     Vector2 currentFireDirection = new Vector2(0,1);
     Vector2 targetFireDirection;
     EnemySpawner enemySpawner;
     GameObject targetEnemy;
+    Player player;
     @Override
     public void Start() {
-        float size = 50f;
-        GetTransform().SetScale(new Vector2(50f*5, 50f*5));
-        rb = gameObject.AddComponent(RigidBody.class);
-        rb.SetRoughness(20f);
-        BoxCollider col = gameObject.AddComponent(BoxCollider.class);
-        col.hitboxDimensions = new Vector2(15f, 15f);
-        col.SetCollisionLayer("PlayerNPC");
-        gameObject.AddComponent(Renderer.class).SetSprite(R.drawable.minitank);
+        retargetTimer = 0.0f;
         enemySpawner = ((GameScene)gameObject.GetScene()).enemySpawner;
-        retargetTimer = 0.7f;
         TargetEnemy();
+        GetTransform().SetScale(new Vector2(200f, 200f));
     }
 
     @Override
     public void Update() {
-        if (lifetime > 0f){
-            lifetime -= Time.GetDeltaTime();
-        } else{
-            Destroy(gameObject);
-        }
+        GetTransform().SetPosition(player.GetTransform().GetPosition());
         if (retargetTimer > 0f){
             retargetTimer -= Time.GetDeltaTime();
         } else {
             TargetEnemy();
-            retargetTimer = 1.2f;
+            retargetTimer = 0.0f;
         }
 
         if (targetFireDirection != null && targetEnemy != null) {
@@ -63,18 +56,11 @@ public class MiniTank extends MonoBehaviour {
             if (FireCooldown()) {
                 FireBullet(currentFireDirection);
             }
-            if (targetEnemy.GetTransform().GetPosition().DistanceSq(GetTransform().GetPosition()) >= 150f * 150f)
-                rb.AddVelocity(Vector2.Mul(targetFireDirection, 10f));
-            else {
-                Vector2 reverse = Vector2.Mul(targetFireDirection, -1);
-                rb.AddVelocity(Vector2.Mul(reverse, 10f));
-            }
         }
     }
 
     private void FireBullet(Vector2 targetDirection)
     {
-
         fireTimer = cannonInfo.fireinterval;
         AudioPlayer.PlayAudio(new AudioClip(R.raw.lmg_fire), false);
         Vector2 fireDirection = targetDirection;
@@ -109,14 +95,15 @@ public class MiniTank extends MonoBehaviour {
     }
 
     private void TargetEnemy(){
-        List<GameObject> targets = enemySpawner.OverlapCircle(GetTransform().GetPosition(), 900f);
+        List<GameObject> targets = enemySpawner.OverlapCircle(GetTransform().GetPosition(), 1200f);
         for ( var enemy : targets) {
             if (enemy.GetComponent(Enemy.class) == null) continue;
-            targetEnemy = enemy; targetFireDirection =
+            targetEnemy = enemy;
+            targetFireDirection =
                 Vector2.Sub(
                         Vector2.Add(enemy.GetTransform().GetPosition(),
                                 Vector2.Mul(enemy.GetComponent(Enemy.class).moveDirection,
-                                        GetTransform().GetPosition().FastDistance(enemy.GetTransform().GetPosition()) * 0.5f)),
+                                        GetTransform().GetPosition().FastDistance(enemy.GetTransform().GetPosition()) * 0.6f)),
                         GetTransform().GetPosition()).FastNormalize(); break; }
     }
 }

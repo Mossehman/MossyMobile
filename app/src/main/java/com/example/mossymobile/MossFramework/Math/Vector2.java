@@ -353,6 +353,33 @@ public final class Vector2 implements ILoggable, ICustomInspectorGUI, Serializab
 
         return new Vector2(x, y);
     }
+
+    public static Vector2 Slerp(Vector2 from, Vector2 to, float t) {
+        // Ensure both vectors are normalized
+        from = from.FastNormalize();
+        to = to.FastNormalize();
+
+        // Compute the dot product (cosine of the angle)
+        float dot = from.Dot(to);
+        // Clamp dot product to avoid errors in acos
+        dot = Math.max(-1f, Math.min(1f, dot));
+
+        // Compute the angle between the vectors
+        float theta = (float) Math.acos(dot);
+
+        // If the angle is small, linear interpolation is sufficient
+        if (theta < 1e-5) {
+            return Vector2.Lerp(from, to, t).FastNormalize();
+        }
+
+        // Perform spherical linear interpolation
+        float sinTheta = (float) Math.sin(theta);
+        float scaleFrom = (float) Math.sin((1 - t) * theta) / sinTheta;
+        float scaleTo = (float) Math.sin(t * theta) / sinTheta;
+
+        return Vector2.Add(Vector2.Mul(from, scaleFrom), Vector2.Mul(to, scaleTo));
+    }
+
     /**
      * Checks whether the {@code x} and {@code y} components of the {@code Vector2} match with another {@code Vector2}.
      *

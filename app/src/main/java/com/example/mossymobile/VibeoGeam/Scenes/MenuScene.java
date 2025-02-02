@@ -33,13 +33,16 @@ public class MenuScene extends Scene {
         List<Map.Entry<String, Float>> entryList = new ArrayList<>(lb.Leaderboard.entrySet());
 
         // Sort the list by the values (Float)
-        entryList.sort(Map.Entry.comparingByValue());
+        entryList.sort((a, b) -> {
+            float scoreA = a.getValue();
+            float scoreB = b.getValue();
+            return Float.compare(scoreB, scoreA);
+        });
 
         for (Map.Entry<String, Float> entry : entryList) {
             //System.out.println(entry.getKey() + " = " + entry.getValue());
             TextView ent = new TextView(UI.GetInstance().GetUIContainer().getContext());
             ent.setText(entry.getKey() + " | " + entry.getValue());
-
             UI.GetInstance().AddViewToContainer(ent, lbLayout);
         }
     }

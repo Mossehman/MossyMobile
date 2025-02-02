@@ -19,7 +19,7 @@ public abstract class Enemy extends MonoBehaviour implements IDamageable {
     public int resourceID;
     public MutableWrapper<Integer> numOfEnemies;
     public BarMeter hpBar;
-    public Vector2 moveDirection;
+    public Vector2 moveDirection = new Vector2();
     public Enemy(float hp, int xp, float speed, float dmg, int resID)
     {
         health = new MutableWrapper<Float>(hp);

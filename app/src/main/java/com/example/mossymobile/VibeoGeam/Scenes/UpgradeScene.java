@@ -24,6 +24,7 @@ import com.example.mossymobile.VibeoGeam.Tank.ActiveUpgrade;
 import com.example.mossymobile.VibeoGeam.Tank.BasicUpgrade;
 import com.example.mossymobile.VibeoGeam.Tank.CannonInfo;
 import com.example.mossymobile.VibeoGeam.GameApplication;
+import com.example.mossymobile.VibeoGeam.Tank.PassiveUpgrade;
 import com.example.mossymobile.VibeoGeam.Tank.TankUpgrade;
 import com.example.mossymobile.VibeoGeam.Tank.UpgradesManager;
 
@@ -121,6 +122,19 @@ public class UpgradeScene extends Scene {
                         if (UpgradesManager.GetInstance().PlayerLevelPoints >= cost) {
                             UpgradesManager.GetInstance().PlayerLevelPoints -= cost;
                             UpgradesManager.GetInstance().PlayerActiveAbility = selectedUpgrade2 - 3;
+
+                            buyBtn.setText("Locked");
+                            buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
+                            InitializeUI();
+                        }
+                    }
+                    else if (upgrade instanceof PassiveUpgrade) {
+                        if (UpgradesManager.GetInstance().PlayerPassiveAbility >= 0) return;
+                        PassiveUpgrade passiveUpgrade = (PassiveUpgrade) upgrade;
+                        int cost = passiveUpgrade.cost;
+                        if (UpgradesManager.GetInstance().PlayerLevelPoints >= cost) {
+                            UpgradesManager.GetInstance().PlayerLevelPoints -= cost;
+                            UpgradesManager.GetInstance().PlayerPassiveAbility = selectedUpgrade2 - 6;
 
                             buyBtn.setText("Locked");
                             buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
@@ -251,8 +265,11 @@ public class UpgradeScene extends Scene {
 
             TankUpgrade finalTankUpgrade = tankUpgrade;
 
-            if (!(finalTankUpgrade instanceof BasicUpgrade)){
+            if (finalTankUpgrade instanceof ActiveUpgrade) {
                 if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0 && i != UpgradesManager.GetInstance().PlayerActiveAbility + 3)
+                    upgradeBtn.setColorFilter(R.color.black, PorterDuff.Mode.MULTIPLY);
+            }else if (finalTankUpgrade instanceof PassiveUpgrade){
+                if (UpgradesManager.GetInstance().PlayerPassiveAbility >= 0 && i != UpgradesManager.GetInstance().PlayerPassiveAbility + 6)
                     upgradeBtn.setColorFilter(R.color.black, PorterDuff.Mode.MULTIPLY);
             }
             int finalI = i;
@@ -275,6 +292,12 @@ public class UpgradeScene extends Scene {
                     ActiveUpgrade activeUpgrade = (ActiveUpgrade)finalTankUpgrade;
                     cannoncost.setText("Costs " + activeUpgrade.cost + " Points"); // Example cost for non-base upgrades
                     canPurchase = UpgradesManager.GetInstance().PlayerActiveAbility < 0;
+                    upgradename.setText(tankUpgrade.upgradename);
+                    DisplayUpgradeDescription(tankUpgrade.upgradedescription);
+                } else if (finalTankUpgrade instanceof PassiveUpgrade) { // Single purchase upgrade
+                    PassiveUpgrade passiveUpgrade = (PassiveUpgrade)finalTankUpgrade;
+                    cannoncost.setText("Costs " + passiveUpgrade.cost + " Points"); // Example cost for non-base upgrades
+                    canPurchase = UpgradesManager.GetInstance().PlayerPassiveAbility < 0;
                     upgradename.setText(tankUpgrade.upgradename);
                     DisplayUpgradeDescription(tankUpgrade.upgradedescription);
                 }
@@ -310,7 +333,7 @@ public class UpgradeScene extends Scene {
     {
         UI.GetInstance().RemoveViewsFromLayout(upgradestatsdocker);
         AddStatToContainer("Regen Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(0).GetCurrentMod() * 10f + 20f, 44f);
-        AddStatToContainer("Reload Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(1).GetCurrentMod() * 10f + 40f, 66f);
+        AddStatToContainer("Reload Rate", UpgradesManager.GetInstance().FetchBaseUpgrade(1).GetCurrentMod() * 10f + 40f, 96f);
         AddStatToContainer("Maximum HP", UpgradesManager.GetInstance().FetchBaseUpgrade(2).GetCurrentMod(), 250f);
     }
     private void DisplayUpgradeDescription(String description)

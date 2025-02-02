@@ -26,7 +26,7 @@ public class EnemyYellowCube extends Enemy {
 
     @Override
     public void Start() {
-        GetTransform().SetScale(new Vector2(60f, 60f));
+        GetTransform().SetScale(new Vector2(20f * 3, 20f * 3));
         hitbox = gameObject.AddComponent(BoxCollider.class);
         rb = gameObject.AddComponent(RigidBody.class);
         renderer = gameObject.AddComponent(Renderer.class);
