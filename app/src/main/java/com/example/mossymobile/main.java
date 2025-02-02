@@ -1,6 +1,9 @@
 package com.example.mossymobile;
 
 import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,11 +16,11 @@ import com.example.mossymobile.MossFramework.Systems.Debugging.BuildConfig;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Inspector.InspectorGUI;
 import com.example.mossymobile.MossFramework.Systems.UserInput.Input;
-import com.example.mossymobile.VibeoGeam.GameApplication;
+import com.example.mossymobile.MossFramework.Systems.UserInput.Sensors;
 
-public class main extends Activity {
+public class main extends Activity implements SensorEventListener {
     //private final Application app = new Application();
-    private final GameApplication app = new GameApplication();
+    private final testApplication app = new testApplication();
     GameView gameView;
 
     @Override
@@ -50,10 +53,6 @@ public class main extends Activity {
 
         app.Start();
 
-        this.findViewById(R.id.closeBtn).setOnClickListener(v -> {
-            Application.closeApplication = true;
-        });
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -77,11 +76,22 @@ public class main extends Activity {
     protected void onStop() {
         super.onStop();
         app.Exit();
+        Sensors.sensorManager.unregisterListener(this);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Input.UpdateTouch(event);
         return true;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Sensors.sensorEvent = event;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        Sensors.sensorAccuracy = accuracy;
     }
 }
