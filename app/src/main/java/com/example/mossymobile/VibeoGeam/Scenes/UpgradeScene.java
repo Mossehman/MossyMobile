@@ -250,13 +250,18 @@ public class UpgradeScene extends Scene {
             upgradeBtn.setImageResource(tankUpgrade.spriteResourceID);
 
             TankUpgrade finalTankUpgrade = tankUpgrade;
+
+            if (!(finalTankUpgrade instanceof BasicUpgrade)){
+                if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0 && i != UpgradesManager.GetInstance().PlayerActiveAbility + 3)
+                    upgradeBtn.setColorFilter(R.color.black, PorterDuff.Mode.MULTIPLY);
+            }
             int finalI = i;
             upgradeBtn.setOnClickListener(l -> {
                 upgradeImagePreview.setImageResource(tankUpgrade.spriteResourceID);
                 upgradeImagePreview.setColorFilter(0);
                 if (finalTankUpgrade instanceof BasicUpgrade) {
                     BasicUpgrade basicUpgrade = (BasicUpgrade)finalTankUpgrade;
-                    if (basicUpgrade.currentLvl < 4) {
+                    if (basicUpgrade.currentLvl < 5) {
                         int nextCost = basicUpgrade.lvlCosts[basicUpgrade.currentLvl + 1];
                         cannoncost.setText("Costs " + nextCost + " Points");
                         canPurchase = (UpgradesManager.GetInstance().PlayerLevelPoints >= nextCost);

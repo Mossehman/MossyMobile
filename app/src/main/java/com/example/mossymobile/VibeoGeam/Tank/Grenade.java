@@ -3,8 +3,10 @@ package com.example.mossymobile.VibeoGeam.Tank;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.Math.Vector2;
+import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
+import com.example.mossymobile.MossFramework.Systems.UserInput.Vibration;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Enemy.Enemy;
 import com.example.mossymobile.VibeoGeam.Scenes.GameScene;
@@ -36,6 +38,7 @@ public class Grenade extends MonoBehaviour {
             GameObject explosion = new GameObject();
             explosion.AddComponent(ExplosionEffect.class);
             explosion.GetTransform().SetPosition(GetTransform().GetPosition());
+            Vibration.Vibrate(new Vector2Int(800, 60));
 
             List<GameObject> list = ((GameScene)gameObject.GetScene()).enemySpawner.OverlapCircle(GetTransform().GetPosition(), 200f);
             for ( var enemy : list) enemy.GetComponent(Enemy.class).ModifyHealth(50f);

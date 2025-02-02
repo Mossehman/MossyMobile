@@ -20,6 +20,7 @@ import com.example.mossymobile.MossFramework.Systems.Scenes.SceneLoadMode;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
+import com.example.mossymobile.MossFramework.Systems.UserInput.Sensors;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.MossFramework.Systems.UserInput.Vibration;
 import com.example.mossymobile.R;
@@ -77,20 +78,18 @@ public class GameScene extends Scene {
 
     @Override
     protected void Update() {
-        if (UpgradesManager.GetInstance().ScheduledCannonSwitch)
-        {
+        if (UpgradesManager.GetInstance().ScheduledCannonSwitch) {
             playerScript.cannonInfo = UpgradesManager.GetInstance().FetchCannon(UpgradesManager.GetInstance().PlayerCannonLevel);
             UpgradesManager.GetInstance().ScheduledCannonSwitch = false;
         }
-        if (playerScript.Health.value <= 0 && !hasLost)
-        {
+        if (playerScript.Health.value <= 0 && !hasLost) {
             //SceneManager.LoadScene("MenuScene");
             DisplayScoreSubmission();
             GameApplication.isResetting = true;
             hasLost = true;
         }
 
-        if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0){
+        if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0) {
             ActiveUpgrade active = UpgradesManager.GetInstance().FetchActiveUpgrade(UpgradesManager.GetInstance().PlayerActiveAbility);
             if (active.cooldown.value <= active.maxcooldown)
                 active.cooldown.value += Time.GetDeltaTime();
@@ -99,9 +98,15 @@ public class GameScene extends Scene {
 
             viewUI.findViewById(R.id.joystick_region3).setVisibility(View.VISIBLE);
             abilityProgressbar.GetComponent(ImprovedProgressBar.class)
-            .SetRef(active.cooldown)
-            .SetMax(active.maxcooldown);
+                    .SetRef(active.cooldown)
+                    .SetMax(active.maxcooldown);
         }
+
+        GameView.GetInstance().GetActivity().runOnUiThread(() -> {
+            View ensnared = UI.GetInstance().GetUIContainer().findViewById(R.id.ensnaredlayout);
+            if (playerScript.isEnsnared) ensnared.setVisibility(View.VISIBLE);
+            else ensnared.setVisibility(View.INVISIBLE);
+        });
     }
 
     private void DisplayScoreSubmission(){
@@ -126,6 +131,7 @@ public class GameScene extends Scene {
     {
         float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
         float screenHeight = Objects.requireNonNull(GameView.GetInstance()).getHeight();
+
         {
             FrameLayout knob = viewUI.findViewById(R.id.joystick_region);
 
@@ -190,5 +196,7 @@ public class GameScene extends Scene {
             bar2.AddComponent(ImprovedProgressBar.class).SetProgressBar(ammo).SetRef(playerScript.Ammo).SetMax(100);
             bar3.AddComponent(ImprovedProgressBar.class).SetProgressBar(exp).SetRef(playerScript.Exp).SetMax(100);
         }
+        ImageView effect = (UI.GetInstance().GetUIContainer().findViewById(R.id.ensnaredlayout)).findViewById(R.id.ensnaredeffect);
+        effect.setImageResource(R.drawable.ensnared);
     }
 }
