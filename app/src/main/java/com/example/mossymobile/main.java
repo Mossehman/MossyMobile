@@ -50,10 +50,6 @@ public class main extends Activity {
 
         app.Start();
 
-        this.findViewById(R.id.closeBtn).setOnClickListener(v -> {
-            Application.closeApplication = true;
-        });
-
         new Thread(new Runnable() {
             @Override
             public void run() {
