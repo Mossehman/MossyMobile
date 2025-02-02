@@ -2,6 +2,7 @@ package com.example.mossymobile.VibeoGeam;
 
 import android.graphics.Color;
 
+import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
@@ -15,6 +16,8 @@ import com.example.mossymobile.MossFramework.Systems.Audio.AudioClip;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
+import com.example.mossymobile.MossFramework.Systems.UserInput.Sensors;
+import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.MossFramework.Systems.UserInput.Vibration;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Tank.Bullet;
@@ -43,7 +46,8 @@ public class Player extends MonoBehaviour implements IDamageable {
     public float Reload = 4f;
 
     private UpgradesManager upgrades = UpgradesManager.GetInstance();
-
+    public boolean isEnsnared = false;
+    private float ensnareDuration = 5.0f;
     @Override
     public void Start() {
         GetTransform().SetPosition(
@@ -56,6 +60,14 @@ public class Player extends MonoBehaviour implements IDamageable {
 
         gameObject.GetScene().quadtreeScale = new Vector2(Objects.requireNonNull(GameView.GetInstance()).getWidth(),
                 Objects.requireNonNull(GameView.GetInstance()).getHeight());
+
+        isEnsnared = false;
+        Sensors.GetInstance(UI.GetInstance().GetUIContainer().getContext()).StartListening(() -> {
+            if (isEnsnared) {
+                ensnareDuration -= 0.8f;
+                Vibration.Vibrate(new Vector2Int(500, 200));
+            }
+        });
     }
 
     @Override
@@ -72,7 +84,7 @@ public class Player extends MonoBehaviour implements IDamageable {
         y = MossMath.clamp(y, 0f, (float)Objects.requireNonNull(GameView.GetInstance()).getHeight());
         GetTransform().SetPosition(new Vector2(x,y));
 
-        if (look != null && movement != null) {
+        if (look != null && movement != null && !isEnsnared) {
             if (moveDirection.MagnitudeSq() > 0)
                 rb.AddVelocity(Vector2.Mul(moveDirection, 0.1f));
 
@@ -109,6 +121,16 @@ public class Player extends MonoBehaviour implements IDamageable {
             }
             moveDirection = movement.direction;
             lookDirection = look.direction;
+        }
+
+        if (isEnsnared) {
+            rb.SetKinematic(true);
+            ensnareDuration -= Time.GetDeltaTime();
+            if (ensnareDuration <= 0) {
+                isEnsnared = false;
+                ensnareDuration = 5f;
+                rb.SetKinematic(false);
+            }
         }
     }
 

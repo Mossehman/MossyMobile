@@ -120,8 +120,8 @@ public class MiniTank extends MonoBehaviour {
 
     private Vector2 Slerp(Vector2 from, Vector2 to, float t) {
         // Ensure both vectors are normalized
-        from = from.Normalized();
-        to = to.Normalized();
+        from = from.FastNormalize();
+        to = to.FastNormalize();
 
         // Compute the dot product (cosine of the angle)
         float dot = from.Dot(to);
@@ -133,7 +133,7 @@ public class MiniTank extends MonoBehaviour {
 
         // If the angle is small, linear interpolation is sufficient
         if (theta < 1e-5) {
-            return Vector2.Lerp(from, to, t).Normalized();
+            return Vector2.Lerp(from, to, t).FastNormalize();
         }
 
         // Perform spherical linear interpolation

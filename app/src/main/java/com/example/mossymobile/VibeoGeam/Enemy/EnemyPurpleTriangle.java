@@ -21,7 +21,7 @@ public class EnemyPurpleTriangle extends Enemy {
     private boolean isDying = false; // Prevent multiple destroy calls
 
     EnemyPurpleTriangle() {
-        super(5, 50, 40, 25, R.drawable.redcircle);
+        super(5, 50, 40, 25, R.drawable.purpletriangle);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class EnemyPurpleTriangle extends Enemy {
                 hpBar.position.value = Vector2.Add(GetTransform().GetPosition(), new Vector2(0, -40));
             }
 
-            Vector2 moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
+            moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
             rb.AddVelocity(moveDirection);
 
             if (health.value < originalHp && hpBar == null && health.value > 0) {
@@ -84,6 +84,7 @@ public class EnemyPurpleTriangle extends Enemy {
     public void OnCollisionEnter(Collision collision) {
         super.OnCollisionEnter(collision);
         if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player")) {
+            player.isEnsnared = true;
             if (hpBar != null) {
                 Destroy(bar);
                 hpBar = null;

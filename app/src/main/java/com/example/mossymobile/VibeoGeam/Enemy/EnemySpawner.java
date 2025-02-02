@@ -16,7 +16,6 @@ import java.util.Objects;
 
 public class EnemySpawner extends MonoBehaviour {
     public Player player;
-    GameObject YellowCube;
     List<GameObject> spawnedEnemies = new ArrayList<>();
     private MutableWrapper<Integer> numOfEnemies = new MutableWrapper<>(0);
     private float spawnInterval = 3f;
@@ -27,8 +26,6 @@ public class EnemySpawner extends MonoBehaviour {
     float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
     float screenHeight = Objects.requireNonNull(GameView.GetInstance()).getHeight();
 
-    private float refreshListTimer = 2f;
-
     @Override
     public void Start() {
         spawnWaveTimer = spawnInterval;
@@ -36,14 +33,6 @@ public class EnemySpawner extends MonoBehaviour {
 
     @Override
     public void Update() {
-        if (refreshListTimer > 0f);
-            //refreshListTimer -= Time.GetDeltaTime();
-        else {
-            refreshListTimer = 2f;
-            for (int i = 0; i < spawnedEnemies.size(); i++) {
-                //if (spawnedEnemies.get(i) == null)
-            }
-        }
         if (numOfEnemies.value <= spawnCountMax) {
             if (spawnWaveTimer >= 0f){
                 spawnWaveTimer -= Time.GetDeltaTime();
@@ -51,7 +40,12 @@ public class EnemySpawner extends MonoBehaviour {
             else{
                 int amtToSpawn = MossMath.clamp(numOfEnemies.value + spawnWaveAmt, 1, spawnCountMax) - numOfEnemies.value;
                 for (int i = 0; i < amtToSpawn; i++) {
-                    spawnedEnemies.add(SpawnCube());
+                    spawnedEnemies.add(SpawnTriangle());
+                    if (MossMath.randIntMinMax(0,100) > 30) {
+                        spawnedEnemies.add(SpawnCube());
+                    } else {
+                        spawnedEnemies.add(SpawnTriangle());
+                    }
                 }
                 spawnWaveTimer = spawnInterval;
             }
@@ -74,6 +68,24 @@ public class EnemySpawner extends MonoBehaviour {
         }
         numOfEnemies.value++;
         return yellowCube;
+    }
+
+    private GameObject SpawnTriangle(){
+        GameObject purpleTriangle = new GameObject();
+        EnemyPurpleTriangle Triangle = purpleTriangle.AddComponent(EnemyPurpleTriangle.class);
+        Triangle.player = player;
+        Triangle.numOfEnemies = numOfEnemies;
+        while (true) {
+            float x = MossMath.randFloatMinMax(0, screenWidth);
+            float y = MossMath.randFloatMinMax(0, screenHeight);
+            Vector2 spawnPos = new Vector2(x, y);
+            if (player.GetTransform().GetPosition().DistanceSq(spawnPos) >= 400 * 400){
+                purpleTriangle.GetTransform().SetPosition(spawnPos);
+                break;
+            }
+        }
+        numOfEnemies.value++;
+        return purpleTriangle;
     }
 
     public List<GameObject> OverlapCircle(Vector2 position, float radius) {
