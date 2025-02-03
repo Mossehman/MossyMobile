@@ -47,7 +47,7 @@ public class BoxCollider extends Collider {
                     return false;
                 }
 
-                float penetration = (otherBounds - thisBounds) * 0.5f - 1.0f; // Overlap amount
+                float penetration = (otherBounds - thisBounds) * 0.5f; // Overlap amount
                 gameObject.GetTransform().SetPosition(new Vector2(thisPosition.x + penetration, thisPosition.y));
             }
             else if (direction.x == 1) { // Moving right
@@ -58,7 +58,7 @@ public class BoxCollider extends Collider {
                     return false;
                 }
 
-                float penetration = (thisBounds - otherBounds) * 0.5f + 1.0f; // Overlap amount
+                float penetration = (thisBounds - otherBounds) * 0.5f; // Overlap amount
                 gameObject.GetTransform().SetPosition(new Vector2(thisPosition.x - penetration, thisPosition.y));
             }
             if (direction.y == -1) {
@@ -69,7 +69,7 @@ public class BoxCollider extends Collider {
                     return false;
                 }
 
-                float penetration = (otherBounds - thisBounds) * 0.5f + 1.0f; // Overlap amount
+                float penetration = (otherBounds - thisBounds) * 0.5f; // Overlap amount
                 gameObject.GetTransform().SetPosition(new Vector2(thisPosition.x, thisPosition.y + penetration));
             }
             else if (direction.y == 1) {
@@ -80,7 +80,7 @@ public class BoxCollider extends Collider {
                     return false;
                 }
 
-                float penetration = (thisBounds - otherBounds) * 0.5f - 1.0f; // Overlap amount
+                float penetration = (thisBounds - otherBounds) * 0.5f; // Overlap amount
                 gameObject.GetTransform().SetPosition(new Vector2(thisPosition.x, thisPosition.y - penetration));
             }
         }
