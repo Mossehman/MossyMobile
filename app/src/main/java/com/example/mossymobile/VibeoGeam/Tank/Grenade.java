@@ -2,13 +2,16 @@ package com.example.mossymobile.VibeoGeam.Tank;
 
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.GameObject;
+import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.MossFramework.Systems.UserInput.Vibration;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Enemy.Enemy;
+import com.example.mossymobile.VibeoGeam.Player;
 import com.example.mossymobile.VibeoGeam.Scenes.GameScene;
 
 import java.util.List;
@@ -17,6 +20,7 @@ public class Grenade extends MonoBehaviour {
     private Renderer renderer;
     public Vector2 targetPosition;
     private Vector2 startPosition;
+    public Player playerPosition;
     private float initialDistance;
     private float lifetime = 2.f;
     @Override
@@ -42,6 +46,8 @@ public class Grenade extends MonoBehaviour {
 
             List<GameObject> list = ((GameScene)gameObject.GetScene()).enemySpawner.OverlapCircle(GetTransform().GetPosition(), 200f);
             for ( var enemy : list) enemy.GetComponent(Enemy.class).ModifyHealth(50f);
+
+            AudioManager.playSound("explosion", playerPosition.GetTransform().GetPosition(), GetTransform().GetPosition(), MossMath.randFloatMinMax(0.9f, 1.1f));
             Destroy(gameObject);
         }
         GetTransform().SetPosition(Vector2.Lerp(GetTransform().GetPosition(), targetPosition, 0.05f));

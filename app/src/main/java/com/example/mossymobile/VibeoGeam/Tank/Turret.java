@@ -25,7 +25,7 @@ public class Turret extends MonoBehaviour {
     CannonInfo cannonInfo = new CannonInfo(
             5f, 600f, 0,
             5.0f, 2, 0.2f,
-            0.0f, 2.0f, 0.30f, -1, 0, "c1xx")
+            0.0f, 2.0f, 0.30f, -1, 0, "cx2x")
             .SetBulletSize(5.f);
 
     Vector2 currentFireDirection = new Vector2(0,1);
@@ -63,7 +63,7 @@ public class Turret extends MonoBehaviour {
     private void FireBullet(Vector2 targetDirection)
     {
         fireTimer = cannonInfo.fireinterval;
-        AudioManager.playSound(cannonInfo.soundName);
+        AudioManager.playSound(cannonInfo.soundName, MossMath.randFloatMinMax(0.75f,1.25f), 0.6f);
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;

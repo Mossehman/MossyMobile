@@ -16,7 +16,10 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.example.mossymobile.MossFramework.Application;
+import com.example.mossymobile.MossFramework.GameView;
+import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Scene;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
 import com.example.mossymobile.R;
@@ -46,6 +49,7 @@ public class UpgradeScene extends Scene {
     @Override
     protected void Init() {
         if (GameApplication.isResetting) Reset();
+        AudioManager.playMusic(GameView.GetInstance().GetContext(), R.raw.shop, true);
 
         uidocker = UI.GetInstance().GetUIContainer().getRootView().findViewById(R.id.upgrades_ui);
         context = uidocker.getContext();
@@ -78,6 +82,8 @@ public class UpgradeScene extends Scene {
                     buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
                     // Refresh UI to reflect locked paths and new upgrade state
                     InitializeUI();
+                    AudioManager.playSound("upgrade",
+                            ((selectedUpgrade <= 3) ? selectedUpgrade : (selectedUpgrade <= 6) ? selectedUpgrade - 3 : selectedUpgrade - 6) * 0.3f);
                 }
                 else {
                     int selectedUpgrade2 = selectedUpgrade - UpgradesManager.GetInstance().cannonData.size();
@@ -111,6 +117,7 @@ public class UpgradeScene extends Scene {
 
                                     // Refresh UI to reflect purchase
                                     InitializeUI(); RefreshBaseUpgradeStats();
+                                    AudioManager.playSound("upgrade", basicUpgrade.currentLvl * 0.3f);
                                 }
                             }
                         }
@@ -126,6 +133,7 @@ public class UpgradeScene extends Scene {
                             buyBtn.setText("Locked");
                             buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
                             InitializeUI();
+                            AudioManager.playSound("upgrade", 1.25f);
                         }
                     }
                     else if (upgrade instanceof PassiveUpgrade) {
@@ -139,6 +147,7 @@ public class UpgradeScene extends Scene {
                             buyBtn.setText("Locked");
                             buyBtn.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.grey));
                             InitializeUI();
+                            AudioManager.playSound("upgrade", 1.25f);
                         }
                     }
                 }
@@ -150,6 +159,7 @@ public class UpgradeScene extends Scene {
             Application.pause = false;
             UI.GetInstance().GetUIContainer().setVisibility(View.VISIBLE);
             UI.GetInstance().RemoveViewsFromLayout(uidocker);
+            AudioManager.playMusic(GameView.GetInstance().GetContext(), R.raw.main1, true);
             SceneManager.UnloadScene("UpgradeScene");
         });
 

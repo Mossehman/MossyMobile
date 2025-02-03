@@ -2,8 +2,10 @@ package com.example.mossymobile.VibeoGeam.Tank;
 
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.GameObject;
+import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.Enemy.Enemy;
@@ -37,6 +39,7 @@ public class Radiation extends MonoBehaviour {
             damageinterval -= Time.GetDeltaTime();
         else{
             damageinterval = 0.6f;
+            AudioManager.playSound("uxx1", MossMath.randFloatMinMax(0.85f, 1.15f), 0.5f);
             List<GameObject> enemiesInRange = enemySpawner.OverlapCircle(GetTransform().GetPosition(), radius);
             for (var enemy : enemiesInRange) enemy.GetComponent(Enemy.class).ModifyHealth(3f);
         }

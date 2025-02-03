@@ -23,7 +23,7 @@ public class MiniTank extends MonoBehaviour {
     float lifetime = 10f;
     float fireTimer = 0f;
     float retargetTimer = 0f;
-    CannonInfo cannonInfo = new CannonInfo(5f, 600f, 0,1.0f, 2, 0.30f, 0.0f, 2.0f, 0.40f, -1, 0, "cannon_fire").SetBulletSize(5.0f);;
+    CannonInfo cannonInfo = new CannonInfo(5f, 600f, 0,1.0f, 2, 0.30f, 0.0f, 2.0f, 0.40f, -1, 0, "c2xx").SetBulletSize(5.0f);;
 
     Vector2 currentFireDirection = new Vector2(0,1);
     Vector2 targetFireDirection;
@@ -77,7 +77,7 @@ public class MiniTank extends MonoBehaviour {
     {
 
         fireTimer = cannonInfo.fireinterval;
-        AudioManager.playSound(cannonInfo.soundName);
+        AudioManager.playSound(cannonInfo.soundName, MossMath.randFloatMinMax(0.75f,1.25f), 0.6f);
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;

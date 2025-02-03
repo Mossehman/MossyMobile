@@ -3,8 +3,10 @@ package com.example.mossymobile.VibeoGeam.Tank;
 import com.example.mossymobile.MossFramework.Components.Colliders.BoxCollider;
 import com.example.mossymobile.MossFramework.Components.Colliders.Collider;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
+import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Debug;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.VibeoGeam.Enemy.Enemy;
@@ -69,6 +71,7 @@ public class Bullet extends MonoBehaviour {
         if (Objects.equals(collider.GetCollisionLayer(), "Enemy")) {
             Debug.Log("Bullet", "EnemyEnter");
             collider.GetGameObject().GetComponent(Enemy.class).ModifyHealth(cannonInfo.damage);
+            AudioManager.playSound("enemyhit", MossMath.randFloatMinMax(1.75f,2.25f));
             if (pierce > 0) {
                 pierce--;
             } else {

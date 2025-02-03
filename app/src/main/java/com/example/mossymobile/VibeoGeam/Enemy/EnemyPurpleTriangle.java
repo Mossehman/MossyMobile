@@ -69,6 +69,11 @@ public class EnemyPurpleTriangle extends Enemy {
             }
 
             if (GetTransform().GetPosition().DistanceSq(player.GetTransform().GetPosition()) >= 1000 * 1000) {
+                isDying = true; // Prevent multiple destroy calls
+                if (hpBar != null) {
+                    Destroy(bar);
+                    hpBar = null;
+                }
                 numOfEnemies.value--;
                 Destroy(gameObject);
             }

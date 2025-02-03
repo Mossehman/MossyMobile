@@ -1,8 +1,5 @@
 package com.example.mossymobile.VibeoGeam;
 
-import android.graphics.Color;
-
-import com.example.mossymobile.MossFramework.Application;
 import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
@@ -14,8 +11,6 @@ import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioClip;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
-import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
-import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.MossFramework.Systems.UserInput.Sensors;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
@@ -51,7 +46,7 @@ public class Player extends MonoBehaviour implements IDamageable {
     private float ensnareDuration = 5.0f;
     private GameObject reticle;
 
-    AudioClip lmgFireAudio = new AudioClip(R.raw.lmg_fire);
+    AudioClip lmgFireAudio = new AudioClip(R.raw.c2xx);
     @Override
     public void Start() {
         GetTransform().SetPosition(
@@ -158,11 +153,12 @@ public class Player extends MonoBehaviour implements IDamageable {
     private void FireBullet(Vector2 targetDirection)
     {
         if (Ammo.value < cannonInfo.ammocost){
+            AudioManager.playSound("ooa", MossMath.randFloatMinMax(0.75f,1.25f));
             return;
         }
         Ammo.value -= cannonInfo.ammocost;
         fireTimer = cannonInfo.fireinterval;
-        AudioManager.playSound(cannonInfo.soundName);
+        AudioManager.playSound(cannonInfo.soundName, MossMath.randFloatMinMax(0.75f,1.25f));
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;
@@ -198,6 +194,7 @@ public class Player extends MonoBehaviour implements IDamageable {
     public void ModifyHealth(float amt) {
         Health.value -= amt;
         Vibration.Vibrate(new Vector2Int(500, 10));
+        AudioManager.playSound("playerhit", MossMath.randFloatMinMax(0.85f, 1.15f));
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.example.mossymobile.MossFramework.GameObject;
 import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Scene;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneLoadMode;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
@@ -44,6 +45,8 @@ public class GameScene extends Scene {
     public boolean hasPassive = false;
     @Override
     protected void Init() {
+        AudioManager.playMusic(GameView.GetInstance().GetContext(), R.raw.main1, true);
+
         float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
         float screenHeight = Objects.requireNonNull(GameView.GetInstance()).getHeight();
 
@@ -86,10 +89,11 @@ public class GameScene extends Scene {
             UpgradesManager.GetInstance().ScheduledCannonSwitch = false;
         }
         if (playerScript.Health.value <= 0 && !hasLost) {
-            //SceneManager.LoadScene("MenuScene");
             DisplayScoreSubmission();
             GameApplication.isResetting = true;
             hasLost = true;
+            AudioManager.playSound("playerdeath");
+            AudioManager.playMusic(GameView.GetInstance().GetContext(), R.raw.lose, false);
         }
 
         if (UpgradesManager.GetInstance().PlayerActiveAbility >= 0) {

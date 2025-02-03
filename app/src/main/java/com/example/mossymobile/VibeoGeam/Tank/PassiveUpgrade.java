@@ -13,8 +13,8 @@ public class PassiveUpgrade extends TankUpgrade {
     public int cost;
     Init initFunc;
 
-    public PassiveUpgrade(String name, int sprite, int cost, Init func) {
-        super(name, sprite);
+    public PassiveUpgrade(String name, int sprite, String soundName, int cost, Init func) {
+        super(name, sprite, soundName);
         this.cost = cost;
         initFunc = func;
     }

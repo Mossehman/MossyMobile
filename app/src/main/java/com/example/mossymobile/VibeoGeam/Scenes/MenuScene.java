@@ -9,7 +9,9 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.example.mossymobile.MossFramework.Application;
+import com.example.mossymobile.MossFramework.GameView;
 import com.example.mossymobile.MossFramework.Scene;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
 import com.example.mossymobile.MossFramework.Systems.UserInput.UI;
@@ -23,6 +25,8 @@ import java.util.Map;
 public class MenuScene extends Scene {
     @Override
     protected void Init() {
+        AudioManager.playMusic(GameView.GetInstance().GetContext(), R.raw.title, true);
+
         UI.GetInstance().RemoveAllUI();
         View ui = UI.GetInstance().AddLayoutToUI(R.layout.mainmenu);
         Context context = ui.getContext();

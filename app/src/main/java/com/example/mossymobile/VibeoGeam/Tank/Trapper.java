@@ -15,7 +15,7 @@ import com.example.mossymobile.VibeoGeam.Player;
 public class Trapper extends MonoBehaviour {
     CannonInfo cannonInfo = new CannonInfo(5f, 15f,3,
             0, 2, 1.f,
-            0f, 10f, 1f, -1, 0, "cannon_fire").SetBulletSize(25);
+            0f, 10f, 1f, -1, 0, "uxx2").SetBulletSize(25);
     public Player player;
     float fireTimer = 0f;
     Vector2 currentFireDirection = new Vector2(0,1);
@@ -41,7 +41,7 @@ public class Trapper extends MonoBehaviour {
 
     private void FireBullet(Vector2 targetDirection) {
         fireTimer = cannonInfo.fireinterval;
-        AudioManager.playSound(cannonInfo.soundName);
+        AudioManager.playSound(cannonInfo.soundName, MossMath.randFloatMinMax(0.75f,1.25f));
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;

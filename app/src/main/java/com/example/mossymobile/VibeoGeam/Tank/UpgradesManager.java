@@ -34,25 +34,25 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
     }
     public void PopulateData()
     {
-        cannonData.add(new CannonInfo(10f, 600f, 0,1.0f, 0, 0.10f, 12.5f, 4.0f, 0.70f,R.drawable.cannon, 0, "cannon_fire").SetCannonName("Cannon"));
+        cannonData.add(new CannonInfo(10f, 600f, 0,1.0f, 0, 0.10f, 12.5f, 4.0f, 0.70f,R.drawable.cannon, 0, "cxxx").SetCannonName("Cannon"));
 
-        cannonData.add(new CannonInfo( 8f, 600f, 0,2.0f, 2, 0.30f, 02.0f, 3.0f, 0.35f, R.drawable.cannon1xx, 2, "c1xx").SetCannonName("Twin Barrels").SetBulletSize(8.0f));
-        cannonData.add(new CannonInfo( 4f, 750f, 1,3.0f, 2, 0.10f, 01.0f, 1.8f, 0.10f, R.drawable.cannon2xx, 2, "c1xx").SetCannonName("Machine Gun").SetBulletSize(6.5f));
-        cannonData.add(new CannonInfo( 3f, 900f, 2,5.0f, 2, 0.07f, 00.5f, 0.9f, 0.05f, R.drawable.cannon3xx, 3, "c1xx").SetCannonName("Minigun").SetBulletSize(5.0f));
+        cannonData.add(new CannonInfo( 8f, 600f, 0,2.0f, 2, 0.30f, 02.0f, 3.0f, 0.35f, R.drawable.cannon1xx, 2, "cxxx").SetCannonName("Twin Barrels").SetBulletSize(8.0f));
+        cannonData.add(new CannonInfo( 4f, 750f, 1,3.0f, 2, 0.10f, 01.0f, 1.8f, 0.10f, R.drawable.cannon2xx, 2, "c2xx").SetCannonName("Machine Gun").SetBulletSize(6.5f));
+        cannonData.add(new CannonInfo( 3f, 900f, 2,5.0f, 2, 0.07f, 00.5f, 0.9f, 0.05f, R.drawable.cannon3xx, 3, "c3xx").SetCannonName("Minigun").SetBulletSize(5.0f));
 
-        cannonData.add(new CannonInfo(15f, 700f, 1,0.7f, 0, 0.10f, 24.0f, 4.0f, 0.23f, R.drawable.cannonx1x, 3, "c1xx").SetCannonName("Longer Barrel"));
-        cannonData.add(new CannonInfo(30f, 800f, 3,0.4f, 0, 0.15f, 35.0f, 3.0f, 0.16f, R.drawable.cannonx2x, 3, "c1xx").SetCannonName("Higher Calibre").SetBulletSize(12.5f));
-        cannonData.add(new CannonInfo(120f,1100f,15,0.0f, 0, 0.30f, 50.0f, 1.6f, 0.09f, R.drawable.cannonx3x, 4, "c1xx").SetCannonName("Anti-Material").SetBulletSize(15.0f));
+        cannonData.add(new CannonInfo(15f, 700f, 1,0.7f, 0, 0.10f, 24.0f, 4.0f, 0.23f, R.drawable.cannonx1x, 3, "cxxx").SetCannonName("Longer Barrel"));
+        cannonData.add(new CannonInfo(30f, 800f, 3,0.4f, 0, 0.15f, 35.0f, 3.0f, 0.16f, R.drawable.cannonx2x, 3, "cx2x").SetCannonName("Higher Calibre").SetBulletSize(12.5f));
+        cannonData.add(new CannonInfo(120f,1100f,15,0.0f, 0, 0.30f, 50.0f, 1.6f, 0.09f, R.drawable.cannonx3x, 4,"cx3x").SetCannonName("Anti-Material").SetBulletSize(15.0f));
 
-        cannonData.add(new CannonInfo(12f, 600f, 2,10.f, 1, 0.10f, 18.0f, 4.0f, 0.85f, R.drawable.cannonxx1, 1, "c1xx").SetCannonName("Buckshot").SetBurstFireInfo( 8, 0.2f).SetBulletSize(7.0f));
-        cannonData.add(new CannonInfo( 8f, 650f, 1,16.f, 1, 0.15f, 08.0f, 1.5f, 0.90f, R.drawable.cannonxx2, 2, "c1xx").SetCannonName("Birdshot").SetBurstFireInfo(28, 0.4f).SetBulletSize(4.0f));
-        cannonData.add(new CannonInfo(24f, 700f, 5,5.0f, 1, 0.10f, 20.0f, 2.0f, 0.87f, R.drawable.cannonxx3, 3, "c1xx").SetCannonName("Flechette").SetBurstFireInfo(20, 0.3f).SetBulletSize(9.5f));
+        cannonData.add(new CannonInfo(12f, 600f, 2,10.f, 1, 0.10f, 18.0f, 4.0f, 0.85f, R.drawable.cannonxx1, 1, "cxxx").SetCannonName("Buckshot").SetBurstFireInfo( 8, 0.2f).SetBulletSize(7.0f));
+        cannonData.add(new CannonInfo( 8f, 650f, 1,16.f, 1, 0.15f, 08.0f, 1.5f, 0.90f, R.drawable.cannonxx2, 2, "cxx2").SetCannonName("Birdshot").SetBurstFireInfo(28, 0.4f).SetBulletSize(4.0f));
+        cannonData.add(new CannonInfo(24f, 700f, 5,5.0f, 1, 0.10f, 20.0f, 2.0f, 0.87f, R.drawable.cannonxx3, 3, "cxx3").SetCannonName("Flechette").SetBurstFireInfo(20, 0.3f).SetBulletSize(9.5f));
 
-        tankData.add(new BasicUpgrade("Repair", R.drawable.upgrade1xx, new int[]{0,1,1,2,3,4}, new float[]{0,0.5f,0.8f,1.3f,1.8f,2.4f}));
-        tankData.add(new BasicUpgrade("Reload", R.drawable.upgrade2xx, new int[]{0,1,1,3,3,4}, new float[]{0,0.6f,1.2f,2.0f,3.4f,5.6f}));
-        tankData.add(new BasicUpgrade("Reinforcement", R.drawable.upgrade3xx, new int[]{0,1,2,2,3,4}, new float[]{100f,120f,140f,160f,200f,250f}));
+        tankData.add(new BasicUpgrade("Repair", R.drawable.upgrade1xx,"", new int[]{0,1,1,2,3,4}, new float[]{0,0.5f,0.8f,1.3f,1.8f,2.4f}));
+        tankData.add(new BasicUpgrade("Reload", R.drawable.upgrade2xx,"", new int[]{0,1,1,3,3,4}, new float[]{0,0.6f,1.2f,2.0f,3.4f,5.6f}));
+        tankData.add(new BasicUpgrade("Reinforcement", R.drawable.upgrade3xx,"", new int[]{0,1,2,2,3,4}, new float[]{100f,120f,140f,160f,200f,250f}));
 
-        tankData.add(new ActiveUpgrade("Thruster", R.drawable.upgradex1x,new MutableWrapper<Float>(0.6f), 2)
+        tankData.add(new ActiveUpgrade("Thruster", R.drawable.upgradex1x, "ux1x", new MutableWrapper<Float>(0.6f), 2)
                 .SetFunction(()->{
                     Vector2 dir;
                     if (player.movement.direction.MagnitudeSq() > 0) dir = player.movement.direction.FastNormalize();
@@ -60,7 +60,7 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
                     dir.Mul(500.f);
                     player.getRb().AddForce(dir, Physics.ForceMode2D.IMPULSE);
                 }).SetDescription("Boosts you in the direction you are moving"));
-        tankData.add(new ActiveUpgrade("Grenade", R.drawable.upgradex2x, new MutableWrapper<Float>(3.f), 4)
+        tankData.add(new ActiveUpgrade("Grenade", R.drawable.upgradex2x, "ux2x", new MutableWrapper<Float>(3.f), 4)
                 .SetFunction(()->{
                     GameObject grenade = new GameObject();
                     grenade.GetTransform().SetPosition(player.GetTransform().GetPosition());
@@ -69,9 +69,10 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
                     if (player.movement.direction.MagnitudeSq() > 0) dir = player.movement.direction.FastNormalize();
                     else dir = Vector2.GetVectorFromAngle(player.GetTransform().GetRotation()-90);
                     dir.Mul(600.f);
+                    src.playerPosition = player;
                     src.targetPosition = Vector2.Add(player.GetTransform().GetPosition(),dir);
                 }).SetDescription("Throws a grenade dealing AOE damage to enemies"));
-        tankData.add(new ActiveUpgrade("Mini Tanks", R.drawable.upgradex3x, new MutableWrapper<Float>(15.f), 8)
+        tankData.add(new ActiveUpgrade("Mini Tanks", R.drawable.upgradex3x, "ux3x", new MutableWrapper<Float>(15.f), 8)
                 .SetFunction(()->{
                     Vector2 playerpos = player.GetTransform().GetPosition();
                     Vector2[] spawnpos = new Vector2[]{
@@ -86,23 +87,21 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
                     }
                 }).SetDescription("Deploys three small tanks to fight"));
 
-
-
-        tankData.add( new PassiveUpgrade("Radioactive", R.drawable.upgradexx1, 18,
+        tankData.add( new PassiveUpgrade("Radioactive", R.drawable.upgradexx1, "", 18,
                 ()->{
                     GameObject aura = new GameObject();
                     aura.AddComponent(Radiation.class).player = player;
                     return aura;
                 })
                 .SetDescription("Radiates a harmful aura that damages enemies in range"));
-        tankData.add( new PassiveUpgrade("Trapper", R.drawable.upgradexx2, 12,
+        tankData.add( new PassiveUpgrade("Trapper", R.drawable.upgradexx2, "", 12,
                 ()->{
                     GameObject trapper = new GameObject();
                     trapper.AddComponent(Trapper.class).player = player;
                     return trapper;
                 })
                 .SetDescription("Periodically deploy caltrops that damage enemies that run into them"));
-        tankData.add( new PassiveUpgrade("Turret", R.drawable.upgradexx3, 24,
+        tankData.add( new PassiveUpgrade("Turret", R.drawable.upgradexx3, "", 24,
                 ()->{
                     GameObject turret = new GameObject();
                     turret.AddComponent(Turret.class).player = player;
