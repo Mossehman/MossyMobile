@@ -34,6 +34,7 @@ public class EnemyPurpleTriangle extends Enemy {
         hitbox.SetCollisionLayer("Enemy");
         rb.SetRoughness(10f);
         renderer.ResourceID = super.resourceID;
+        renderer.SetZLayer(1);
         originalHp = super.health.value;
     }
 
@@ -67,7 +68,8 @@ public class EnemyPurpleTriangle extends Enemy {
                 hpBar.barLength = 35;
             }
 
-            if (GetTransform().GetPosition().MagnitudeSq() >= 2000 * 2000) {
+            if (GetTransform().GetPosition().DistanceSq(player.GetTransform().GetPosition()) >= 1000 * 1000) {
+                numOfEnemies.value--;
                 Destroy(gameObject);
             }
         }

@@ -67,7 +67,8 @@ public class EnemyYellowCube extends Enemy {
                 hpBar.barLength = 100;
             }
 
-            if (GetTransform().GetPosition().MagnitudeSq() >= 2000 * 2000) {
+            if (GetTransform().GetPosition().DistanceSq(player.GetTransform().GetPosition()) >= 1000 * 1000) {
+                numOfEnemies.value--;
                 Destroy(gameObject);
             }
         }

@@ -1,6 +1,8 @@
 package com.example.mossymobile.VibeoGeam;
 
 import com.example.mossymobile.MossFramework.Application;
+import com.example.mossymobile.MossFramework.GameView;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
 import com.example.mossymobile.MossFramework.Systems.Scenes.SceneManager;
 import com.example.mossymobile.MossFramework.Systems.ScriptableObjects.ScriptableObject;
@@ -34,7 +36,8 @@ public class GameApplication extends Application {
 
         UpgradesManager.GetInstance().PopulateData();
         Leaderboard lb = ScriptableObject.Create("highscores", Leaderboard.class, true);
-
+        AudioManager.initialize(GameView.GetInstance().GetContext());
+        AudioManager.playMusic("main_menu", -1);
         SceneManager.LoadScene("MenuScene");
         return true;
     }

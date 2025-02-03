@@ -6,6 +6,7 @@ import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioClip;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
@@ -14,7 +15,7 @@ import com.example.mossymobile.VibeoGeam.Player;
 public class Trapper extends MonoBehaviour {
     CannonInfo cannonInfo = new CannonInfo(5f, 15f,3,
             0, 2, 1.f,
-            0f, 10f, 1f, -1, 0).SetBulletSize(25);
+            0f, 10f, 1f, -1, 0, "cannon_fire").SetBulletSize(25);
     public Player player;
     float fireTimer = 0f;
     Vector2 currentFireDirection = new Vector2(0,1);
@@ -40,7 +41,7 @@ public class Trapper extends MonoBehaviour {
 
     private void FireBullet(Vector2 targetDirection) {
         fireTimer = cannonInfo.fireinterval;
-        AudioPlayer.PlayAudio(new AudioClip(R.raw.lmg_fire), false);
+        AudioManager.playSound(cannonInfo.soundName);
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;

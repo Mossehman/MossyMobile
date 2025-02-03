@@ -107,6 +107,9 @@ public class GameScene extends Scene {
 
         GameView.GetInstance().GetActivity().runOnUiThread(() -> {
             View ensnared = UI.GetInstance().GetUIContainer().findViewById(R.id.ensnaredlayout);
+
+            TextView debug = UI.GetInstance().GetUIContainer().findViewById(R.id.debug);
+            debug.setText(enemySpawner.numOfEnemies.value.toString());
             if (playerScript.isEnsnared) ensnared.setVisibility(View.VISIBLE);
             else ensnared.setVisibility(View.INVISIBLE);
 

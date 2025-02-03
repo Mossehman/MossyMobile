@@ -13,6 +13,7 @@ import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.Math.Vector2Int;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioClip;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Debugging.Gizmos;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
@@ -48,6 +49,9 @@ public class Player extends MonoBehaviour implements IDamageable {
     private UpgradesManager upgrades = UpgradesManager.GetInstance();
     public boolean isEnsnared = false;
     private float ensnareDuration = 5.0f;
+    private GameObject reticle;
+
+    AudioClip lmgFireAudio = new AudioClip(R.raw.lmg_fire);
     @Override
     public void Start() {
         GetTransform().SetPosition(
@@ -64,10 +68,16 @@ public class Player extends MonoBehaviour implements IDamageable {
         isEnsnared = false;
         Sensors.GetInstance(UI.GetInstance().GetUIContainer().getContext()).StartListening(() -> {
             if (isEnsnared) {
-                ensnareDuration -= 0.8f;
+                ensnareDuration -= 1.5f;
                 Vibration.Vibrate(new Vector2Int(500, 200));
             }
         });
+
+        reticle = Instantiate(new GameObject());
+        reticle.AddComponent(Renderer.class).SetSprite(R.drawable.reticle);
+        reticle.GetTransform().SetPosition(GetTransform().GetPosition());
+        reticle.GetTransform().SetScale(GetTransform().GetScale());
+
     }
 
     @Override
@@ -121,6 +131,17 @@ public class Player extends MonoBehaviour implements IDamageable {
             }
             moveDirection = movement.direction;
             lookDirection = look.direction;
+            {
+                Vector2 direction = new Vector2(0, 0);
+                if (look.isJoystickHeld) { // Aiming
+                    direction = lookDirection;
+                } else if (moveDirection.MagnitudeSq() > 0) { // Moving Look
+                    direction = moveDirection;
+                }
+                reticle.GetTransform().SetPosition(Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(direction.FastNormalize(), 400f)));
+                if (direction.MagnitudeSq() > 0) reticle.GetTransform().SetScale(new Vector2(cannonInfo.spread * 20 + 50,cannonInfo.spread * 20 + 50));
+                else reticle.GetTransform().SetScale(new Vector2(0,0));
+            }
         }
 
         if (isEnsnared) {
@@ -141,7 +162,7 @@ public class Player extends MonoBehaviour implements IDamageable {
         }
         Ammo.value -= cannonInfo.ammocost;
         fireTimer = cannonInfo.fireinterval;
-        AudioPlayer.PlayAudio(new AudioClip(R.raw.lmg_fire), false);
+        AudioManager.playSound(cannonInfo.soundName);
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;
@@ -181,14 +202,7 @@ public class Player extends MonoBehaviour implements IDamageable {
 
     @Override
     public void OnDrawGizmos() {
-        Vector2 direction = new Vector2(0,0);
-        if (look.isJoystickHeld) { // Aiming
-            direction = lookDirection;
-        }
-        else if (moveDirection.MagnitudeSq() > 0) { // Moving Look
-            direction = moveDirection;
-        }
-        Gizmos.DrawLine(GetTransform().GetPosition(), Vector2.Add(GetTransform().GetPosition(), Vector2.Mul(direction, 400f)), Color.WHITE);
+
     }
 
     private Vector2 Slerp(Vector2 from, Vector2 to, float t) {

@@ -17,7 +17,7 @@ import java.util.Objects;
 public class EnemySpawner extends MonoBehaviour {
     public Player player;
     List<GameObject> spawnedEnemies = new ArrayList<>();
-    private MutableWrapper<Integer> numOfEnemies = new MutableWrapper<>(0);
+    public MutableWrapper<Integer> numOfEnemies = new MutableWrapper<>(0);
     private float spawnInterval = 3f;
     private float spawnWaveTimer = 0f;
     private int spawnCountMax = 30;
@@ -40,7 +40,6 @@ public class EnemySpawner extends MonoBehaviour {
             else{
                 int amtToSpawn = MossMath.clamp(numOfEnemies.value + spawnWaveAmt, 1, spawnCountMax) - numOfEnemies.value;
                 for (int i = 0; i < amtToSpawn; i++) {
-                    spawnedEnemies.add(SpawnTriangle());
                     if (MossMath.randIntMinMax(0,100) >= 10) {
                         spawnedEnemies.add(SpawnCube());
                     } else {

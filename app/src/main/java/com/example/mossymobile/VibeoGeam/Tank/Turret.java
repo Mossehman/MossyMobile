@@ -7,6 +7,7 @@ import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.MossFramework.MonoBehaviour;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioClip;
+import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Audio.AudioPlayer;
 import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
@@ -24,7 +25,7 @@ public class Turret extends MonoBehaviour {
     CannonInfo cannonInfo = new CannonInfo(
             5f, 600f, 0,
             5.0f, 2, 0.2f,
-            0.0f, 2.0f, 0.30f, -1, 0)
+            0.0f, 2.0f, 0.30f, -1, 0, "c1xx")
             .SetBulletSize(5.f);
 
     Vector2 currentFireDirection = new Vector2(0,1);
@@ -62,7 +63,7 @@ public class Turret extends MonoBehaviour {
     private void FireBullet(Vector2 targetDirection)
     {
         fireTimer = cannonInfo.fireinterval;
-        AudioPlayer.PlayAudio(new AudioClip(R.raw.lmg_fire), false);
+        AudioManager.playSound(cannonInfo.soundName);
         Vector2 fireDirection = targetDirection;
         int n = 1;
         if (cannonInfo.firetype == 1) n = cannonInfo.numofpellets;

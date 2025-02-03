@@ -348,7 +348,7 @@ public class UpgradeScene extends Scene {
         TextView statText = new TextView(context);
         statText.setText(description);
         statText.setTextSize(18);
-        statText.setTextColor(R.color.black);
+        statText.setTextColor(ContextCompat.getColor(context, R.color.black));
         statText.setTypeface(null, Typeface.BOLD);
         statText.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -372,7 +372,7 @@ public class UpgradeScene extends Scene {
         TextView statText = new TextView(context);
         statText.setText(statName);
         statText.setTextSize(18);
-        statText.setTextColor(R.color.black);
+        statText.setTextColor(ContextCompat.getColor(context, R.color.black));
         statText.setTypeface(null, Typeface.BOLD);
         statText.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
