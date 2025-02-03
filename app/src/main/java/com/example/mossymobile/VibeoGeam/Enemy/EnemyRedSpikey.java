@@ -5,16 +5,15 @@ import com.example.mossymobile.MossFramework.Components.Renderers.Renderer;
 import com.example.mossymobile.MossFramework.Components.RigidBody;
 import com.example.mossymobile.MossFramework.DesignPatterns.MutableWrapper;
 import com.example.mossymobile.MossFramework.GameObject;
-import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
-import com.example.mossymobile.MossFramework.Systems.Audio.AudioManager;
 import com.example.mossymobile.MossFramework.Systems.Physics.Collision;
+import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.R;
 import com.example.mossymobile.VibeoGeam.BarMeter;
 
 import java.util.Objects;
 
-public class EnemyPurpleTriangle extends Enemy {
+public class EnemyRedSpikey extends Enemy {
     private Renderer renderer;
     private BoxCollider hitbox;
     private RigidBody rb;
@@ -22,21 +21,20 @@ public class EnemyPurpleTriangle extends Enemy {
     private float originalHp;
     private boolean isDying = false; // Prevent multiple destroy calls
 
-    EnemyPurpleTriangle() {
-        super(7, 30, 60, 25, R.drawable.purpletriangle);
+    EnemyRedSpikey() {
+        super(240, 120, 5, 60, R.drawable.redspiky);
     }
 
     @Override
     public void Start() {
-        GetTransform().SetScale(new Vector2(15f * 3, 15f * 3));
+        GetTransform().SetScale(new Vector2(40f * 3, 40f * 3));
         hitbox = gameObject.AddComponent(BoxCollider.class);
         rb = gameObject.AddComponent(RigidBody.class);
         renderer = gameObject.AddComponent(Renderer.class);
-        hitbox.hitboxDimensions = new Vector2(15f, 15f);
+        hitbox.hitboxDimensions = new Vector2(40f, 40f);
         hitbox.SetCollisionLayer("Enemy");
         rb.SetRoughness(10f);
         renderer.ResourceID = super.resourceID;
-        renderer.SetZLayer(1);
         originalHp = super.health.value;
     }
 
@@ -58,8 +56,9 @@ public class EnemyPurpleTriangle extends Enemy {
             }
 
             moveDirection = Vector2.Sub(player.GetTransform().GetPosition(), GetTransform().GetPosition()).Normalized();
+            GetTransform().SetRotation(GetTransform().GetRotation() + Time.GetDeltaTime() * 360f);
             rb.AddVelocity(moveDirection);
-            GetTransform().SetRotation(Vector2.DirectionToAngle(moveDirection));
+
             if (health.value < originalHp && hpBar == null && health.value > 0) {
                 bar = new GameObject();
                 hpBar = bar.AddComponent(BarMeter.class);
@@ -67,7 +66,7 @@ public class EnemyPurpleTriangle extends Enemy {
                 hpBar.valueRef = super.health;
                 hpBar.GetTransform().SetScale(new Vector2(200, 10));
                 hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
-                hpBar.barLength = originalHp * 5;
+                hpBar.barLength = originalHp * 2.5f;
             }
 
             if (GetTransform().GetPosition().DistanceSq(player.GetTransform().GetPosition()) >= 2000 * 2000) {
@@ -92,22 +91,14 @@ public class EnemyPurpleTriangle extends Enemy {
     @Override
     public void OnCollisionEnter(Collision collision) {
         super.OnCollisionEnter(collision);
-        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player")) {
-            player.isEnsnared = true;
-            AudioManager.playSound("playerensnare", MossMath.randFloatMinMax(0.95f, 1.05f));
-            if (hpBar != null) {
-                Destroy(bar);
-                hpBar = null;
-            }
+        if (Objects.equals(collision.GetCollider().GetCollisionLayer(), "Player") || Objects.equals(collision.GetCollider().GetCollisionLayer(), "PlayerNPC")) {
+            Destroy(bar);
         }
     }
 
     @Override
     public void OnDestroy() {
         super.OnDestroy();
-        if (hpBar != null) {
-            Destroy(bar);
-            hpBar = null;
-        }
+        Destroy(bar);
     }
 }

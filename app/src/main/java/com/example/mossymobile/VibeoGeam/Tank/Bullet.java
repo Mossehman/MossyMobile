@@ -71,7 +71,7 @@ public class Bullet extends MonoBehaviour {
         if (Objects.equals(collider.GetCollisionLayer(), "Enemy")) {
             Debug.Log("Bullet", "EnemyEnter");
             collider.GetGameObject().GetComponent(Enemy.class).ModifyHealth(cannonInfo.damage);
-            AudioManager.playSound("enemyhit", MossMath.randFloatMinMax(1.75f,2.25f));
+            AudioManager.playSound("enemyhit", MossMath.randFloatMinMax(1.75f,2.25f), 0.4f);
             if (pierce > 0) {
                 pierce--;
             } else {

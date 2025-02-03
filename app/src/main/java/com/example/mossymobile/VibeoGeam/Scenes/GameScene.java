@@ -156,7 +156,7 @@ public class GameScene extends Scene {
         EditText usernameI = ui.findViewById(R.id.username_input);
         ui.findViewById(R.id.score_submit_btn).setOnClickListener(l -> {
             String userInput = usernameI.getText().toString();
-
+            if (userInput.isEmpty() || userInput.isEmpty()) return;
             Leaderboard lb = ScriptableObject.Create("highscores", Leaderboard.class, true);
             lb.Leaderboard.put(userInput, finalScore);
             lb.SaveToExternalStorage();

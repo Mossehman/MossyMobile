@@ -44,9 +44,9 @@ public class UpgradesManager extends Singleton<UpgradesManager> {
         cannonData.add(new CannonInfo(30f, 800f, 3,0.4f, 0, 0.15f, 35.0f, 3.0f, 0.16f, R.drawable.cannonx2x, 3, "cx2x").SetCannonName("Higher Calibre").SetBulletSize(12.5f));
         cannonData.add(new CannonInfo(120f,1100f,15,0.0f, 0, 0.30f, 50.0f, 1.6f, 0.09f, R.drawable.cannonx3x, 4,"cx3x").SetCannonName("Anti-Material").SetBulletSize(15.0f));
 
-        cannonData.add(new CannonInfo(12f, 600f, 2,10.f, 1, 0.10f, 18.0f, 4.0f, 0.85f, R.drawable.cannonxx1, 1, "cxxx").SetCannonName("Buckshot").SetBurstFireInfo( 8, 0.2f).SetBulletSize(7.0f));
-        cannonData.add(new CannonInfo( 8f, 650f, 1,16.f, 1, 0.15f, 08.0f, 1.5f, 0.90f, R.drawable.cannonxx2, 2, "cxx2").SetCannonName("Birdshot").SetBurstFireInfo(28, 0.4f).SetBulletSize(4.0f));
-        cannonData.add(new CannonInfo(24f, 700f, 5,5.0f, 1, 0.10f, 20.0f, 2.0f, 0.87f, R.drawable.cannonxx3, 3, "cxx3").SetCannonName("Flechette").SetBurstFireInfo(20, 0.3f).SetBulletSize(9.5f));
+        cannonData.add(new CannonInfo(3f, 600f, 2,10.f, 1, 0.10f, 18.0f, 4.0f, 0.85f, R.drawable.cannonxx1, 1, "cxxx").SetCannonName("Buckshot").SetBurstFireInfo( 8, 0.2f).SetBulletSize(7.0f));
+        cannonData.add(new CannonInfo(1.25f, 650f, 1,16.f, 1, 0.15f, 08.0f, 1.5f, 0.90f, R.drawable.cannonxx2, 2, "cxx2").SetCannonName("Birdshot").SetBurstFireInfo(28, 0.4f).SetBulletSize(4.0f));
+        cannonData.add(new CannonInfo(3f, 700f, 5,5.0f, 1, 0.10f, 20.0f, 2.0f, 0.87f, R.drawable.cannonxx3, 3, "cxx3").SetCannonName("Flechette").SetBurstFireInfo(20, 0.3f).SetBulletSize(9.5f));
 
         tankData.add(new BasicUpgrade("Repair", R.drawable.upgrade1xx,"", new int[]{0,1,1,2,3,4}, new float[]{0,0.5f,0.8f,1.3f,1.8f,2.4f}));
         tankData.add(new BasicUpgrade("Reload", R.drawable.upgrade2xx,"", new int[]{0,1,1,3,3,4}, new float[]{0,0.6f,1.2f,2.0f,3.4f,5.6f}));

@@ -64,10 +64,10 @@ public class EnemyYellowCube extends Enemy {
                 hpBar.valueRef = super.health;
                 hpBar.GetTransform().SetScale(new Vector2(200, 10));
                 hpBar.position = new MutableWrapper<>(GetTransform().GetPosition());
-                hpBar.barLength = 100;
+                hpBar.barLength = originalHp * 5;
             }
 
-            if (GetTransform().GetPosition().DistanceSq(player.GetTransform().GetPosition()) >= 1000 * 1000) {
+            if (GetTransform().GetPosition().DistanceSq(player.GetTransform().GetPosition()) >= 2000 * 2000) {
                 isDying = true; // Prevent multiple destroy calls
                 if (hpBar != null) {
                     Destroy(bar);

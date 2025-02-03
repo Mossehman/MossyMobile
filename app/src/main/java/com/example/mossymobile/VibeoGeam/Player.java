@@ -65,6 +65,7 @@ public class Player extends MonoBehaviour implements IDamageable {
             if (isEnsnared) {
                 ensnareDuration -= 1.5f;
                 Vibration.Vibrate(new Vector2Int(500, 200));
+                AudioManager.playSound("playerunsnare", MossMath.randFloatMinMax(0.9f, 1.1f));
             }
         });
 
@@ -194,7 +195,7 @@ public class Player extends MonoBehaviour implements IDamageable {
     public void ModifyHealth(float amt) {
         Health.value -= amt;
         Vibration.Vibrate(new Vector2Int(500, 10));
-        AudioManager.playSound("playerhit", MossMath.randFloatMinMax(0.85f, 1.15f));
+        AudioManager.playSound("playerhit", MossMath.randFloatMinMax(0.85f, 1.15f), 2f);
     }
 
     @Override

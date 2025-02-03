@@ -10,7 +10,6 @@ import com.example.mossymobile.MossFramework.Systems.Time.Time;
 import com.example.mossymobile.VibeoGeam.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +19,7 @@ public class EnemySpawner extends MonoBehaviour {
     public MutableWrapper<Integer> numOfEnemies = new MutableWrapper<>(0);
     private float spawnInterval = 3f;
     private float spawnWaveTimer = 0f;
-    private int spawnCountMax = 30;
+    private int spawnCountMax = 40;
     private int spawnWaveAmt = 5;
 
     float screenWidth = Objects.requireNonNull(GameView.GetInstance()).getWidth();
@@ -40,10 +39,13 @@ public class EnemySpawner extends MonoBehaviour {
             else{
                 int amtToSpawn = MossMath.clamp(numOfEnemies.value + spawnWaveAmt, 1, spawnCountMax) - numOfEnemies.value;
                 for (int i = 0; i < amtToSpawn; i++) {
-                    if (MossMath.randIntMinMax(0,100) >= 10) {
+                    int chance = MossMath.randIntMinMax(0,100);
+                    if (chance <= 80) {
                         spawnedEnemies.add(SpawnCube());
-                    } else {
+                    } else if (chance <= 95) {
                         spawnedEnemies.add(SpawnTriangle());
+                    } else if (chance <= 100) {
+                        spawnedEnemies.add(SpawnSpiky());
                     }
                 }
                 spawnWaveTimer = spawnInterval;
@@ -85,6 +87,24 @@ public class EnemySpawner extends MonoBehaviour {
         }
         numOfEnemies.value++;
         return purpleTriangle;
+    }
+
+    private GameObject SpawnSpiky(){
+        GameObject redSpikey = new GameObject();
+        EnemyRedSpikey Spikey = redSpikey.AddComponent(EnemyRedSpikey.class);
+        Spikey.player = player;
+        Spikey.numOfEnemies = numOfEnemies;
+        while (true) {
+            float x = MossMath.randFloatMinMax(0, screenWidth);
+            float y = MossMath.randFloatMinMax(0, screenHeight);
+            Vector2 spawnPos = new Vector2(x, y);
+            if (player.GetTransform().GetPosition().DistanceSq(spawnPos) >= 400 * 400){
+                redSpikey.GetTransform().SetPosition(spawnPos);
+                break;
+            }
+        }
+        numOfEnemies.value++;
+        return redSpikey;
     }
 
     public List<GameObject> OverlapCircle(Vector2 position, float radius) {

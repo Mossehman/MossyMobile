@@ -5,6 +5,7 @@ import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 
+import com.example.mossymobile.MossFramework.Math.MossMath;
 import com.example.mossymobile.MossFramework.Math.Vector2;
 import com.example.mossymobile.R;
 
@@ -51,9 +52,10 @@ public class AudioManager {
         soundMap.put("enemyhit", soundPool.load(context, R.raw.hurt, 1));
         soundMap.put("playerhit", soundPool.load(context, R.raw.metal_interaction1, 1));
         soundMap.put("playerdeath", soundPool.load(context, R.raw.tankexplosion, 1));
+        soundMap.put("playerensnare", soundPool.load(context, R.raw.electricity, 1));
+        soundMap.put("playerunsnare", soundPool.load(context, R.raw.engine_rev, 1));
     }
 
-    // Play short sound effects
     public static void playSound(String soundKey) {
         Integer soundId = soundMap.get(soundKey);
         if (soundId != null) {
@@ -83,11 +85,8 @@ public class AudioManager {
         }
     }
 
-
-    // Play background music using MediaPlayer
     public static void playMusic(Context context, int resId, boolean loop) {
-        stopMusic();  // Stop any previous music
-
+        stopMusic();
         musicPlayer = MediaPlayer.create(context, resId);
         if (musicPlayer != null) {
             musicPlayer.setLooping(loop);
@@ -96,7 +95,6 @@ public class AudioManager {
         }
     }
 
-    // Stop background music
     public static void stopMusic() {
         if (musicPlayer != null) {
             if (musicPlayer.isPlaying()) {
@@ -118,21 +116,16 @@ public class AudioManager {
     }
 
     private static float[] calculateStereoVolume(Vector2 playerPos, Vector2 soundPos) {
-        // Distance between player and sound source
         float distance = playerPos.Distance(soundPos);
-        float maxDistance = 3000f;  // Adjust this based on your game world size
+        float maxDistance = 3000f;
 
-        // Normalize distance (0 = close, 1 = far)
         float distanceFactor = Math.min(distance / maxDistance, 1.0f);
 
-        // Overall volume decreases with distance
         float overallVolume = 1.0f - distanceFactor;
 
-        // Calculate panning based on horizontal position
-        float pan = (soundPos.x - playerPos.x) / maxDistance;  // -1 (left) to 1 (right)
-        pan = Math.max(-1.0f, Math.min(1.0f, pan));  // Clamp pan between -1 and 1
+        float pan = (soundPos.x - playerPos.x) / maxDistance;
+        pan = MossMath.clamp(pan, -1.0f, 1.0f);
 
-        // Convert pan to left and right volumes
         float leftVolume = overallVolume * (pan <= 0 ? 1.0f : 1.0f - pan);
         float rightVolume = overallVolume * (pan >= 0 ? 1.0f : 1.0f + pan);
 

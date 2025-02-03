@@ -330,7 +330,7 @@ public class UpgradeScene extends Scene {
         // imagine feature creeping a shop ui
         CannonInfo cannonInfo = UpgradesManager.GetInstance().FetchCannon(i);
 
-        AddStatToContainer("Damage", cannonInfo.damage, 120);
+        AddStatToContainer("Damage", cannonInfo.damage * cannonInfo.numofpellets, 120);
         AddStatToContainer("Speed", cannonInfo.speed, 1200);
         AddStatToContainer("Pierce", cannonInfo.pierce, 15);
         AddStatToContainer("Spread", cannonInfo.spread * 10, 200);
