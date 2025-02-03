@@ -93,14 +93,16 @@ public abstract class Scene implements Serializable {
             objectsToRender.clear();
         }
         if (Debug.GetConfig() != BuildConfig.PRODUCTION) {
+            for (GameObject gameObject : gameObjects) {
+                gameObject.Gizmos();
+            }
 
+            tree.Render();
         }
 
-        for (GameObject gameObject : gameObjects) {
-            gameObject.Gizmos();
-        }
 
-        tree.Render();
+
+
 
         if (!gameObjectsToRemove.isEmpty())
         {
