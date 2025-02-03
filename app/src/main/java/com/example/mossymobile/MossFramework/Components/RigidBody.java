@@ -60,10 +60,19 @@ public final class RigidBody extends MonoBehaviour {
         if (this.isKinematic.value) { return; }
 
         Vector2 friction = Vector2.Mul(velocity, new Vector2(-Physics.AirResistance * roughness.value, -Physics.AirResistance * roughness.value));
-        friction.y = 0;
+
+
 
         acceleration.y = force.y;
         acceleration.x = force.x / mass.value;
+
+        if (!gravityEnabled.value)
+        {
+            friction.y = 0;
+            acceleration.y /= mass.value;
+        }
+
+
 
 
         initialVelocity.x = velocity.x;

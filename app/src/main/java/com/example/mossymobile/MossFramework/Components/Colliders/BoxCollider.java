@@ -161,7 +161,7 @@ public class BoxCollider extends Collider {
                         }
                         else
                         {
-                            Vector2 collisionNormal = Vector2.Sub(otherPosition, thisPosition).Normalized();
+                            Vector2 collisionNormal = GetCollisionNormal(boxCollider, this);
                             Collision collision1 = new Collision(col.GetGameObject(), collisionNormal, col);
                             Collision collision2 = new Collision(gameObject, Vector2.Mul(collisionNormal, new Vector2(-1, -1)), this);
 
